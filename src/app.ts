@@ -2,22 +2,24 @@ import * as PIXI from "pixi.js";
 import { Scene } from "./components/objects/Scene";
 
 export class App extends PIXI.Application {
-  enableDevTools: boolean;
   currentScene: Scene;
   constructor(
     initialScene: { new (): Scene },
-    options: PIXI.IApplicationOptions & { enableDevTools?: boolean }
+    options: PIXI.IApplicationOptions & {}
   ) {
-    const { enableDevTools, ...rest } = options;
+    const { ...rest } = options;
     super(rest);
     globalThis.$app = this;
 
     this.currentScene = new initialScene();
     this.stage.addChild(this.currentScene);
 
-    this.enableDevTools = !!enableDevTools;
-    if (enableDevTools) {
-      (window as any)?.__PIXI_INSPECTOR_GLOBAL_HOOK__?.register({ PIXI });
+    if (!!window?.$isTest) {
+      const win = window as any;
+      // Pixi DevTools
+      win?.__PIXI_INSPECTOR_GLOBAL_HOOK__?.register({ PIXI });
+      // VConsole (HTMLから読み込み)
+      if (win?.VConsole) new win.VConsole();
     }
 
     document.body.appendChild(this.view);

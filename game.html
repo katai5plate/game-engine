@@ -23,17 +23,50 @@
     <title>Game</title>
   </head>
   <body>
-    <script src="./dist/index.js"></script>
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
     <script>
-      let count = 10;
-      const i = setInterval(() => {
-        if (!!window.VConsole && !!$app.enableDevTools) {
-          new window.VConsole();
-          clearInterval(i);
-        }
-        count--;
-      }, 1000);
+      window.$isTest = !!location.search.slice(1).match(/&?test/);
+      /** script の順次実行 */
+      const loadScripts = (src, cond) =>
+        new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = src;
+          document.body.appendChild(script);
+          let timeout = 10;
+          const i = setInterval(() => {
+            if (!!cond()) {
+              resolve();
+              clearInterval(i);
+            } else if (timeout < 0) {
+              reject();
+              clearInterval(i);
+            }
+            timeout--;
+          }, 100);
+        });
+      /** ゲームスタート*/
+      const gameStart = () =>
+        loadScripts(
+          "./dist/index.js",
+          () => window.$app && document.getElementsByTagName("canvas").length
+        )
+          .then(() => console.log("GAME LAUNCHED"))
+          .catch((e) => console.log("AN ERROR OCCURRED: GAME", e));
+
+      if (window.$isTest) {
+        // テストモードの場合
+        loadScripts(
+          "https://unpkg.com/vconsole@latest/dist/vconsole.min.js",
+          () => window.VConsole
+        )
+          .then(() => {
+            console.log("VCONSOLE IS LOADED");
+            gameStart();
+          })
+          .catch((e) => console.log("AN ERROR OCCURRED: VCONSOLE", e));
+      } else {
+        // 通常起動の場合
+        gameStart();
+      }
     </script>
   </body>
 </html>

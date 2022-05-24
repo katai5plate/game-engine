@@ -1,4 +1,3 @@
-import * as PIXI from "pixi.js";
 import { App } from "./app";
 import { InitScene } from "./components/scenes/InitScene";
 
@@ -7,5 +6,4 @@ new App(InitScene, {
   width: 816,
   height: 624,
   backgroundColor: 0xaaaaaa,
-  enableDevTools: true,
 });
