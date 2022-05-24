@@ -13,6 +13,9 @@ export class App extends PIXI.Application {
 
     this.currentScene = new initialScene();
     this.stage.addChild(this.currentScene);
+    this.ticker.add((deltaTime) => {
+      this.currentScene.update(deltaTime);
+    });
 
     if (!!window?.$isTest) {
       const win = window as any;

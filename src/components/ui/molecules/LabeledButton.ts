@@ -8,10 +8,10 @@ export class LabeledButton extends Button {
   constructor(
     texture: OriginCP[0],
     text: string,
-    { x, y, style }: OriginCP[1] & { style?: PIXI.TextStyle } = {}
+    { x, y, textStyle }: OriginCP[1] & { textStyle?: PIXI.TextStyle } = {}
   ) {
     super(texture, { x, y });
-    this.text = new PIXI.Text(text, style);
+    this.text = new PIXI.Text(text, textStyle);
     this.text.anchor.set(0.5);
     this.addChild(this.text);
   }

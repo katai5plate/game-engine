@@ -48391,6 +48391,10 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _this.stage.addChild(_this.currentScene);
 
+    _this.ticker.add(function (deltaTime) {
+      _this.currentScene.update(deltaTime);
+    });
+
     if (!!(window === null || window === void 0 ? void 0 : window.$isTest)) {
       var win = window; // Pixi DevTools
 
@@ -48586,6 +48590,7 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
     _classCallCheck(this, Scene);
 
     _this = _super.call(this);
+    _this.gameObjects = {};
 
     _this.setup();
 
@@ -48595,12 +48600,126 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
   _createClass(Scene, [{
     key: "setup",
     value: function setup() {}
+  }, {
+    key: "update",
+    value: function update(deltaTime) {}
+  }, {
+    key: "getGameObject",
+    value: function getGameObject(name) {
+      return this.gameObjects[name];
+    }
   }]);
 
   return Scene;
 }(PIXI.Container);
 
 exports.Scene = Scene;
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/atoms/Paintable.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Paintable = void 0;
+
+var PIXI = __importStar(require("pixi.js"));
+
+var pixi_js_1 = require("pixi.js");
+
+var Paintable = /*#__PURE__*/function (_PIXI$Graphics) {
+  _inherits(Paintable, _PIXI$Graphics);
+
+  var _super = _createSuper(Paintable);
+
+  function Paintable(width, height) {
+    var _this;
+
+    _classCallCheck(this, Paintable);
+
+    _this = _super.call(this);
+    _this.width = width;
+    _this.height = height;
+    return _this;
+  }
+
+  _createClass(Paintable, [{
+    key: "toTexture",
+    value: function toTexture() {
+      return $app.renderer.generateTexture(this);
+    }
+  }, {
+    key: "toSprite",
+    value: function toSprite() {
+      return new pixi_js_1.Sprite(this.toTexture());
+    }
+  }]);
+
+  return Paintable;
+}(PIXI.Graphics);
+
+exports.Paintable = Paintable;
 },{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/atoms/Button.ts":[function(require,module,exports) {
 "use strict";
 
@@ -48850,7 +48969,7 @@ var LabeledButton = /*#__PURE__*/function (_Button_1$Button) {
     var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
         x = _ref.x,
         y = _ref.y,
-        style = _ref.style;
+        textStyle = _ref.textStyle;
 
     _classCallCheck(this, LabeledButton);
 
@@ -48858,7 +48977,7 @@ var LabeledButton = /*#__PURE__*/function (_Button_1$Button) {
       x: x,
       y: y
     });
-    _this.text = new PIXI.Text(text, style);
+    _this.text = new PIXI.Text(text, textStyle);
 
     _this.text.anchor.set(0.5);
 
@@ -48896,56 +49015,16 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
-      }
-    };
-  }
-
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.InitScene = void 0;
 
-var PIXI = __importStar(require("pixi.js"));
-
 var utils_1 = require("../../utils");
 
 var Scene_1 = require("../objects/Scene");
+
+var Paintable_1 = require("../ui/atoms/Paintable");
 
 var LabeledButton_1 = require("../ui/molecules/LabeledButton");
 
@@ -48963,20 +49042,26 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
   _createClass(InitScene, [{
     key: "setup",
     value: function setup() {
-      var button = new LabeledButton_1.LabeledButton($app.renderer.generateTexture(new PIXI.Graphics().beginFill(0x888800).drawRect(0, 0, 100, 100).endFill()), "wfojfeiwjof", {
-        x: 100,
-        y: 100
+      var _this = this;
+
+      this.gameObjects = {
+        button1: new LabeledButton_1.LabeledButton(new Paintable_1.Paintable(100, 100).beginFill(0x888800).drawRect(0, 0, 100, 100).endFill().toTexture(), "←", {
+          x: 100,
+          y: 100
+        }),
+        button2: new LabeledButton_1.LabeledButton(new Paintable_1.Paintable(100, 100).beginFill(0x008888).drawRect(0, 0, 100, 100).endFill().toTexture(), "→", {
+          x: 300,
+          y: 100
+        })
+      };
+      Object.values(this.gameObjects).forEach(function (o) {
+        return _this.addChild(o);
       });
-      var button2 = new LabeledButton_1.LabeledButton($app.renderer.generateTexture(new PIXI.Graphics().beginFill(0x888800).drawRect(0, 0, 100, 100).endFill()), "fejiwjfe", {
-        x: 300,
-        y: 100
-      });
-      this.addChild(button);
-      this.addChild(button2);
-      (0, utils_1.toGlobalForDebug)({
-        button: button,
-        button2: button2
-      });
+      (0, utils_1.toGlobalForDebug)(this.gameObjects);
+    }
+  }, {
+    key: "update",
+    value: function update() {// this.getGameObject<LabeledButton>("button2").x += 0.5;
     }
   }]);
 
@@ -48984,7 +49069,7 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
 }(Scene_1.Scene);
 
 exports.InitScene = InitScene;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../utils":"utils.ts","../objects/Scene":"components/objects/Scene.ts","../ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts"}],"index.ts":[function(require,module,exports) {
+},{"../../utils":"utils.ts","../objects/Scene":"components/objects/Scene.ts","../ui/atoms/Paintable":"components/ui/atoms/Paintable.ts","../ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
