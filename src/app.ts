@@ -17,7 +17,7 @@ export class App extends PIXI.Application {
 
     this.enableDevTools = !!enableDevTools;
     if (enableDevTools) {
-      (window as any).__PIXI_INSPECTOR_GLOBAL_HOOK__.register({ PIXI });
+      (window as any)?.__PIXI_INSPECTOR_GLOBAL_HOOK__?.register({ PIXI });
     }
 
     document.body.appendChild(this.view);

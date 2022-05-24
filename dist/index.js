@@ -48378,6 +48378,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _classCallCheck(this, App);
 
+    var _a;
+
     var enableDevTools = options.enableDevTools,
         rest = __rest(options, ["enableDevTools"]);
 
@@ -48393,12 +48395,18 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     _this.enableDevTools = !!enableDevTools;
 
     if (enableDevTools) {
-      window.__PIXI_INSPECTOR_GLOBAL_HOOK__.register({
+      (_a = window === null || window === void 0 ? void 0 : window.__PIXI_INSPECTOR_GLOBAL_HOOK__) === null || _a === void 0 ? void 0 : _a.register({
         PIXI: PIXI
       });
     }
 
     document.body.appendChild(_this.view);
+
+    window.doit = function () {
+      document.body.appendChild(_this.view);
+      console.log(1111, document.body, _this.view);
+    };
+
     window.addEventListener("resize", function () {
       __classPrivateFieldGet(_assertThisInitialized(_this), _App_instances, "m", _App_onResize).call(_assertThisInitialized(_this));
     });
@@ -48987,12 +48995,14 @@ var app_1 = require("./app");
 var InitScene_1 = require("./components/scenes/InitScene"); // ゲーム開始
 
 
-new app_1.App(InitScene_1.InitScene, {
-  width: 816,
-  height: 624,
-  backgroundColor: 0xaaaaaa,
-  enableDevTools: true
-});
+setTimeout(function () {
+  new app_1.App(InitScene_1.InitScene, {
+    width: 816,
+    height: 624,
+    backgroundColor: 0xaaaaaa,
+    enableDevTools: true
+  });
+}, 2000);
 },{"./app":"app.ts","./components/scenes/InitScene":"components/scenes/InitScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
