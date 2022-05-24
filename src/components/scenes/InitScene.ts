@@ -18,7 +18,18 @@ export class InitScene extends Scene {
       "wfojfeiwjof",
       { x: 100, y: 100 }
     );
+    const button2 = new LabeledButton(
+      $app.renderer.generateTexture(
+        new PIXI.Graphics()
+          .beginFill(0x888800)
+          .drawRect(0, 0, 100, 100)
+          .endFill()
+      ),
+      "fejiwjfe",
+      { x: 300, y: 100 }
+    );
     this.addChild(button);
-    toGlobalForDebug({ button });
+    this.addChild(button2);
+    toGlobalForDebug({ button, button2 });
   }
 }

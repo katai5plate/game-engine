@@ -48967,9 +48967,15 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
         x: 100,
         y: 100
       });
+      var button2 = new LabeledButton_1.LabeledButton($app.renderer.generateTexture(new PIXI.Graphics().beginFill(0x888800).drawRect(0, 0, 100, 100).endFill()), "fejiwjfe", {
+        x: 300,
+        y: 100
+      });
       this.addChild(button);
+      this.addChild(button2);
       (0, utils_1.toGlobalForDebug)({
-        button: button
+        button: button,
+        button2: button2
       });
     }
   }]);
