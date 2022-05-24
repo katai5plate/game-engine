@@ -24,5 +24,16 @@
   </head>
   <body>
     <script src="./dist/index.js"></script>
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+      let count = 10;
+      const i = setInterval(() => {
+        if (!!window.VConsole && !!$app.enableDevTools) {
+          new window.VConsole();
+          clearInterval(i);
+        }
+        count--;
+      }, 1000);
+    </script>
   </body>
 </html>

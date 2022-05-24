@@ -8,7 +8,6 @@ export class InitScene extends Scene {
     super();
   }
   setup() {
-    if ($app.view) document.body.style.backgroundColor = "blue";
     const button = new LabeledButton(
       $app.renderer.generateTexture(
         new PIXI.Graphics()

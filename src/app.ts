@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { Scene } from "./components/objects/Scene";
 
 export class App extends PIXI.Application {
+  enableDevTools: boolean;
   currentScene: Scene;
   constructor(
     initialScene: { new (): Scene },
@@ -13,6 +14,8 @@ export class App extends PIXI.Application {
 
     this.currentScene = new initialScene();
     this.stage.addChild(this.currentScene);
+
+    this.enableDevTools = !!enableDevTools;
     if (enableDevTools) {
       (window as any).__PIXI_INSPECTOR_GLOBAL_HOOK__.register({ PIXI });
     }

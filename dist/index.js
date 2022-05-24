@@ -48390,6 +48390,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _this.stage.addChild(_this.currentScene);
 
+    _this.enableDevTools = !!enableDevTools;
+
     if (enableDevTools) {
       window.__PIXI_INSPECTOR_GLOBAL_HOOK__.register({
         PIXI: PIXI
@@ -48958,7 +48960,6 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
   _createClass(InitScene, [{
     key: "setup",
     value: function setup() {
-      if ($app.view) document.body.style.backgroundColor = "blue";
       var button = new LabeledButton_1.LabeledButton($app.renderer.generateTexture(new PIXI.Graphics().beginFill(0x888800).drawRect(0, 0, 100, 100).endFill()), "wfojfeiwjof", {
         x: 100,
         y: 100
@@ -49020,7 +49021,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1328" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1030" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
