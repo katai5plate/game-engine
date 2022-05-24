@@ -1,8 +1,11 @@
 import * as PIXI from "pixi.js";
 import { Scene } from "./components/objects/Scene";
+import { toGlobalForDebug } from "./utils/helper";
 
 export class App extends PIXI.Application {
   currentScene: Scene;
+  /** ゲームが始まって何秒経ったか */
+  time: number = 0;
   constructor(
     initialScene: { new (): Scene },
     options: PIXI.IApplicationOptions & {}
@@ -15,14 +18,15 @@ export class App extends PIXI.Application {
     this.stage.addChild(this.currentScene);
     this.ticker.add((deltaTime) => {
       this.currentScene.update(deltaTime);
+      this.time += deltaTime / 60;
     });
 
     if (!!window?.$isTest) {
       const win = window as any;
       // Pixi DevTools
-      win?.__PIXI_INSPECTOR_GLOBAL_HOOK__?.register({ PIXI });
+      toGlobalForDebug({ PIXI });
       // VConsole (HTMLから読み込み)
-      if (win?.VConsole) new win.VConsole();
+      if (win?.VConsole) toGlobalForDebug({ $vc: new win.VConsole() });
     }
 
     document.body.appendChild(this.view);

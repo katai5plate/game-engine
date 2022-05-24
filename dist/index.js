@@ -48275,7 +48275,39 @@ var filters = {
   NoiseFilter: _filterNoise.NoiseFilter
 };
 exports.filters = filters;
-},{"@pixi/polyfill":"../node_modules/@pixi/polyfill/dist/esm/polyfill.js","@pixi/utils":"../node_modules/@pixi/utils/dist/esm/utils.js","@pixi/accessibility":"../node_modules/pixi.js/node_modules/@pixi/accessibility/dist/esm/accessibility.js","@pixi/interaction":"../node_modules/@pixi/interaction/dist/esm/interaction.js","@pixi/app":"../node_modules/@pixi/app/dist/esm/app.js","@pixi/core":"../node_modules/@pixi/core/dist/esm/core.js","@pixi/extract":"../node_modules/pixi.js/node_modules/@pixi/extract/dist/esm/extract.js","@pixi/loaders":"../node_modules/@pixi/loaders/dist/esm/loaders.js","@pixi/compressed-textures":"../node_modules/pixi.js/node_modules/@pixi/compressed-textures/dist/esm/compressed-textures.js","@pixi/particle-container":"../node_modules/pixi.js/node_modules/@pixi/particle-container/dist/esm/particle-container.js","@pixi/prepare":"../node_modules/pixi.js/node_modules/@pixi/prepare/dist/esm/prepare.js","@pixi/spritesheet":"../node_modules/pixi.js/node_modules/@pixi/spritesheet/dist/esm/spritesheet.js","@pixi/sprite-tiling":"../node_modules/pixi.js/node_modules/@pixi/sprite-tiling/dist/esm/sprite-tiling.js","@pixi/text-bitmap":"../node_modules/pixi.js/node_modules/@pixi/text-bitmap/dist/esm/text-bitmap.js","@pixi/ticker":"../node_modules/@pixi/ticker/dist/esm/ticker.js","@pixi/filter-alpha":"../node_modules/pixi.js/node_modules/@pixi/filter-alpha/dist/esm/filter-alpha.js","@pixi/filter-blur":"../node_modules/pixi.js/node_modules/@pixi/filter-blur/dist/esm/filter-blur.js","@pixi/filter-color-matrix":"../node_modules/pixi.js/node_modules/@pixi/filter-color-matrix/dist/esm/filter-color-matrix.js","@pixi/filter-displacement":"../node_modules/pixi.js/node_modules/@pixi/filter-displacement/dist/esm/filter-displacement.js","@pixi/filter-fxaa":"../node_modules/pixi.js/node_modules/@pixi/filter-fxaa/dist/esm/filter-fxaa.js","@pixi/filter-noise":"../node_modules/pixi.js/node_modules/@pixi/filter-noise/dist/esm/filter-noise.js","@pixi/mixin-cache-as-bitmap":"../node_modules/pixi.js/node_modules/@pixi/mixin-cache-as-bitmap/dist/esm/mixin-cache-as-bitmap.js","@pixi/mixin-get-child-by-name":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-child-by-name/dist/esm/mixin-get-child-by-name.js","@pixi/mixin-get-global-position":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-global-position/dist/esm/mixin-get-global-position.js","@pixi/constants":"../node_modules/@pixi/constants/dist/esm/constants.js","@pixi/display":"../node_modules/@pixi/display/dist/esm/display.js","@pixi/graphics":"../node_modules/@pixi/graphics/dist/esm/graphics.js","@pixi/math":"../node_modules/@pixi/math/dist/esm/math.js","@pixi/mesh":"../node_modules/pixi.js/node_modules/@pixi/mesh/dist/esm/mesh.js","@pixi/mesh-extras":"../node_modules/pixi.js/node_modules/@pixi/mesh-extras/dist/esm/mesh-extras.js","@pixi/runner":"../node_modules/@pixi/runner/dist/esm/runner.js","@pixi/sprite":"../node_modules/@pixi/sprite/dist/esm/sprite.js","@pixi/sprite-animated":"../node_modules/pixi.js/node_modules/@pixi/sprite-animated/dist/esm/sprite-animated.js","@pixi/text":"../node_modules/@pixi/text/dist/esm/text.js","@pixi/settings":"../node_modules/@pixi/settings/dist/esm/settings.js"}],"app.ts":[function(require,module,exports) {
+},{"@pixi/polyfill":"../node_modules/@pixi/polyfill/dist/esm/polyfill.js","@pixi/utils":"../node_modules/@pixi/utils/dist/esm/utils.js","@pixi/accessibility":"../node_modules/pixi.js/node_modules/@pixi/accessibility/dist/esm/accessibility.js","@pixi/interaction":"../node_modules/@pixi/interaction/dist/esm/interaction.js","@pixi/app":"../node_modules/@pixi/app/dist/esm/app.js","@pixi/core":"../node_modules/@pixi/core/dist/esm/core.js","@pixi/extract":"../node_modules/pixi.js/node_modules/@pixi/extract/dist/esm/extract.js","@pixi/loaders":"../node_modules/@pixi/loaders/dist/esm/loaders.js","@pixi/compressed-textures":"../node_modules/pixi.js/node_modules/@pixi/compressed-textures/dist/esm/compressed-textures.js","@pixi/particle-container":"../node_modules/pixi.js/node_modules/@pixi/particle-container/dist/esm/particle-container.js","@pixi/prepare":"../node_modules/pixi.js/node_modules/@pixi/prepare/dist/esm/prepare.js","@pixi/spritesheet":"../node_modules/pixi.js/node_modules/@pixi/spritesheet/dist/esm/spritesheet.js","@pixi/sprite-tiling":"../node_modules/pixi.js/node_modules/@pixi/sprite-tiling/dist/esm/sprite-tiling.js","@pixi/text-bitmap":"../node_modules/pixi.js/node_modules/@pixi/text-bitmap/dist/esm/text-bitmap.js","@pixi/ticker":"../node_modules/@pixi/ticker/dist/esm/ticker.js","@pixi/filter-alpha":"../node_modules/pixi.js/node_modules/@pixi/filter-alpha/dist/esm/filter-alpha.js","@pixi/filter-blur":"../node_modules/pixi.js/node_modules/@pixi/filter-blur/dist/esm/filter-blur.js","@pixi/filter-color-matrix":"../node_modules/pixi.js/node_modules/@pixi/filter-color-matrix/dist/esm/filter-color-matrix.js","@pixi/filter-displacement":"../node_modules/pixi.js/node_modules/@pixi/filter-displacement/dist/esm/filter-displacement.js","@pixi/filter-fxaa":"../node_modules/pixi.js/node_modules/@pixi/filter-fxaa/dist/esm/filter-fxaa.js","@pixi/filter-noise":"../node_modules/pixi.js/node_modules/@pixi/filter-noise/dist/esm/filter-noise.js","@pixi/mixin-cache-as-bitmap":"../node_modules/pixi.js/node_modules/@pixi/mixin-cache-as-bitmap/dist/esm/mixin-cache-as-bitmap.js","@pixi/mixin-get-child-by-name":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-child-by-name/dist/esm/mixin-get-child-by-name.js","@pixi/mixin-get-global-position":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-global-position/dist/esm/mixin-get-global-position.js","@pixi/constants":"../node_modules/@pixi/constants/dist/esm/constants.js","@pixi/display":"../node_modules/@pixi/display/dist/esm/display.js","@pixi/graphics":"../node_modules/@pixi/graphics/dist/esm/graphics.js","@pixi/math":"../node_modules/@pixi/math/dist/esm/math.js","@pixi/mesh":"../node_modules/pixi.js/node_modules/@pixi/mesh/dist/esm/mesh.js","@pixi/mesh-extras":"../node_modules/pixi.js/node_modules/@pixi/mesh-extras/dist/esm/mesh-extras.js","@pixi/runner":"../node_modules/@pixi/runner/dist/esm/runner.js","@pixi/sprite":"../node_modules/@pixi/sprite/dist/esm/sprite.js","@pixi/sprite-animated":"../node_modules/pixi.js/node_modules/@pixi/sprite-animated/dist/esm/sprite-animated.js","@pixi/text":"../node_modules/@pixi/text/dist/esm/text.js","@pixi/settings":"../node_modules/@pixi/settings/dist/esm/settings.js"}],"utils/helper.ts":[function(require,module,exports) {
+"use strict";
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.toGlobalForDebug = void 0;
+/** 指定した変数をデバッグ用にグローバル参照可能にする */
+
+var toGlobalForDebug = function toGlobalForDebug(target) {
+  Object.entries(target).forEach(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        k = _ref2[0],
+        v = _ref2[1];
+
+    globalThis[k] = v;
+  });
+};
+
+exports.toGlobalForDebug = toGlobalForDebug;
+},{}],"app.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -48368,6 +48400,8 @@ exports.App = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
 
+var helper_1 = require("./utils/helper");
+
 var App = /*#__PURE__*/function (_PIXI$Application) {
   _inherits(App, _PIXI$Application);
 
@@ -48378,14 +48412,15 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _classCallCheck(this, App);
 
-    var _a;
-
     var rest = __rest(options, []);
 
     _this = _super.call(this, rest);
 
     _App_instances.add(_assertThisInitialized(_this));
+    /** ゲームが始まって何秒経ったか */
 
+
+    _this.time = 0;
     globalThis.$app = _assertThisInitialized(_this);
     _this.currentScene = new initialScene();
 
@@ -48393,16 +48428,20 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _this.ticker.add(function (deltaTime) {
       _this.currentScene.update(deltaTime);
+
+      _this.time += deltaTime / 60;
     });
 
     if (!!(window === null || window === void 0 ? void 0 : window.$isTest)) {
       var win = window; // Pixi DevTools
 
-      (_a = win === null || win === void 0 ? void 0 : win.__PIXI_INSPECTOR_GLOBAL_HOOK__) === null || _a === void 0 ? void 0 : _a.register({
+      (0, helper_1.toGlobalForDebug)({
         PIXI: PIXI
       }); // VConsole (HTMLから読み込み)
 
-      if (win === null || win === void 0 ? void 0 : win.VConsole) new win.VConsole();
+      if (win === null || win === void 0 ? void 0 : win.VConsole) (0, helper_1.toGlobalForDebug)({
+        $vc: new win.VConsole()
+      });
     }
 
     document.body.appendChild(_this.view);
@@ -48475,39 +48514,249 @@ _App_instances = new WeakSet(), _App_onResize = function _App_onResize() {
 
   return;
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"utils.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./utils/helper":"utils/helper.ts"}],"filters/BrightnessFilter.ts":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.toGlobalForDebug = void 0;
-/** 指定した変数をデバッグ用にグローバル参照可能にする */
+exports.BrightnessFilter = void 0;
 
-var toGlobalForDebug = function toGlobalForDebug(target) {
-  Object.entries(target).forEach(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-        k = _ref2[0],
-        v = _ref2[1];
+var PIXI = __importStar(require("pixi.js"));
+/** 明るさフィルター */
 
-    globalThis[k] = v;
-  });
+
+var BrightnessFilter = /*#__PURE__*/function (_PIXI$filters$ColorMa) {
+  _inherits(BrightnessFilter, _PIXI$filters$ColorMa);
+
+  var _super = _createSuper(BrightnessFilter);
+
+  function BrightnessFilter() {
+    _classCallCheck(this, BrightnessFilter);
+
+    return _super.call(this);
+  }
+  /** @param v -1 - 1 */
+
+
+  _createClass(BrightnessFilter, [{
+    key: "setBrightness",
+    value: function setBrightness(v) {
+      var b = 1 - v;
+      this.matrix = [b, 0, 0, 0, v].concat([0, b, 0, 0, v], [0, 0, b, 0, v], [0, 0, 0, 1, 0]);
+      return this;
+    }
+  }]);
+
+  return BrightnessFilter;
+}(PIXI.filters.ColorMatrixFilter);
+
+exports.BrightnessFilter = BrightnessFilter;
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"../node_modules/ts-easing/lib/index.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.easing = {
+    // No easing, no acceleration
+    linear: function (t) { return t; },
+    // Accelerates fast, then slows quickly towards end.
+    quadratic: function (t) { return t * (-(t * t) * t + 4 * t * t - 6 * t + 4); },
+    // Overshoots over 1 and then returns to 1 towards end.
+    cubic: function (t) { return t * (4 * t * t - 9 * t + 6); },
+    // Overshoots over 1 multiple times - wiggles around 1.
+    elastic: function (t) { return t * (33 * t * t * t * t - 106 * t * t * t + 126 * t * t - 67 * t + 15); },
+    // Accelerating from zero velocity
+    inQuad: function (t) { return t * t; },
+    // Decelerating to zero velocity
+    outQuad: function (t) { return t * (2 - t); },
+    // Acceleration until halfway, then deceleration
+    inOutQuad: function (t) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; },
+    // Accelerating from zero velocity
+    inCubic: function (t) { return t * t * t; },
+    // Decelerating to zero velocity
+    outCubic: function (t) { return (--t) * t * t + 1; },
+    // Acceleration until halfway, then deceleration
+    inOutCubic: function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1; },
+    // Accelerating from zero velocity
+    inQuart: function (t) { return t * t * t * t; },
+    // Decelerating to zero velocity
+    outQuart: function (t) { return 1 - (--t) * t * t * t; },
+    // Acceleration until halfway, then deceleration
+    inOutQuart: function (t) { return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t; },
+    // Accelerating from zero velocity
+    inQuint: function (t) { return t * t * t * t * t; },
+    // Decelerating to zero velocity
+    outQuint: function (t) { return 1 + (--t) * t * t * t * t; },
+    // Acceleration until halfway, then deceleration
+    inOutQuint: function (t) { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; },
+    // Accelerating from zero velocity
+    inSine: function (t) { return -Math.cos(t * (Math.PI / 2)) + 1; },
+    // Decelerating to zero velocity
+    outSine: function (t) { return Math.sin(t * (Math.PI / 2)); },
+    // Accelerating until halfway, then decelerating
+    inOutSine: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
+    // Exponential accelerating from zero velocity
+    inExpo: function (t) { return Math.pow(2, 10 * (t - 1)); },
+    // Exponential decelerating to zero velocity
+    outExpo: function (t) { return -Math.pow(2, -10 * t) + 1; },
+    // Exponential accelerating until halfway, then decelerating
+    inOutExpo: function (t) {
+        t /= .5;
+        if (t < 1)
+            return Math.pow(2, 10 * (t - 1)) / 2;
+        t--;
+        return (-Math.pow(2, -10 * t) + 2) / 2;
+    },
+    // Circular accelerating from zero velocity
+    inCirc: function (t) { return -Math.sqrt(1 - t * t) + 1; },
+    // Circular decelerating to zero velocity Moves VERY fast at the beginning and
+    // then quickly slows down in the middle. This tween can actually be used
+    // in continuous transitions where target value changes all the time,
+    // because of the very quick start, it hides the jitter between target value changes.
+    outCirc: function (t) { return Math.sqrt(1 - (t = t - 1) * t); },
+    // Circular acceleration until halfway, then deceleration
+    inOutCirc: function (t) {
+        t /= .5;
+        if (t < 1)
+            return -(Math.sqrt(1 - t * t) - 1) / 2;
+        t -= 2;
+        return (Math.sqrt(1 - t * t) + 1) / 2;
+    }
 };
 
-exports.toGlobalForDebug = toGlobalForDebug;
-},{}],"components/objects/Scene.ts":[function(require,module,exports) {
+},{}],"utils/math.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.lerp = void 0;
+
+var ts_easing_1 = require("ts-easing");
+
+var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
+  inElastic: function inElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
+  },
+  outElastic: function outElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+  },
+  inOutElastic: function inOutElastic(x) {
+    var a = 2 * Math.PI / 4.5;
+    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
+  },
+  inBack: function inBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return b * x * x * x - a * x * x;
+  },
+  outBack: function outBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
+  },
+  inOutBack: function inOutBack(x) {
+    var a = 1.70158;
+    var b = a * 1.525;
+    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
+  },
+  inBounce: function inBounce(x) {
+    return 1 - this.outBounce(1 - x);
+  },
+  outBounce: function outBounce(x) {
+    var a = 7.5625;
+    var b = 2.75;
+
+    if (x < 1 / b) {
+      return a * x * x;
+    } else if (x < 2 / b) {
+      return a * (x -= 1.5 / b) * x + 0.75;
+    } else if (x < 2.5 / b) {
+      return a * (x -= 2.25 / b) * x + 0.9375;
+    } else {
+      return a * (x -= 2.625 / b) * x + 0.984375;
+    }
+  },
+  inOutBounce: function inOutBounce(x) {
+    return x < 0.5 ? (1 - this.outBounce(1 - 2 * x)) / 2 : (1 + this.outBounce(2 * x - 1)) / 2;
+  }
+}); // function lerp(a, b, t) {
+//   if (b == a) return a;
+//   return a + t * (b - a);
+// }
+
+var lerp = function lerp(ease, a, b, t) {
+  var f = easing[ease];
+  var d = b - a;
+  var x = t / d;
+  var y = f(0 > x ? 0 : 1 < x ? 1 : x);
+  var r = a + y * d;
+  return r;
+};
+
+exports.lerp = lerp;
+},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/Scene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -48800,6 +49049,8 @@ exports.Button = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
 
+var BrightnessFilter_1 = require("../../../filters/BrightnessFilter");
+
 var Button = /*#__PURE__*/function (_PIXI$Sprite) {
   _inherits(Button, _PIXI$Sprite);
 
@@ -48832,24 +49083,29 @@ var Button = /*#__PURE__*/function (_PIXI$Sprite) {
     .on("mousedown", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onDownProcess)).on("mouseup", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("mouseupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("mouseover", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onOverProcess)).on("mouseout", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onOutProcess)) // タッチ限定
     .on("touchstart", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onDownProcess)).on("touchend", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("touchendoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess));
 
+    _this.brightnessFilter = new BrightnessFilter_1.BrightnessFilter();
+    _this.filters = [_this.brightnessFilter];
     return _this;
   }
 
   _createClass(Button, [{
     key: "onNomal",
     value: function onNomal() {
-      this.alpha = 1;
+      this.brightnessFilter.setBrightness(0);
     }
   }, {
     key: "onDown",
     value: function onDown() {
-      this.alpha = 0;
+      this.brightnessFilter.setBrightness(-0.25);
     }
   }, {
     key: "onOver",
     value: function onOver() {
-      this.alpha = 0.75;
+      this.brightnessFilter.setBrightness(0.25);
     }
+  }, {
+    key: "onClick",
+    value: function onClick() {}
   }]);
 
   return Button;
@@ -48857,6 +49113,7 @@ var Button = /*#__PURE__*/function (_PIXI$Sprite) {
 
 exports.Button = Button;
 _Button_instances = new WeakSet(), _Button_onDownProcess = function _Button_onDownProcess() {
+  if (!this.isDown) this.onClick();
   this.isDown = true;
   this.onDown();
 }, _Button_onUpProcess = function _Button_onUpProcess() {
@@ -48884,7 +49141,7 @@ _Button_instances = new WeakSet(), _Button_onDownProcess = function _Button_onDo
 
   this.onNomal();
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/molecules/LabeledButton.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../../filters/BrightnessFilter":"filters/BrightnessFilter.ts"}],"components/ui/molecules/LabeledButton.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -49020,7 +49277,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.InitScene = void 0;
 
-var utils_1 = require("../../utils");
+var BrightnessFilter_1 = require("../../filters/BrightnessFilter");
+
+var helper_1 = require("../../utils/helper");
+
+var math_1 = require("../../utils/math");
 
 var Scene_1 = require("../objects/Scene");
 
@@ -49057,11 +49318,20 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
       Object.values(this.gameObjects).forEach(function (o) {
         return _this.addChild(o);
       });
-      (0, utils_1.toGlobalForDebug)(this.gameObjects);
+      (0, helper_1.toGlobalForDebug)(Object.assign(Object.assign({}, this.gameObjects), {
+        BrightnessFilter: BrightnessFilter_1.BrightnessFilter
+      }));
     }
   }, {
     key: "update",
-    value: function update() {// this.getGameObject<LabeledButton>("button2").x += 0.5;
+    value: function update() {
+      var _$app$screen = $app.screen,
+          width = _$app$screen.width,
+          height = _$app$screen.height;
+      var button1 = this.getGameObject("button1");
+      button1.x = (0, math_1.lerp)("inOutBack", button1.width / 2, width - button1.width / 2, $app.time * 150 % width);
+      var button2 = this.getGameObject("button2");
+      button2.y = (0, math_1.lerp)("outBounce", button2.height / 2, height - button2.height / 2, $app.time * 200 % height);
     }
   }]);
 
@@ -49069,7 +49339,7 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
 }(Scene_1.Scene);
 
 exports.InitScene = InitScene;
-},{"../../utils":"utils.ts","../objects/Scene":"components/objects/Scene.ts","../ui/atoms/Paintable":"components/ui/atoms/Paintable.ts","../ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts"}],"index.ts":[function(require,module,exports) {
+},{"../../filters/BrightnessFilter":"filters/BrightnessFilter.ts","../../utils/helper":"utils/helper.ts","../../utils/math":"utils/math.ts","../objects/Scene":"components/objects/Scene.ts","../ui/atoms/Paintable":"components/ui/atoms/Paintable.ts","../ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -49114,7 +49384,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "15646" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "19596" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

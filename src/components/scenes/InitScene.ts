@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
-import { toGlobalForDebug } from "../../utils";
+import { BrightnessFilter } from "../../filters/BrightnessFilter";
+import { toGlobalForDebug } from "../../utils/helper";
+import { lerp } from "../../utils/math";
 import { Scene } from "../objects/Scene";
 import { Paintable } from "../ui/atoms/Paintable";
 import { LabeledButton } from "../ui/molecules/LabeledButton";
@@ -30,9 +32,23 @@ export class InitScene extends Scene {
       ),
     };
     Object.values(this.gameObjects).forEach((o) => this.addChild(o));
-    toGlobalForDebug(this.gameObjects);
+    toGlobalForDebug({ ...this.gameObjects, BrightnessFilter });
   }
   update() {
-    // this.getGameObject<LabeledButton>("button2").x += 0.5;
+    const { width, height } = $app.screen;
+    const button1 = this.getGameObject<LabeledButton>("button1");
+    button1.x = lerp(
+      "inOutBack",
+      button1.width / 2,
+      width - button1.width / 2,
+      ($app.time * 150) % width
+    );
+    const button2 = this.getGameObject<LabeledButton>("button2");
+    button2.y = lerp(
+      "outBounce",
+      button2.height / 2,
+      height - button2.height / 2,
+      ($app.time * 200) % height
+    );
   }
 }

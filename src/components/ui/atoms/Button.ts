@@ -1,8 +1,10 @@
 import * as PIXI from "pixi.js";
+import { BrightnessFilter } from "../../../filters/BrightnessFilter";
 
 export class Button extends PIXI.Sprite {
   isDown: boolean = false;
   isOver: boolean = false;
+  brightnessFilter: BrightnessFilter;
   constructor(
     texture: PIXI.Texture,
     { x, y }: { x?: number; y?: number } = {}
@@ -28,17 +30,21 @@ export class Button extends PIXI.Sprite {
       .on("touchstart", this.#onDownProcess)
       .on("touchend", this.#onUpProcess)
       .on("touchendoutside", this.#onUpProcess);
+    this.brightnessFilter = new BrightnessFilter();
+    this.filters = [this.brightnessFilter];
   }
   onNomal() {
-    this.alpha = 1;
+    this.brightnessFilter.setBrightness(0);
   }
   onDown() {
-    this.alpha = 0;
+    this.brightnessFilter.setBrightness(-0.25);
   }
   onOver() {
-    this.alpha = 0.75;
+    this.brightnessFilter.setBrightness(0.25);
   }
+  onClick() {}
   #onDownProcess() {
+    if (!this.isDown) this.onClick();
     this.isDown = true;
     this.onDown();
   }
