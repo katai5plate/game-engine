@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "parcel ./src/index.ts",
+    "build": "parcel build ./src/index.ts"
+  },
+  "dependencies": {
+    "@pixi/tilemap": "^3.2.2",
+    "parcel-bundler": "^1.12.5",
+    "pixi.js": "^6.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  }
+}
