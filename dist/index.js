@@ -48391,7 +48391,7 @@ var __rest = this && this.__rest || function (s, e) {
   return t;
 };
 
-var _App_instances, _App_onResize;
+var _App_instances, _App_watchers, _App_onResize, _App_registerWatcher;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -48421,13 +48421,67 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 
     _this.time = 0;
+    /** ゲーム非同期監視リスト */
+
+    _App_watchers.set(_assertThisInitialized(_this), new Set());
+
     globalThis.$app = _assertThisInitialized(_this);
     _this.currentScene = new initialScene();
 
     _this.stage.addChild(_this.currentScene);
 
     _this.ticker.add(function (deltaTime) {
-      _this.currentScene.update(deltaTime);
+      var updateProps = {
+        deltaTime: deltaTime,
+        time: _this.time
+      };
+
+      _this.currentScene.update(updateProps);
+
+      __classPrivateFieldGet(_assertThisInitialized(_this), _App_watchers, "f").forEach(function (watcher) {
+        var _a, _b, _c;
+
+        if (!!watcher.resolveCondition()) {
+          // 条件一致なら解決
+          watcher.onResolve();
+
+          __classPrivateFieldGet(_assertThisInitialized(_this), _App_watchers, "f").delete(watcher);
+        } else if (!!((_a = watcher.rejectCondition) === null || _a === void 0 ? void 0 : _a.call(watcher))) {
+          // エラー条件一致ならエラー
+          (_b = watcher.onReject) === null || _b === void 0 ? void 0 : _b.call(watcher);
+
+          __classPrivateFieldGet(_assertThisInitialized(_this), _App_watchers, "f").delete(watcher);
+        } // onProgress 引数の設置画
+
+
+        var startTime = watcher.startTime;
+        (_c = watcher.onProgress) === null || _c === void 0 ? void 0 : _c.call(watcher, Object.assign(Object.assign(Object.assign({}, updateProps), {
+          isFromTime: !!watcher.metaTime,
+          startTime: startTime
+        }), !!watcher.metaTime ? function () {
+          var _watcher$metaTime = watcher.metaTime,
+              resolveTime = _watcher$metaTime.resolveTime,
+              rejectTime = _watcher$metaTime.rejectTime;
+
+          var per = function per(left, time) {
+            return 1 + left / (startTime - time);
+          };
+
+          var resolveLeft = resolveTime - _this.time;
+          return Object.assign({
+            resolveTime: resolveTime,
+            resolvePer: per(resolveLeft, resolveTime),
+            resolveLeft: resolveLeft
+          }, rejectTime !== undefined ? function () {
+            var rejectLeft = rejectTime - _this.time;
+            return {
+              rejectTime: rejectTime,
+              rejectLeft: rejectLeft,
+              rejectPer: per(rejectLeft, rejectTime)
+            };
+          }() : {});
+        }() : {}));
+      });
 
       _this.time += deltaTime / 60;
     });
@@ -48461,13 +48515,61 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     value: function gotoScene(scene) {
       this.currentScene = new scene();
     }
+    /**
+     * 特定条件まで待つ
+     * @param resolveCondition 達成条件
+     * @param onProgress 途中の毎フレーム処理
+     * @param rejectCondition エラー条件
+     * @param errorMessage エラーメッセージ
+     */
+
+  }, {
+    key: "addWatcher",
+    value: function addWatcher(resolveCondition, // 書きやすさのために null スキップ
+    onProgress, rejectCondition, errorMessage) {
+      return __classPrivateFieldGet(this, _App_instances, "m", _App_registerWatcher).call(this, resolveCondition, {
+        onProgress: onProgress !== null && onProgress !== void 0 ? onProgress : undefined,
+        rejectCondition: rejectCondition !== null && rejectCondition !== void 0 ? rejectCondition : undefined,
+        errorMessage: errorMessage !== null && errorMessage !== void 0 ? errorMessage : undefined
+      });
+    }
+    /**
+     * 特定の時間まで待つ
+     * @param resolveTime 指定秒後に達成
+     * @param onProgress 途中の毎フレーム処理
+     * @param rejectTime 指定秒を超えたらエラー
+     * @param errorMessage エラーメッセージ
+     */
+
+  }, {
+    key: "addTimeWatcher",
+    value: function addTimeWatcher(resolveTime, // 書きやすさのために null スキップ
+    onProgress, rejectTime, errorMessage) {
+      var _a;
+
+      var now = $app.time;
+      var metaTime = {
+        resolveTime: now + resolveTime,
+        rejectTime: rejectTime ? now + rejectTime : undefined
+      };
+      return __classPrivateFieldGet(this, _App_instances, "m", _App_registerWatcher).call(this, function () {
+        return $app.time >= now + resolveTime;
+      }, {
+        onProgress: (_a = onProgress) !== null && _a !== void 0 ? _a : undefined,
+        rejectCondition: rejectTime ? function () {
+          return $app.time >= now + rejectTime;
+        } : undefined,
+        errorMessage: errorMessage !== null && errorMessage !== void 0 ? errorMessage : undefined,
+        metaTime: metaTime
+      });
+    }
   }]);
 
   return App;
 }(PIXI.Application);
 
 exports.App = App;
-_App_instances = new WeakSet(), _App_onResize = function _App_onResize() {
+_App_watchers = new WeakMap(), _App_instances = new WeakSet(), _App_onResize = function _App_onResize() {
   var _window = window,
       innerWidth = _window.innerWidth,
       innerHeight = _window.innerHeight;
@@ -48513,6 +48615,31 @@ _App_instances = new WeakSet(), _App_onResize = function _App_onResize() {
   }
 
   return;
+}, _App_registerWatcher = function _App_registerWatcher(resolveCondition, _ref) {
+  var _this2 = this;
+
+  var onProgress = _ref.onProgress,
+      rejectCondition = _ref.rejectCondition,
+      errorMessage = _ref.errorMessage,
+      metaTime = _ref.metaTime;
+  return new Promise(function (resolve, reject) {
+    __classPrivateFieldGet(_this2, _App_watchers, "f").add(Object.assign(Object.assign(Object.assign({
+      startTime: $app.time,
+      resolveCondition: resolveCondition,
+      onResolve: function onResolve() {
+        return resolve(true);
+      }
+    }, onProgress ? {
+      onProgress: onProgress
+    } : {}), rejectCondition ? {
+      rejectCondition: rejectCondition,
+      onReject: function onReject() {
+        return reject(new Error(errorMessage !== null && errorMessage !== void 0 ? errorMessage : ""));
+      }
+    } : {}), metaTime ? {
+      metaTime: metaTime
+    } : {}));
+  });
 };
 },{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./utils/helper":"utils/helper.ts"}],"filters/BrightnessFilter.ts":[function(require,module,exports) {
 "use strict";
@@ -48722,7 +48849,7 @@ var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
     return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
   },
   inBounce: function inBounce(x) {
-    return 1 - this.outBounce(1 - x);
+    return 1 - easing.outBounce(1 - x);
   },
   outBounce: function outBounce(x) {
     var a = 7.5625;
@@ -48739,19 +48866,15 @@ var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
     }
   },
   inOutBounce: function inOutBounce(x) {
-    return x < 0.5 ? (1 - this.outBounce(1 - 2 * x)) / 2 : (1 + this.outBounce(2 * x - 1)) / 2;
+    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
   }
-}); // function lerp(a, b, t) {
-//   if (b == a) return a;
-//   return a + t * (b - a);
-// }
+});
 
-var lerp = function lerp(ease, a, b, t) {
+var lerp = function lerp(ease, a, b, x) {
   var f = easing[ease];
   var d = b - a;
-  var x = t / d;
-  var y = f(0 > x ? 0 : 1 < x ? 1 : x);
-  var r = a + y * d;
+  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
+  var r = a + t * d;
   return r;
 };
 
@@ -48851,7 +48974,7 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
     value: function setup() {}
   }, {
     key: "update",
-    value: function update(deltaTime) {}
+    value: function update(props) {}
   }, {
     key: "getGameObject",
     value: function getGameObject(name) {
@@ -49252,6 +49375,20 @@ exports.LabeledButton = LabeledButton;
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -49271,6 +49408,64 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __asyncValues = this && this.__asyncValues || function (o) {
+  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+  var m = o[Symbol.asyncIterator],
+      i;
+  return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () {
+    return this;
+  }, i);
+
+  function verb(n) {
+    i[n] = o[n] && function (v) {
+      return new Promise(function (resolve, reject) {
+        v = o[n](v), settle(resolve, reject, v.done, v.value);
+      });
+    };
+  }
+
+  function settle(resolve, reject, d, v) {
+    Promise.resolve(v).then(function (v) {
+      resolve({
+        value: v,
+        done: d
+      });
+    }, reject);
+  }
+};
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -49303,35 +49498,153 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
   _createClass(InitScene, [{
     key: "setup",
     value: function setup() {
-      var _this = this;
+      var e_1, _a;
 
-      this.gameObjects = {
-        button1: new LabeledButton_1.LabeledButton(new Paintable_1.Paintable(100, 100).beginFill(0x888800).drawRect(0, 0, 100, 100).endFill().toTexture(), "←", {
-          x: 100,
-          y: 100
-        }),
-        button2: new LabeledButton_1.LabeledButton(new Paintable_1.Paintable(100, 100).beginFill(0x008888).drawRect(0, 0, 100, 100).endFill().toTexture(), "→", {
-          x: 300,
-          y: 100
-        })
-      };
-      Object.values(this.gameObjects).forEach(function (o) {
-        return _this.addChild(o);
-      });
-      (0, helper_1.toGlobalForDebug)(Object.assign(Object.assign({}, this.gameObjects), {
-        BrightnessFilter: BrightnessFilter_1.BrightnessFilter
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var _this = this;
+
+        var positions, button1, _loop, positions_1, positions_1_1;
+
+        return _regeneratorRuntime().wrap(function _callee$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                this.gameObjects = {
+                  button1: new LabeledButton_1.LabeledButton(new Paintable_1.Paintable(100, 100).beginFill(0x888800).drawRect(0, 0, 100, 100).endFill().toTexture(), "←", {
+                    x: 100,
+                    y: 100
+                  }),
+                  button2: new LabeledButton_1.LabeledButton(new Paintable_1.Paintable(100, 100).beginFill(0x008888).drawRect(0, 0, 100, 100).endFill().toTexture(), "→", {
+                    x: 300,
+                    y: 100
+                  })
+                };
+                Object.values(this.gameObjects).forEach(function (o) {
+                  return _this.addChild(o);
+                });
+                (0, helper_1.toGlobalForDebug)(Object.assign(Object.assign({}, this.gameObjects), {
+                  BrightnessFilter: BrightnessFilter_1.BrightnessFilter
+                }));
+                positions = [[500, 100], [500, 500], [100, 500], [100, 100]];
+                button1 = this.getGameObject("button1");
+
+              case 5:
+                if (!1) {
+                  _context2.next = 33;
+                  break;
+                }
+
+                _context2.prev = 6;
+                _loop = /*#__PURE__*/_regeneratorRuntime().mark(function _loop() {
+                  var _positions_1_1$value, x, y;
+
+                  return _regeneratorRuntime().wrap(function _loop$(_context) {
+                    while (1) {
+                      switch (_context.prev = _context.next) {
+                        case 0:
+                          _positions_1_1$value = _slicedToArray(positions_1_1.value, 2), x = _positions_1_1$value[0], y = _positions_1_1$value[1];
+                          _context.next = 3;
+                          return $app.addTimeWatcher(1, function (_ref) {
+                            var resolvePer = _ref.resolvePer;
+                            button1.x = (0, math_1.lerp)("inOutExpo", button1.x, x, resolvePer);
+                            button1.y = (0, math_1.lerp)("inOutBounce", button1.y, y, resolvePer);
+                          });
+
+                        case 3:
+                        case "end":
+                          return _context.stop();
+                      }
+                    }
+                  }, _loop);
+                });
+                positions_1 = (e_1 = void 0, __asyncValues(positions));
+
+              case 9:
+                _context2.next = 11;
+                return positions_1.next();
+
+              case 11:
+                positions_1_1 = _context2.sent;
+
+                if (positions_1_1.done) {
+                  _context2.next = 16;
+                  break;
+                }
+
+                return _context2.delegateYield(_loop(), "t0", 14);
+
+              case 14:
+                _context2.next = 9;
+                break;
+
+              case 16:
+                _context2.next = 21;
+                break;
+
+              case 18:
+                _context2.prev = 18;
+                _context2.t1 = _context2["catch"](6);
+                e_1 = {
+                  error: _context2.t1
+                };
+
+              case 21:
+                _context2.prev = 21;
+                _context2.prev = 22;
+
+                if (!(positions_1_1 && !positions_1_1.done && (_a = positions_1.return))) {
+                  _context2.next = 26;
+                  break;
+                }
+
+                _context2.next = 26;
+                return _a.call(positions_1);
+
+              case 26:
+                _context2.prev = 26;
+
+                if (!e_1) {
+                  _context2.next = 29;
+                  break;
+                }
+
+                throw e_1.error;
+
+              case 29:
+                return _context2.finish(26);
+
+              case 30:
+                return _context2.finish(21);
+
+              case 31:
+                _context2.next = 5;
+                break;
+
+              case 33:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee, this, [[6, 18, 21, 31], [22,, 26, 30]]);
       }));
     }
   }, {
     key: "update",
-    value: function update() {
-      var _$app$screen = $app.screen,
-          width = _$app$screen.width,
-          height = _$app$screen.height;
-      var button1 = this.getGameObject("button1");
-      button1.x = (0, math_1.lerp)("inOutBack", button1.width / 2, width - button1.width / 2, $app.time * 150 % width);
-      var button2 = this.getGameObject("button2");
-      button2.y = (0, math_1.lerp)("outBounce", button2.height / 2, height - button2.height / 2, $app.time * 200 % height);
+    value: function update() {// const { width, height } = $app.screen;
+      // const button1 = this.getGameObject<LabeledButton>("button1");
+      // button1.x = lerp(
+      //   "inOutBack",
+      //   button1.width / 2,
+      //   width - button1.width / 2,
+      //   ($app.time * 150) % width
+      // );
+      // const button2 = this.getGameObject<LabeledButton>("button2");
+      // button2.y = lerp(
+      //   "outBounce",
+      //   button2.height / 2,
+      //   height - button2.height / 2,
+      //   ($app.time * 200) % height
+      // );
     }
   }]);
 
