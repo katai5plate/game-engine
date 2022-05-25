@@ -33,20 +33,13 @@ export class InitScene extends Scene {
     };
     Object.values(this.gameObjects).forEach((o) => this.addChild(o));
     toGlobalForDebug({ ...this.gameObjects, BrightnessFilter });
-    const positions = [
-      [500, 100],
-      [500, 500],
-      [100, 500],
-      [100, 100],
-    ];
     const button1 = this.getGameObject<LabeledButton>("button1");
     while (1) {
-      for await (let [x, y] of positions) {
-        await $app.addTimeWatcher(1, ({ resolvePer }) => {
-          button1.x = lerp("inOutExpo", button1.x, x, resolvePer);
-          button1.y = lerp("inOutBounce", button1.y, y, resolvePer);
-        });
-      }
+      const [x, y] = [100 + Math.random() * 700, 100 + Math.random() * 500];
+      await $app.addTimeWatcher(1, ({ resolvePer }) => {
+        button1.x = lerp("inOutExpo", button1.x, x, resolvePer);
+        button1.y = lerp("inOutBounce", button1.y, y, resolvePer);
+      });
     }
   }
   update() {
