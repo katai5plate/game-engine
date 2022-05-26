@@ -48944,7 +48944,7 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
     }
     /**
      * メインの処理。
-     * - ループさせたい場合は `Flow.loop` や `while(1)` を使用する
+     * - ループさせたい場合は `Flow.loop` を使用する
      */
 
   }, {
