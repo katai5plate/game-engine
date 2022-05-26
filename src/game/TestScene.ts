@@ -1,13 +1,10 @@
-import * as PIXI from "pixi.js";
-import { BrightnessFilter } from "../../filters/BrightnessFilter";
-import { toGlobalForDebug } from "../../utils/helper";
-import { lerp } from "../../utils/math";
-import { Flow } from "../objects/Flow";
-import { Scene } from "../objects/Scene";
-import { Paintable } from "../ui/atoms/Paintable";
-import { LabeledButton } from "../ui/molecules/LabeledButton";
+import { Flow } from "../components/objects/Flow";
+import { Scene } from "../components/objects/Scene";
+import { Paintable } from "../components/ui/atoms/Paintable";
+import { LabeledButton } from "../components/ui/molecules/LabeledButton";
+import { lerp } from "../utils/math";
 
-export class InitScene extends Scene {
+export class TestScene extends Scene {
   button1: LabeledButton;
   button2: LabeledButton;
   constructor() {

@@ -48652,145 +48652,7 @@ _App_watchers = new WeakMap(), _App_instances = new WeakSet(), _App_onResize = f
     } : {}));
   });
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./utils/helper":"utils/helper.ts"}],"../node_modules/ts-easing/lib/index.js":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.easing = {
-    // No easing, no acceleration
-    linear: function (t) { return t; },
-    // Accelerates fast, then slows quickly towards end.
-    quadratic: function (t) { return t * (-(t * t) * t + 4 * t * t - 6 * t + 4); },
-    // Overshoots over 1 and then returns to 1 towards end.
-    cubic: function (t) { return t * (4 * t * t - 9 * t + 6); },
-    // Overshoots over 1 multiple times - wiggles around 1.
-    elastic: function (t) { return t * (33 * t * t * t * t - 106 * t * t * t + 126 * t * t - 67 * t + 15); },
-    // Accelerating from zero velocity
-    inQuad: function (t) { return t * t; },
-    // Decelerating to zero velocity
-    outQuad: function (t) { return t * (2 - t); },
-    // Acceleration until halfway, then deceleration
-    inOutQuad: function (t) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; },
-    // Accelerating from zero velocity
-    inCubic: function (t) { return t * t * t; },
-    // Decelerating to zero velocity
-    outCubic: function (t) { return (--t) * t * t + 1; },
-    // Acceleration until halfway, then deceleration
-    inOutCubic: function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1; },
-    // Accelerating from zero velocity
-    inQuart: function (t) { return t * t * t * t; },
-    // Decelerating to zero velocity
-    outQuart: function (t) { return 1 - (--t) * t * t * t; },
-    // Acceleration until halfway, then deceleration
-    inOutQuart: function (t) { return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t; },
-    // Accelerating from zero velocity
-    inQuint: function (t) { return t * t * t * t * t; },
-    // Decelerating to zero velocity
-    outQuint: function (t) { return 1 + (--t) * t * t * t * t; },
-    // Acceleration until halfway, then deceleration
-    inOutQuint: function (t) { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; },
-    // Accelerating from zero velocity
-    inSine: function (t) { return -Math.cos(t * (Math.PI / 2)) + 1; },
-    // Decelerating to zero velocity
-    outSine: function (t) { return Math.sin(t * (Math.PI / 2)); },
-    // Accelerating until halfway, then decelerating
-    inOutSine: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
-    // Exponential accelerating from zero velocity
-    inExpo: function (t) { return Math.pow(2, 10 * (t - 1)); },
-    // Exponential decelerating to zero velocity
-    outExpo: function (t) { return -Math.pow(2, -10 * t) + 1; },
-    // Exponential accelerating until halfway, then decelerating
-    inOutExpo: function (t) {
-        t /= .5;
-        if (t < 1)
-            return Math.pow(2, 10 * (t - 1)) / 2;
-        t--;
-        return (-Math.pow(2, -10 * t) + 2) / 2;
-    },
-    // Circular accelerating from zero velocity
-    inCirc: function (t) { return -Math.sqrt(1 - t * t) + 1; },
-    // Circular decelerating to zero velocity Moves VERY fast at the beginning and
-    // then quickly slows down in the middle. This tween can actually be used
-    // in continuous transitions where target value changes all the time,
-    // because of the very quick start, it hides the jitter between target value changes.
-    outCirc: function (t) { return Math.sqrt(1 - (t = t - 1) * t); },
-    // Circular acceleration until halfway, then deceleration
-    inOutCirc: function (t) {
-        t /= .5;
-        if (t < 1)
-            return -(Math.sqrt(1 - t * t) - 1) / 2;
-        t -= 2;
-        return (Math.sqrt(1 - t * t) + 1) / 2;
-    }
-};
-
-},{}],"utils/math.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.lerp = void 0;
-
-var ts_easing_1 = require("ts-easing");
-
-var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
-  inElastic: function inElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
-  },
-  outElastic: function outElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
-  },
-  inOutElastic: function inOutElastic(x) {
-    var a = 2 * Math.PI / 4.5;
-    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
-  },
-  inBack: function inBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return b * x * x * x - a * x * x;
-  },
-  outBack: function outBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
-  },
-  inOutBack: function inOutBack(x) {
-    var a = 1.70158;
-    var b = a * 1.525;
-    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
-  },
-  inBounce: function inBounce(x) {
-    return 1 - easing.outBounce(1 - x);
-  },
-  outBounce: function outBounce(x) {
-    var a = 7.5625;
-    var b = 2.75;
-
-    if (x < 1 / b) {
-      return a * x * x;
-    } else if (x < 2 / b) {
-      return a * (x -= 1.5 / b) * x + 0.75;
-    } else if (x < 2.5 / b) {
-      return a * (x -= 2.25 / b) * x + 0.9375;
-    } else {
-      return a * (x -= 2.625 / b) * x + 0.984375;
-    }
-  },
-  inOutBounce: function inOutBounce(x) {
-    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
-  }
-});
-
-var lerp = function lerp(ease, a, b, x) {
-  var f = easing[ease];
-  var d = b - a;
-  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
-  var r = a + t * d;
-  return r;
-};
-
-exports.lerp = lerp;
-},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/Flow.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./utils/helper":"utils/helper.ts"}],"components/objects/Flow.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -49339,7 +49201,7 @@ var BrightnessFilter = /*#__PURE__*/function (_PIXI$filters$ColorMa) {
 }(PIXI.filters.ColorMatrixFilter);
 
 exports.BrightnessFilter = BrightnessFilter;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/atoms/Button.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/atoms/TouchableSprite.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -49410,19 +49272,130 @@ var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (re
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var _Button_instances, _Button_onDownProcess, _Button_onUpProcess, _Button_onOverProcess, _Button_onOutProcess;
+var _TouchableSprite_instances, _TouchableSprite_onDownProcess, _TouchableSprite_onUpProcess, _TouchableSprite_onOverProcess, _TouchableSprite_onOutProcess;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TouchableSprite = void 0;
+
+var PIXI = __importStar(require("pixi.js"));
+
+var TouchableSprite = /*#__PURE__*/function (_PIXI$Sprite) {
+  _inherits(TouchableSprite, _PIXI$Sprite);
+
+  var _super = _createSuper(TouchableSprite);
+
+  function TouchableSprite(texture) {
+    var _this;
+
+    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+        x = _ref.x,
+        y = _ref.y;
+
+    _classCallCheck(this, TouchableSprite);
+
+    _this = _super.call(this, texture);
+
+    _TouchableSprite_instances.add(_assertThisInitialized(_this));
+
+    _this.isDown = false;
+    _this.isOver = false;
+    _this.x = x !== null && x !== void 0 ? x : 0;
+    _this.y = y !== null && y !== void 0 ? y : 0;
+    _this.interactive = true;
+    _this.buttonMode = true;
+
+    _this.on("pointerdown", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDownProcess)).on("pointerup", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("pointerupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("pointerover", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOverProcess)).on("pointerout", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOutProcess)) // マウス限定
+    .on("mousedown", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDownProcess)).on("mouseup", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("mouseupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("mouseover", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOverProcess)).on("mouseout", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOutProcess)) // タッチ限定
+    .on("touchstart", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDownProcess)).on("touchend", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("touchendoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess));
+
+    return _this;
+  }
+
+  _createClass(TouchableSprite, [{
+    key: "onNomal",
+    value: function onNomal() {}
+  }, {
+    key: "onDown",
+    value: function onDown() {}
+  }, {
+    key: "onOver",
+    value: function onOver() {}
+  }, {
+    key: "onClick",
+    value: function onClick() {}
+  }]);
+
+  return TouchableSprite;
+}(PIXI.Sprite);
+
+exports.TouchableSprite = TouchableSprite;
+_TouchableSprite_instances = new WeakSet(), _TouchableSprite_onDownProcess = function _TouchableSprite_onDownProcess() {
+  if (!this.isDown) this.onClick();
+  this.isDown = true;
+  this.onDown();
+}, _TouchableSprite_onUpProcess = function _TouchableSprite_onUpProcess() {
+  this.isDown = false;
+
+  if (this.isOver) {
+    this.onOver();
+  } else {
+    this.onNomal();
+  }
+}, _TouchableSprite_onOverProcess = function _TouchableSprite_onOverProcess() {
+  this.isOver = true;
+
+  if (this.isDown) {
+    return;
+  }
+
+  this.onOver();
+}, _TouchableSprite_onOutProcess = function _TouchableSprite_onOutProcess() {
+  this.isOver = false;
+
+  if (this.isDown) {
+    return;
+  }
+
+  this.onNomal();
+};
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/atoms/Button.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Button = void 0;
 
-var PIXI = __importStar(require("pixi.js"));
-
 var BrightnessFilter_1 = require("../../../filters/BrightnessFilter");
 
-var Button = /*#__PURE__*/function (_PIXI$Sprite) {
-  _inherits(Button, _PIXI$Sprite);
+var TouchableSprite_1 = require("./TouchableSprite");
+
+var Button = /*#__PURE__*/function (_TouchableSprite_1$To) {
+  _inherits(Button, _TouchableSprite_1$To);
 
   var _super = _createSuper(Button);
 
@@ -49435,23 +49408,14 @@ var Button = /*#__PURE__*/function (_PIXI$Sprite) {
 
     _classCallCheck(this, Button);
 
-    _this = _super.call(this, texture);
-
-    _Button_instances.add(_assertThisInitialized(_this));
-
+    _this = _super.call(this, texture, {
+      x: x,
+      y: y
+    });
     _this.isDown = false;
     _this.isOver = false;
 
     _this.anchor.set(0.5);
-
-    _this.x = x !== null && x !== void 0 ? x : 0;
-    _this.y = y !== null && y !== void 0 ? y : 0;
-    _this.interactive = true;
-    _this.buttonMode = true;
-
-    _this.on("pointerdown", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onDownProcess)).on("pointerup", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("pointerupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("pointerover", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onOverProcess)).on("pointerout", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onOutProcess)) // マウス限定
-    .on("mousedown", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onDownProcess)).on("mouseup", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("mouseupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("mouseover", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onOverProcess)).on("mouseout", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onOutProcess)) // タッチ限定
-    .on("touchstart", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onDownProcess)).on("touchend", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess)).on("touchendoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _Button_instances, "m", _Button_onUpProcess));
 
     _this.brightnessFilter = new BrightnessFilter_1.BrightnessFilter();
     _this.filters = [_this.brightnessFilter];
@@ -49473,45 +49437,13 @@ var Button = /*#__PURE__*/function (_PIXI$Sprite) {
     value: function onOver() {
       this.brightnessFilter.setBrightness(0.25);
     }
-  }, {
-    key: "onClick",
-    value: function onClick() {}
   }]);
 
   return Button;
-}(PIXI.Sprite);
+}(TouchableSprite_1.TouchableSprite);
 
 exports.Button = Button;
-_Button_instances = new WeakSet(), _Button_onDownProcess = function _Button_onDownProcess() {
-  if (!this.isDown) this.onClick();
-  this.isDown = true;
-  this.onDown();
-}, _Button_onUpProcess = function _Button_onUpProcess() {
-  this.isDown = false;
-
-  if (this.isOver) {
-    this.onOver();
-  } else {
-    this.onNomal();
-  }
-}, _Button_onOverProcess = function _Button_onOverProcess() {
-  this.isOver = true;
-
-  if (this.isDown) {
-    return;
-  }
-
-  this.onOver();
-}, _Button_onOutProcess = function _Button_onOutProcess() {
-  this.isOver = false;
-
-  if (this.isDown) {
-    return;
-  }
-
-  this.onNomal();
-};
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../../filters/BrightnessFilter":"filters/BrightnessFilter.ts"}],"components/ui/molecules/LabeledButton.ts":[function(require,module,exports) {
+},{"../../../filters/BrightnessFilter":"filters/BrightnessFilter.ts","./TouchableSprite":"components/ui/atoms/TouchableSprite.ts"}],"components/ui/molecules/LabeledButton.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -49617,7 +49549,145 @@ var LabeledButton = /*#__PURE__*/function (_Button_1$Button) {
 }(Button_1.Button);
 
 exports.LabeledButton = LabeledButton;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../atoms/Button":"components/ui/atoms/Button.ts"}],"components/scenes/InitScene.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../atoms/Button":"components/ui/atoms/Button.ts"}],"../node_modules/ts-easing/lib/index.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.easing = {
+    // No easing, no acceleration
+    linear: function (t) { return t; },
+    // Accelerates fast, then slows quickly towards end.
+    quadratic: function (t) { return t * (-(t * t) * t + 4 * t * t - 6 * t + 4); },
+    // Overshoots over 1 and then returns to 1 towards end.
+    cubic: function (t) { return t * (4 * t * t - 9 * t + 6); },
+    // Overshoots over 1 multiple times - wiggles around 1.
+    elastic: function (t) { return t * (33 * t * t * t * t - 106 * t * t * t + 126 * t * t - 67 * t + 15); },
+    // Accelerating from zero velocity
+    inQuad: function (t) { return t * t; },
+    // Decelerating to zero velocity
+    outQuad: function (t) { return t * (2 - t); },
+    // Acceleration until halfway, then deceleration
+    inOutQuad: function (t) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; },
+    // Accelerating from zero velocity
+    inCubic: function (t) { return t * t * t; },
+    // Decelerating to zero velocity
+    outCubic: function (t) { return (--t) * t * t + 1; },
+    // Acceleration until halfway, then deceleration
+    inOutCubic: function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1; },
+    // Accelerating from zero velocity
+    inQuart: function (t) { return t * t * t * t; },
+    // Decelerating to zero velocity
+    outQuart: function (t) { return 1 - (--t) * t * t * t; },
+    // Acceleration until halfway, then deceleration
+    inOutQuart: function (t) { return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t; },
+    // Accelerating from zero velocity
+    inQuint: function (t) { return t * t * t * t * t; },
+    // Decelerating to zero velocity
+    outQuint: function (t) { return 1 + (--t) * t * t * t * t; },
+    // Acceleration until halfway, then deceleration
+    inOutQuint: function (t) { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; },
+    // Accelerating from zero velocity
+    inSine: function (t) { return -Math.cos(t * (Math.PI / 2)) + 1; },
+    // Decelerating to zero velocity
+    outSine: function (t) { return Math.sin(t * (Math.PI / 2)); },
+    // Accelerating until halfway, then decelerating
+    inOutSine: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
+    // Exponential accelerating from zero velocity
+    inExpo: function (t) { return Math.pow(2, 10 * (t - 1)); },
+    // Exponential decelerating to zero velocity
+    outExpo: function (t) { return -Math.pow(2, -10 * t) + 1; },
+    // Exponential accelerating until halfway, then decelerating
+    inOutExpo: function (t) {
+        t /= .5;
+        if (t < 1)
+            return Math.pow(2, 10 * (t - 1)) / 2;
+        t--;
+        return (-Math.pow(2, -10 * t) + 2) / 2;
+    },
+    // Circular accelerating from zero velocity
+    inCirc: function (t) { return -Math.sqrt(1 - t * t) + 1; },
+    // Circular decelerating to zero velocity Moves VERY fast at the beginning and
+    // then quickly slows down in the middle. This tween can actually be used
+    // in continuous transitions where target value changes all the time,
+    // because of the very quick start, it hides the jitter between target value changes.
+    outCirc: function (t) { return Math.sqrt(1 - (t = t - 1) * t); },
+    // Circular acceleration until halfway, then deceleration
+    inOutCirc: function (t) {
+        t /= .5;
+        if (t < 1)
+            return -(Math.sqrt(1 - t * t) - 1) / 2;
+        t -= 2;
+        return (Math.sqrt(1 - t * t) + 1) / 2;
+    }
+};
+
+},{}],"utils/math.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.lerp = void 0;
+
+var ts_easing_1 = require("ts-easing");
+
+var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
+  inElastic: function inElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
+  },
+  outElastic: function outElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+  },
+  inOutElastic: function inOutElastic(x) {
+    var a = 2 * Math.PI / 4.5;
+    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
+  },
+  inBack: function inBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return b * x * x * x - a * x * x;
+  },
+  outBack: function outBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
+  },
+  inOutBack: function inOutBack(x) {
+    var a = 1.70158;
+    var b = a * 1.525;
+    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
+  },
+  inBounce: function inBounce(x) {
+    return 1 - easing.outBounce(1 - x);
+  },
+  outBounce: function outBounce(x) {
+    var a = 7.5625;
+    var b = 2.75;
+
+    if (x < 1 / b) {
+      return a * x * x;
+    } else if (x < 2 / b) {
+      return a * (x -= 1.5 / b) * x + 0.75;
+    } else if (x < 2.5 / b) {
+      return a * (x -= 2.25 / b) * x + 0.9375;
+    } else {
+      return a * (x -= 2.625 / b) * x + 0.984375;
+    }
+  },
+  inOutBounce: function inOutBounce(x) {
+    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
+  }
+});
+
+var lerp = function lerp(ease, a, b, x) {
+  var f = easing[ease];
+  var d = b - a;
+  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
+  var r = a + t * d;
+  return r;
+};
+
+exports.lerp = lerp;
+},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"game/TestScene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -49679,27 +49749,27 @@ var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, gene
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.InitScene = void 0;
+exports.TestScene = void 0;
 
-var math_1 = require("../../utils/math");
+var Flow_1 = require("../components/objects/Flow");
 
-var Flow_1 = require("../objects/Flow");
+var Scene_1 = require("../components/objects/Scene");
 
-var Scene_1 = require("../objects/Scene");
+var Paintable_1 = require("../components/ui/atoms/Paintable");
 
-var Paintable_1 = require("../ui/atoms/Paintable");
+var LabeledButton_1 = require("../components/ui/molecules/LabeledButton");
 
-var LabeledButton_1 = require("../ui/molecules/LabeledButton");
+var math_1 = require("../utils/math");
 
-var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
-  _inherits(InitScene, _Scene_1$Scene);
+var TestScene = /*#__PURE__*/function (_Scene_1$Scene) {
+  _inherits(TestScene, _Scene_1$Scene);
 
-  var _super = _createSuper(InitScene);
+  var _super = _createSuper(TestScene);
 
-  function InitScene() {
+  function TestScene() {
     var _this;
 
-    _classCallCheck(this, InitScene);
+    _classCallCheck(this, TestScene);
 
     _this = _super.call(this);
     _this.button1 = _this.spawn(new LabeledButton_1.LabeledButton(new Paintable_1.Paintable(100, 100).beginFill(0x888800).drawRect(0, 0, 100, 100).endFill().toTexture(), "←", {
@@ -49716,7 +49786,7 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
     return _this;
   }
 
-  _createClass(InitScene, [{
+  _createClass(TestScene, [{
     key: "main",
     value: function main() {
       return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -49762,11 +49832,11 @@ var InitScene = /*#__PURE__*/function (_Scene_1$Scene) {
     }
   }]);
 
-  return InitScene;
+  return TestScene;
 }(Scene_1.Scene);
 
-exports.InitScene = InitScene;
-},{"../../utils/math":"utils/math.ts","../objects/Flow":"components/objects/Flow.ts","../objects/Scene":"components/objects/Scene.ts","../ui/atoms/Paintable":"components/ui/atoms/Paintable.ts","../ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts"}],"index.ts":[function(require,module,exports) {
+exports.TestScene = TestScene;
+},{"../components/objects/Flow":"components/objects/Flow.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/ui/atoms/Paintable":"components/ui/atoms/Paintable.ts","../components/ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts","../utils/math":"utils/math.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -49775,15 +49845,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var app_1 = require("./app");
 
-var InitScene_1 = require("./components/scenes/InitScene"); // ゲーム開始
+var TestScene_1 = require("./game/TestScene"); // ゲーム開始
 
 
-new app_1.App(InitScene_1.InitScene, {
+new app_1.App(TestScene_1.TestScene, {
   width: 816,
   height: 624,
   backgroundColor: 0xaaaaaa
 });
-},{"./app":"app.ts","./components/scenes/InitScene":"components/scenes/InitScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./app":"app.ts","./game/TestScene":"game/TestScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

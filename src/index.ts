@@ -1,8 +1,8 @@
 import { App } from "./app";
-import { InitScene } from "./components/scenes/InitScene";
+import { TestScene } from "./game/TestScene";
 
 // ゲーム開始
-new App(InitScene, {
+new App(TestScene, {
   width: 816,
   height: 624,
   backgroundColor: 0xaaaaaa,
