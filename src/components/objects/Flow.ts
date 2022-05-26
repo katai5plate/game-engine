@@ -5,7 +5,6 @@ type ResolveTime = Parameters<typeof $app.addTimeWatcher>[0];
 
 export class Flow<T> {
   constructor(target: T, fn: (start: Promise<void>, $: T) => Promise<void>) {
-    // this.target = target;
     fn(Promise.resolve(), target);
   }
   static LOOPBACK = Symbol("LOOPBACK");
@@ -21,16 +20,15 @@ export class Flow<T> {
   ) {
     return () => $app.addWatcher(resolveCondition, onProgress);
   }
-  static loop(
-    fn: (head: Promise<void>) => Promise<void | typeof this.LOOPBACK>
-  ) {
+  static loop(fn: (head: Promise<void>) => Promise<any>) {
     return async () => {
+      const prev = $app.time;
       while (1) {
-        if ((await fn(Promise.resolve())) !== this.LOOPBACK) break;
+        await fn(Promise.resolve());
+        if (prev === $app.time) {
+          throw new Error("無限ループによるフリーズを回避しました");
+        }
       }
     };
-  }
-  static loopBack() {
-    return () => this.LOOPBACK;
   }
 }

@@ -54,7 +54,6 @@ export class App extends PIXI.Application {
     this.stage.addChild(this.currentScene);
     this.ticker.add((deltaTime) => {
       const updateProps: UpdateProps = { deltaTime, time: this.time };
-      this.currentScene.update(updateProps);
       this.#watchers.forEach((watcher) => {
         if (!!watcher.resolveCondition()) {
           // 条件一致なら解決
@@ -234,5 +233,13 @@ export class App extends PIXI.Application {
       errorMessage: errorMessage ?? undefined,
       metaTime,
     });
+  }
+  /** 次のフレームまで待つ */
+  waitNextFrame() {
+    const now = this.time;
+    return this.#registerWatcher(() => {
+      console.log(now, this.time, now !== this.time);
+      return now !== this.time;
+    }, {});
   }
 }
