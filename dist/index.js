@@ -49790,16 +49790,18 @@ var TestScene = /*#__PURE__*/function (_Scene_1$Scene) {
     key: "main",
     value: function main() {
       return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var _this2 = this;
+
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                new Flow_1.Flow(this, function (start, $) {
+                new Flow_1.Flow(this.button2, function (start, $) {
                   return start.then(Flow_1.Flow.time(1)).then(function () {
-                    return $.spawn($.button2);
+                    return _this2.spawn($);
                   }).then(Flow_1.Flow.loop(function (head) {
                     return head.then(Flow_1.Flow.time(0.1, function () {
-                      $.button2.angle++;
+                      $.angle++;
                     }));
                   }));
                 });

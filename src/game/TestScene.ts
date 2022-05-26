@@ -32,15 +32,15 @@ export class TestScene extends Scene {
     this.ready();
   }
   async main() {
-    new Flow(this, (start, $) =>
+    new Flow(this.button2, (start, $) =>
       start
         .then(Flow.time(1))
-        .then(() => $.spawn($.button2))
+        .then(() => this.spawn($))
         .then(
           Flow.loop((head) =>
             head.then(
               Flow.time(0.1, () => {
-                $.button2.angle++;
+                $.angle++;
               })
             )
           )
