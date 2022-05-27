@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Scene } from "./components/objects/Scene";
+import { Scene, SceneData } from "./components/objects/Scene";
 import { toGlobalForDebug } from "./utils/helper";
 
 export interface UpdateProps {
@@ -37,21 +37,20 @@ export interface Watcher {
 }
 
 export class App extends PIXI.Application {
-  currentScene: Scene;
+  currentScene: Scene = new Scene();
   /** ゲームが始まって何秒経ったか */
   time: number = 0;
   /** ゲーム非同期監視リスト */
   #watchers: Set<Watcher> = new Set();
   constructor(
-    initialScene: { new (): Scene },
+    initialScene: SceneData<any>,
     options: PIXI.IApplicationOptions & {}
   ) {
     const { ...rest } = options;
     super(rest);
     globalThis.$app = this;
 
-    this.currentScene = new initialScene();
-    this.stage.addChild(this.currentScene);
+    this.gotoScene(initialScene);
     this.ticker.add((deltaTime) => {
       const updateProps: UpdateProps = { deltaTime, time: this.time };
       this.#watchers.forEach((watcher) => {
@@ -115,8 +114,17 @@ export class App extends PIXI.Application {
     this.#onResize();
   }
   /** シーン遷移 */
-  gotoScene(scene: { new (): Scene }) {
-    this.currentScene = new scene();
+  async gotoScene(sceneData: SceneData<any>) {
+    this.stage.removeChild(this.currentScene);
+    console.time("SCENE LOADED");
+    console.log("SCENE LOADING... (PRELOAD ASSETS)");
+    sceneData.assetUrls.forEach((url: string) =>
+      this.loader.add(url, `./dist${url}`)
+    );
+    await new Promise((r) => this.loader.load(r));
+    this.currentScene = new sceneData.scene();
+    this.stage.addChild(this.currentScene);
+    console.timeEnd("SCENE LOADED");
   }
   /** リサイズ時に自動的に黒枠を再調整する */
   #onResize() {

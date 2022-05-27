@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
 /**
- * シーンを作成
+ * シーンの処理内容を定義
  * ```ts
- * class ExampleScene extends Scene {
+ * class extends Scene {
  *   hoge: PIXI.Sprite;
  *   fuga: PIXI.Sprite;
  *   constructor() {
@@ -37,6 +37,7 @@ import * as PIXI from "pixi.js";
 export class Scene extends PIXI.Container {
   isReady: boolean;
   isPlaying: boolean;
+  static assetUrls: string[] = [];
   constructor() {
     super();
     this.isReady = this.isPlaying = false;
@@ -82,3 +83,18 @@ export class Scene extends PIXI.Container {
     return object;
   }
 }
+
+export interface SceneData<S extends Scene> {
+  scene: { new (): S };
+  assetUrls: string[];
+}
+
+/**
+ * シーンを作成
+ * @param preloadAssets 事前にロードする素材
+ * @param scene シーンクラス定義
+ */
+export const createScene = <S extends Scene>(
+  preloadAssets: string[],
+  scene: { new (): S }
+): SceneData<S> => ({ scene, assetUrls: preloadAssets });
