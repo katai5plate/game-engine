@@ -30,3 +30,10 @@
 
 - `"pixi.js": "^6.2.0"`
   - `@pixi/tilemap`
+
+## ライセンス
+
+- このゲームエンジン自体は GPL 3.0 です。
+  - https://github.com/katai5plate/game-engine/blob/main/LICENSE
+- 画像・音声素材には EasyRPG/RTP を使用しています。それは CC BY 4.0 です。
+  - https://github.com/EasyRPG/RTP/blob/master/COPYING
