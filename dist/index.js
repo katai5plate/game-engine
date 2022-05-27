@@ -48973,6 +48973,8 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
      *     super();
      *     // 2. これで宣言とともにスポーン
      *     this.初期スポーン物 = this.spawn(new PIXI.Container());
+     *     // this.spawn させない場合は記録されるがスポーンしない
+     *     this.後発スポーン物 = new PIXI.Container();
      *     this.ready();
      *   }
      *   async main() {
