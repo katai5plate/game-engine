@@ -15,7 +15,7 @@ export class Button extends TouchableSprite {
     this.brightnessFilter = new BrightnessFilter();
     this.filters = [this.brightnessFilter];
   }
-  onNomal() {
+  onNormal() {
     this.brightnessFilter.setBrightness(0);
   }
   onDown() {
@@ -23,5 +23,8 @@ export class Button extends TouchableSprite {
   }
   onOver() {
     this.brightnessFilter.setBrightness(0.25);
+  }
+  onClick() {
+    // 継承先のために残す
   }
 }

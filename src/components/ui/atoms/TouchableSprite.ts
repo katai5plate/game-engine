@@ -1,62 +1,66 @@
 import * as PIXI from "pixi.js";
+import { Touch } from "../../objects/Touch";
 
 export class TouchableSprite extends PIXI.Sprite {
-  isDown: boolean = false;
-  isOver: boolean = false;
+  touch: Touch;
   constructor(
     texture: PIXI.Texture,
     { x, y }: { x?: number; y?: number } = {}
   ) {
     super(texture);
+    this.touch = new Touch();
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.interactive = true;
     this.buttonMode = true;
-    this.on("pointerdown", this.#onDownProcess)
-      .on("pointerup", this.#onUpProcess)
-      .on("pointerupoutside", this.#onUpProcess)
-      .on("pointerover", this.#onOverProcess)
-      .on("pointerout", this.#onOutProcess)
+    this.on("pointerdown", this.#onDown)
+      .on("pointerup", this.#onUp)
+      .on("pointerupoutside", this.#onUp)
+      .on("pointerover", this.#onOver)
+      .on("pointerout", this.#onOut)
       // マウス限定
-      .on("mousedown", this.#onDownProcess)
-      .on("mouseup", this.#onUpProcess)
-      .on("mouseupoutside", this.#onUpProcess)
-      .on("mouseover", this.#onOverProcess)
-      .on("mouseout", this.#onOutProcess)
+      .on("mousedown", this.#onDown)
+      .on("mouseup", this.#onUp)
+      .on("mouseupoutside", this.#onUp)
+      .on("mouseover", this.#onOver)
+      .on("mouseout", this.#onOut)
       // タッチ限定
-      .on("touchstart", this.#onDownProcess)
-      .on("touchend", this.#onUpProcess)
-      .on("touchendoutside", this.#onUpProcess);
+      .on("touchstart", this.#onDown)
+      .on("touchend", this.#onUp)
+      .on("touchendoutside", this.#onUp);
   }
-  onNomal() {}
-  onDown() {}
-  onOver() {}
-  onClick() {}
-  #onDownProcess() {
-    if (!this.isDown) this.onClick();
-    this.isDown = true;
-    this.onDown();
+  onNormal() {
+    // 継承先のために残す
   }
-  #onUpProcess() {
-    this.isDown = false;
-    if (this.isOver) {
-      this.onOver();
-    } else {
-      this.onNomal();
-    }
+  onDown() {
+    // 継承先のために残す
   }
-  #onOverProcess() {
-    this.isOver = true;
-    if (this.isDown) {
-      return;
-    }
-    this.onOver();
+  onOver() {
+    // 継承先のために残す
   }
-  #onOutProcess() {
-    this.isOver = false;
-    if (this.isDown) {
-      return;
-    }
-    this.onNomal();
+  onClick() {
+    // 継承先のために残す
+  }
+  #onDown() {
+    this.touch.onDown({
+      onClick: this.onClick.bind(this),
+      onDown: this.onDown.bind(this),
+    });
+  }
+  #onUp() {
+    this.touch.onUp({
+      onOver: this.onOver.bind(this),
+      onNormal: this.onNormal.bind(this),
+    });
+  }
+  #onOver() {
+    this.touch.onOver({
+      onOver: this.onOver.bind(this),
+    });
+  }
+  #onOut() {
+    this.touch.onOut({
+      onNormal: this.onNormal.bind(this),
+    });
   }
 }

@@ -49310,6 +49310,148 @@ var BrightnessFilter = /*#__PURE__*/function (_PIXI$filters$ColorMa) {
 }(PIXI.filters.ColorMatrixFilter);
 
 exports.BrightnessFilter = BrightnessFilter;
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/Touch.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Touch = void 0;
+
+var PIXI = __importStar(require("pixi.js"));
+
+var Touch = /*#__PURE__*/function (_PIXI$Sprite) {
+  _inherits(Touch, _PIXI$Sprite);
+
+  var _super = _createSuper(Touch);
+
+  function Touch() {
+    var _this;
+
+    _classCallCheck(this, Touch);
+
+    _this = _super.apply(this, arguments);
+    _this.isDown = false;
+    _this.isOver = false;
+    return _this;
+  }
+
+  _createClass(Touch, [{
+    key: "onDown",
+    value: function onDown(_) {
+      var _a, _b;
+
+      if (!this.isDown) (_a = _.onClick) === null || _a === void 0 ? void 0 : _a.call(_);
+      this.isDown = true;
+      (_b = _.onDown) === null || _b === void 0 ? void 0 : _b.call(_);
+    }
+  }, {
+    key: "onUp",
+    value: function onUp(_) {
+      var _a, _b;
+
+      this.isDown = false;
+
+      if (this.isOver) {
+        (_a = _.onOver) === null || _a === void 0 ? void 0 : _a.call(_);
+      } else {
+        (_b = _.onNormal) === null || _b === void 0 ? void 0 : _b.call(_);
+      }
+    }
+  }, {
+    key: "onOver",
+    value: function onOver(_) {
+      var _a;
+
+      this.isOver = true;
+
+      if (this.isDown) {
+        return;
+      }
+
+      (_a = _.onOver) === null || _a === void 0 ? void 0 : _a.call(_);
+    }
+  }, {
+    key: "onOut",
+    value: function onOut(_) {
+      var _a;
+
+      this.isOver = false;
+
+      if (this.isDown) {
+        return;
+      }
+
+      (_a = _.onNormal) === null || _a === void 0 ? void 0 : _a.call(_);
+    }
+  }]);
+
+  return Touch;
+}(PIXI.Sprite);
+
+exports.Touch = Touch;
 },{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/atoms/TouchableSprite.ts":[function(require,module,exports) {
 "use strict";
 
@@ -49381,7 +49523,7 @@ var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (re
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var _TouchableSprite_instances, _TouchableSprite_onDownProcess, _TouchableSprite_onUpProcess, _TouchableSprite_onOverProcess, _TouchableSprite_onOutProcess;
+var _TouchableSprite_instances, _TouchableSprite_onDown, _TouchableSprite_onUp, _TouchableSprite_onOver, _TouchableSprite_onOut;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -49389,6 +49531,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.TouchableSprite = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
+
+var Touch_1 = require("../../objects/Touch");
 
 var TouchableSprite = /*#__PURE__*/function (_PIXI$Sprite) {
   _inherits(TouchableSprite, _PIXI$Sprite);
@@ -49408,68 +49552,61 @@ var TouchableSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 
     _TouchableSprite_instances.add(_assertThisInitialized(_this));
 
-    _this.isDown = false;
-    _this.isOver = false;
+    _this.touch = new Touch_1.Touch();
     _this.x = x !== null && x !== void 0 ? x : 0;
     _this.y = y !== null && y !== void 0 ? y : 0;
     _this.interactive = true;
     _this.buttonMode = true;
 
-    _this.on("pointerdown", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDownProcess)).on("pointerup", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("pointerupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("pointerover", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOverProcess)).on("pointerout", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOutProcess)) // マウス限定
-    .on("mousedown", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDownProcess)).on("mouseup", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("mouseupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("mouseover", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOverProcess)).on("mouseout", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOutProcess)) // タッチ限定
-    .on("touchstart", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDownProcess)).on("touchend", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess)).on("touchendoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUpProcess));
+    _this.on("pointerdown", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDown)).on("pointerup", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUp)).on("pointerupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUp)).on("pointerover", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOver)).on("pointerout", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOut)) // マウス限定
+    .on("mousedown", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDown)).on("mouseup", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUp)).on("mouseupoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUp)).on("mouseover", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOver)).on("mouseout", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onOut)) // タッチ限定
+    .on("touchstart", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onDown)).on("touchend", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUp)).on("touchendoutside", __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_instances, "m", _TouchableSprite_onUp));
 
     return _this;
   }
 
   _createClass(TouchableSprite, [{
-    key: "onNomal",
-    value: function onNomal() {}
+    key: "onNormal",
+    value: function onNormal() {// 継承先のために残す
+    }
   }, {
     key: "onDown",
-    value: function onDown() {}
+    value: function onDown() {// 継承先のために残す
+    }
   }, {
     key: "onOver",
-    value: function onOver() {}
+    value: function onOver() {// 継承先のために残す
+    }
   }, {
     key: "onClick",
-    value: function onClick() {}
+    value: function onClick() {// 継承先のために残す
+    }
   }]);
 
   return TouchableSprite;
 }(PIXI.Sprite);
 
 exports.TouchableSprite = TouchableSprite;
-_TouchableSprite_instances = new WeakSet(), _TouchableSprite_onDownProcess = function _TouchableSprite_onDownProcess() {
-  if (!this.isDown) this.onClick();
-  this.isDown = true;
-  this.onDown();
-}, _TouchableSprite_onUpProcess = function _TouchableSprite_onUpProcess() {
-  this.isDown = false;
-
-  if (this.isOver) {
-    this.onOver();
-  } else {
-    this.onNomal();
-  }
-}, _TouchableSprite_onOverProcess = function _TouchableSprite_onOverProcess() {
-  this.isOver = true;
-
-  if (this.isDown) {
-    return;
-  }
-
-  this.onOver();
-}, _TouchableSprite_onOutProcess = function _TouchableSprite_onOutProcess() {
-  this.isOver = false;
-
-  if (this.isDown) {
-    return;
-  }
-
-  this.onNomal();
+_TouchableSprite_instances = new WeakSet(), _TouchableSprite_onDown = function _TouchableSprite_onDown() {
+  this.touch.onDown({
+    onClick: this.onClick.bind(this),
+    onDown: this.onDown.bind(this)
+  });
+}, _TouchableSprite_onUp = function _TouchableSprite_onUp() {
+  this.touch.onUp({
+    onOver: this.onOver.bind(this),
+    onNormal: this.onNormal.bind(this)
+  });
+}, _TouchableSprite_onOver = function _TouchableSprite_onOver() {
+  this.touch.onOver({
+    onOver: this.onOver.bind(this)
+  });
+}, _TouchableSprite_onOut = function _TouchableSprite_onOut() {
+  this.touch.onOut({
+    onNormal: this.onNormal.bind(this)
+  });
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/ui/atoms/Button.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../objects/Touch":"components/objects/Touch.ts"}],"components/ui/atoms/Button.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -49532,8 +49669,8 @@ var Button = /*#__PURE__*/function (_TouchableSprite_1$To) {
   }
 
   _createClass(Button, [{
-    key: "onNomal",
-    value: function onNomal() {
+    key: "onNormal",
+    value: function onNormal() {
       this.brightnessFilter.setBrightness(0);
     }
   }, {
@@ -49545,6 +49682,10 @@ var Button = /*#__PURE__*/function (_TouchableSprite_1$To) {
     key: "onOver",
     value: function onOver() {
       this.brightnessFilter.setBrightness(0.25);
+    }
+  }, {
+    key: "onClick",
+    value: function onClick() {// 継承先のために残す
     }
   }]);
 
