@@ -49517,13 +49517,20 @@ var __importStar = this && this.__importStar || function (mod) {
   return result;
 };
 
+var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
+  if (kind === "m") throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+};
+
 var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
   if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
   if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var _TouchableSprite_instances, _TouchableSprite_onDown, _TouchableSprite_onUp, _TouchableSprite_onOver, _TouchableSprite_onOut;
+var _TouchableSprite_instances, _TouchableSprite_touch, _TouchableSprite_onDown, _TouchableSprite_onUp, _TouchableSprite_onOver, _TouchableSprite_onOut;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -49552,7 +49559,10 @@ var TouchableSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 
     _TouchableSprite_instances.add(_assertThisInitialized(_this));
 
-    _this.touch = new Touch_1.Touch();
+    _TouchableSprite_touch.set(_assertThisInitialized(_this), void 0);
+
+    __classPrivateFieldSet(_assertThisInitialized(_this), _TouchableSprite_touch, new Touch_1.Touch(), "f");
+
     _this.x = x !== null && x !== void 0 ? x : 0;
     _this.y = y !== null && y !== void 0 ? y : 0;
     _this.interactive = true;
@@ -49587,22 +49597,22 @@ var TouchableSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 }(PIXI.Sprite);
 
 exports.TouchableSprite = TouchableSprite;
-_TouchableSprite_instances = new WeakSet(), _TouchableSprite_onDown = function _TouchableSprite_onDown() {
-  this.touch.onDown({
+_TouchableSprite_touch = new WeakMap(), _TouchableSprite_instances = new WeakSet(), _TouchableSprite_onDown = function _TouchableSprite_onDown() {
+  __classPrivateFieldGet(this, _TouchableSprite_touch, "f").onDown({
     onClick: this.onClick.bind(this),
     onDown: this.onDown.bind(this)
   });
 }, _TouchableSprite_onUp = function _TouchableSprite_onUp() {
-  this.touch.onUp({
+  __classPrivateFieldGet(this, _TouchableSprite_touch, "f").onUp({
     onOver: this.onOver.bind(this),
     onNormal: this.onNormal.bind(this)
   });
 }, _TouchableSprite_onOver = function _TouchableSprite_onOver() {
-  this.touch.onOver({
+  __classPrivateFieldGet(this, _TouchableSprite_touch, "f").onOver({
     onOver: this.onOver.bind(this)
   });
 }, _TouchableSprite_onOut = function _TouchableSprite_onOut() {
-  this.touch.onOut({
+  __classPrivateFieldGet(this, _TouchableSprite_touch, "f").onOut({
     onNormal: this.onNormal.bind(this)
   });
 };

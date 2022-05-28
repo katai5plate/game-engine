@@ -2,13 +2,13 @@ import * as PIXI from "pixi.js";
 import { Touch } from "../../objects/Touch";
 
 export class TouchableSprite extends PIXI.Sprite {
-  touch: Touch;
+  #touch: Touch;
   constructor(
     texture: PIXI.Texture,
     { x, y }: { x?: number; y?: number } = {}
   ) {
     super(texture);
-    this.touch = new Touch();
+    this.#touch = new Touch();
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.interactive = true;
@@ -42,24 +42,24 @@ export class TouchableSprite extends PIXI.Sprite {
     // 継承先のために残す
   }
   #onDown() {
-    this.touch.onDown({
+    this.#touch.onDown({
       onClick: this.onClick.bind(this),
       onDown: this.onDown.bind(this),
     });
   }
   #onUp() {
-    this.touch.onUp({
+    this.#touch.onUp({
       onOver: this.onOver.bind(this),
       onNormal: this.onNormal.bind(this),
     });
   }
   #onOver() {
-    this.touch.onOver({
+    this.#touch.onOver({
       onOver: this.onOver.bind(this),
     });
   }
   #onOut() {
-    this.touch.onOut({
+    this.#touch.onOut({
       onNormal: this.onNormal.bind(this),
     });
   }
