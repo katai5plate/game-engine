@@ -18,14 +18,10 @@ export class Button extends TouchableSprite {
   onNormal() {
     this.brightnessFilter.setBrightness(0);
   }
-  onDown() {
-    this.brightnessFilter.setBrightness(-0.25);
-  }
   onOver() {
     this.brightnessFilter.setBrightness(0.25);
   }
-  onClick() {
-    // 継承先のために残す
-    console.log("click");
+  onPress() {
+    this.brightnessFilter.setBrightness(-0.25);
   }
 }

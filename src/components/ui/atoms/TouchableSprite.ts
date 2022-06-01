@@ -12,18 +12,8 @@ export class TouchableSprite extends PIXI.Sprite {
     this.y = y ?? 0;
     this.interactive = true;
     this.buttonMode = true;
-    this.#touch = new Touch().connect({
-      onClick: this.onClick.bind(this),
-      onDown: this.onDown.bind(this),
-      onOver: this.onOver.bind(this),
-      onNormal: this.onNormal.bind(this),
-    });
-    const [onDown, onUp, onOver, onOut] = [
-      () => this.#touch.onDown(),
-      () => this.#touch.onUp(),
-      () => this.#touch.onOver(),
-      () => this.#touch.onOut(),
-    ];
+    this.#touch = new Touch();
+    const { onDown, onUp, onOver, onOut } = this.#touch.createInput();
     this.on("pointerdown", onDown)
       .on("pointerup", onUp)
       .on("pointerupoutside", onUp)
@@ -39,17 +29,39 @@ export class TouchableSprite extends PIXI.Sprite {
       .on("touchstart", onDown)
       .on("touchend", onUp)
       .on("touchendoutside", onUp);
+    this.#touch.connectOutput({
+      onClick: this.onClick.bind(this),
+      onRelease: this.onRelease.bind(this),
+      onFocus: this.onFocus.bind(this),
+      onBlur: this.onBlur.bind(this),
+      onNormal: this.onNormal.bind(this),
+      onOver: this.onOver.bind(this),
+      onPress: this.onPress.bind(this),
+      onUnknown: this.onUnknown.bind(this),
+    });
   }
-  onNormal() {
+  onBlur() {
     // 継承先のために残す
   }
-  onDown() {
+  onRelease() {
+    // 継承先のために残す
+  }
+  onFocus() {
+    // 継承先のために残す
+  }
+  onClick() {
+    // 継承先のために残す
+  }
+  onNormal() {
     // 継承先のために残す
   }
   onOver() {
     // 継承先のために残す
   }
-  onClick() {
+  onPress() {
+    // 継承先のために残す
+  }
+  onUnknown() {
     // 継承先のために残す
   }
 }

@@ -49319,73 +49319,114 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
+  if (kind === "m") throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+};
+
+var _Touch_instances, _Touch_isDown, _Touch_isOver, _Touch_state, _Touch_callbacks, _Touch_event, _Touch_onDownOver, _Touch_onDownOut, _Touch_onUpOver, _Touch_onUpOut, _Touch_onDown, _Touch_onUp, _Touch_onOver, _Touch_onOut;
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Touch = void 0;
+var TouchState;
+
+(function (TouchState) {
+  TouchState[TouchState["normal"] = 0] = "normal";
+  TouchState[TouchState["over"] = 1] = "over";
+  TouchState[TouchState["press"] = 2] = "press";
+  TouchState[TouchState["unknown"] = 3] = "unknown";
+})(TouchState || (TouchState = {}));
 
 var Touch = /*#__PURE__*/function () {
   function Touch() {
     _classCallCheck(this, Touch);
 
-    this.isDown = false;
-    this.isOver = false;
-    this.callbacks = {};
+    _Touch_instances.add(this);
+
+    _Touch_isDown.set(this, false);
+
+    _Touch_isOver.set(this, false);
+
+    _Touch_state.set(this, TouchState.normal);
+
+    _Touch_callbacks.set(this, {});
   }
+  /**
+   * 押下判定と当たり判定を設定するハンドラーを取得する
+   * ```ts
+   * const touch = new Touch();
+   * const {
+   *   onDown, // 押している状態
+   *   onUp, // 押していない状態
+   *   onOver, // 当たり判定内
+   *   onOut // 当たり判定外
+   * } = touch.createInput();
+   * this.on("touchstart", onDown)
+   * // :
+   * ```
+   */
+
 
   _createClass(Touch, [{
-    key: "connect",
-    value: function connect(_) {
-      this.callbacks = _;
-      return this;
+    key: "createInput",
+    value: function createInput() {
+      var _this = this;
+
+      return {
+        onDown: function onDown(e) {
+          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onDown).call(_this, e);
+        },
+        onUp: function onUp(e) {
+          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onUp).call(_this, e);
+        },
+        onOver: function onOver(e) {
+          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onOver).call(_this, e);
+        },
+        onOut: function onOut(e) {
+          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onOut).call(_this, e);
+        }
+      };
     }
+    /**
+     * 各判定時に実行するコールバック関数を設定する
+     * @param callbacks
+     * ```ts
+     * const touch = new Touch();
+     * touch.connectOutput({
+     *   // クリックしたとき
+     *   onClick: this.onClick.bind(this),
+     *   // 押し終えたとき
+     *   onRelease: this.onRelease.bind(this),
+     *   // 当たり判定内に入った時
+     *   onFocus: this.onFocus.bind(this),
+     *   // 当たり判定外に出た時
+     *   onBlur: this.onBlur.bind(this),
+     *   // 通常状態になった時
+     *   onNormal: this.onNormal.bind(this),
+     *   // マウスオーバー状態になった時
+     *   onOver: this.onOver.bind(this),
+     *   // 押している状態になった時
+     *   onPress: this.onPress.bind(this),
+     *   // 当たり判定外なのに押下状態になっている時
+     *   onUnknown: this.onUnknown.bind(this),
+     * });
+     * ```
+     */
+
   }, {
-    key: "onDown",
-    value: function onDown() {
-      var _a, _b, _c, _d;
-
-      if (!this.isDown) (_b = (_a = this.callbacks).onClick) === null || _b === void 0 ? void 0 : _b.call(_a);
-      this.isDown = true;
-      (_d = (_c = this.callbacks).onDown) === null || _d === void 0 ? void 0 : _d.call(_c);
-    }
-  }, {
-    key: "onUp",
-    value: function onUp() {
-      var _a, _b, _c, _d;
-
-      this.isDown = false;
-
-      if (this.isOver) {
-        (_b = (_a = this.callbacks).onOver) === null || _b === void 0 ? void 0 : _b.call(_a);
-      } else {
-        (_d = (_c = this.callbacks).onNormal) === null || _d === void 0 ? void 0 : _d.call(_c);
-      }
-    }
-  }, {
-    key: "onOver",
-    value: function onOver() {
-      var _a, _b;
-
-      this.isOver = true;
-
-      if (this.isDown) {
-        return;
-      }
-
-      (_b = (_a = this.callbacks).onOver) === null || _b === void 0 ? void 0 : _b.call(_a);
-    }
-  }, {
-    key: "onOut",
-    value: function onOut() {
-      var _a, _b;
-
-      this.isOver = false;
-
-      if (this.isDown) {
-        return;
-      }
-
-      (_b = (_a = this.callbacks).onNormal) === null || _b === void 0 ? void 0 : _b.call(_a);
+    key: "connectOutput",
+    value: function connectOutput(callbacks) {
+      __classPrivateFieldSet(this, _Touch_callbacks, callbacks, "f");
     }
   }]);
 
@@ -49393,6 +49434,101 @@ var Touch = /*#__PURE__*/function () {
 }();
 
 exports.Touch = Touch;
+_Touch_isDown = new WeakMap(), _Touch_isOver = new WeakMap(), _Touch_state = new WeakMap(), _Touch_callbacks = new WeakMap(), _Touch_instances = new WeakSet(), _Touch_event = function _Touch_event() {
+  if (__classPrivateFieldGet(this, _Touch_isDown, "f")) {
+    if (__classPrivateFieldGet(this, _Touch_isOver, "f")) {
+      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onDownOver).call(this);
+    } else {
+      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onDownOut).call(this);
+    }
+  } else {
+    if (__classPrivateFieldGet(this, _Touch_isOver, "f")) {
+      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onUpOver).call(this);
+    } else {
+      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onUpOut).call(this);
+    }
+  }
+}, _Touch_onDownOver = function _Touch_onDownOver() {
+  var _a, _b, _c, _d, _e, _f;
+
+  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.normal) {
+    (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onFocus) === null || _b === void 0 ? void 0 : _b.call(_a);
+
+    __classPrivateFieldSet(this, _Touch_state, TouchState.over, "f");
+  }
+
+  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.over) {
+    (_d = (_c = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onClick) === null || _d === void 0 ? void 0 : _d.call(_c);
+  }
+
+  __classPrivateFieldSet(this, _Touch_state, TouchState.press, "f");
+
+  (_f = (_e = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onPress) === null || _f === void 0 ? void 0 : _f.call(_e);
+}, _Touch_onDownOut = function _Touch_onDownOut() {
+  var _a, _b;
+
+  if (__classPrivateFieldGet(this, _Touch_state, "f") !== TouchState.unknown) {
+    console.warn("ポインタが画面外なのに押下状態になっています");
+  }
+
+  (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onUnknown) === null || _b === void 0 ? void 0 : _b.call(_a);
+
+  __classPrivateFieldSet(this, _Touch_state, TouchState.unknown, "f");
+}, _Touch_onUpOver = function _Touch_onUpOver() {
+  var _a, _b, _c, _d, _e, _f;
+
+  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.normal) {
+    (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onFocus) === null || _b === void 0 ? void 0 : _b.call(_a);
+  }
+
+  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.press) {
+    (_d = (_c = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onRelease) === null || _d === void 0 ? void 0 : _d.call(_c);
+  }
+
+  (_f = (_e = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onOver) === null || _f === void 0 ? void 0 : _f.call(_e);
+
+  __classPrivateFieldSet(this, _Touch_state, TouchState.over, "f");
+}, _Touch_onUpOut = function _Touch_onUpOut() {
+  var _a, _b, _c, _d, _e, _f;
+
+  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.press) {
+    (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onRelease) === null || _b === void 0 ? void 0 : _b.call(_a);
+
+    __classPrivateFieldSet(this, _Touch_state, TouchState.over, "f");
+  }
+
+  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.over) {
+    (_d = (_c = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onBlur) === null || _d === void 0 ? void 0 : _d.call(_c);
+  }
+
+  __classPrivateFieldSet(this, _Touch_state, TouchState.normal, "f");
+
+  (_f = (_e = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onNormal) === null || _f === void 0 ? void 0 : _f.call(_e);
+}, _Touch_onDown = function _Touch_onDown(e) {
+  if (__classPrivateFieldGet(this, _Touch_isDown, "f") === false) {
+    __classPrivateFieldSet(this, _Touch_isDown, true, "f");
+
+    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
+  }
+}, _Touch_onUp = function _Touch_onUp(e) {
+  if (__classPrivateFieldGet(this, _Touch_isDown, "f") === true) {
+    __classPrivateFieldSet(this, _Touch_isDown, false, "f");
+
+    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
+  }
+}, _Touch_onOver = function _Touch_onOver(e) {
+  if (__classPrivateFieldGet(this, _Touch_isOver, "f") === false) {
+    __classPrivateFieldSet(this, _Touch_isOver, true, "f");
+
+    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
+  }
+}, _Touch_onOut = function _Touch_onOut(e) {
+  if (__classPrivateFieldGet(this, _Touch_isOver, "f") === true) {
+    __classPrivateFieldSet(this, _Touch_isOver, false, "f");
+
+    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
+  }
+};
 },{}],"components/ui/atoms/TouchableSprite.ts":[function(require,module,exports) {
 "use strict";
 
@@ -49505,48 +49641,63 @@ var TouchableSprite = /*#__PURE__*/function (_PIXI$Sprite) {
     _this.interactive = true;
     _this.buttonMode = true;
 
-    __classPrivateFieldSet(_assertThisInitialized(_this), _TouchableSprite_touch, new Touch_1.Touch().connect({
-      onClick: _this.onClick.bind(_assertThisInitialized(_this)),
-      onDown: _this.onDown.bind(_assertThisInitialized(_this)),
-      onOver: _this.onOver.bind(_assertThisInitialized(_this)),
-      onNormal: _this.onNormal.bind(_assertThisInitialized(_this))
-    }), "f");
+    __classPrivateFieldSet(_assertThisInitialized(_this), _TouchableSprite_touch, new Touch_1.Touch(), "f");
 
-    var onDown = function onDown() {
-      return __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").onDown();
-    },
-        onUp = function onUp() {
-      return __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").onUp();
-    },
-        onOver = function onOver() {
-      return __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").onOver();
-    },
-        onOut = function onOut() {
-      return __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").onOut();
-    };
+    var _classPrivateFieldGe = __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").createInput(),
+        onDown = _classPrivateFieldGe.onDown,
+        onUp = _classPrivateFieldGe.onUp,
+        onOver = _classPrivateFieldGe.onOver,
+        onOut = _classPrivateFieldGe.onOut;
 
     _this.on("pointerdown", onDown).on("pointerup", onUp).on("pointerupoutside", onUp).on("pointerover", onOver).on("pointerout", onOut) // マウス限定
     .on("mousedown", onDown).on("mouseup", onUp).on("mouseupoutside", onUp).on("mouseover", onOver).on("mouseout", onOut) // タッチ限定
     .on("touchstart", onDown).on("touchend", onUp).on("touchendoutside", onUp);
 
+    __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").connectOutput({
+      onClick: _this.onClick.bind(_assertThisInitialized(_this)),
+      onRelease: _this.onRelease.bind(_assertThisInitialized(_this)),
+      onFocus: _this.onFocus.bind(_assertThisInitialized(_this)),
+      onBlur: _this.onBlur.bind(_assertThisInitialized(_this)),
+      onNormal: _this.onNormal.bind(_assertThisInitialized(_this)),
+      onOver: _this.onOver.bind(_assertThisInitialized(_this)),
+      onPress: _this.onPress.bind(_assertThisInitialized(_this)),
+      onUnknown: _this.onUnknown.bind(_assertThisInitialized(_this))
+    });
+
     return _this;
   }
 
   _createClass(TouchableSprite, [{
-    key: "onNormal",
-    value: function onNormal() {// 継承先のために残す
+    key: "onBlur",
+    value: function onBlur() {// 継承先のために残す
     }
   }, {
-    key: "onDown",
-    value: function onDown() {// 継承先のために残す
+    key: "onRelease",
+    value: function onRelease() {// 継承先のために残す
+    }
+  }, {
+    key: "onFocus",
+    value: function onFocus() {// 継承先のために残す
+    }
+  }, {
+    key: "onClick",
+    value: function onClick() {// 継承先のために残す
+    }
+  }, {
+    key: "onNormal",
+    value: function onNormal() {// 継承先のために残す
     }
   }, {
     key: "onOver",
     value: function onOver() {// 継承先のために残す
     }
   }, {
-    key: "onClick",
-    value: function onClick() {// 継承先のために残す
+    key: "onPress",
+    value: function onPress() {// 継承先のために残す
+    }
+  }, {
+    key: "onUnknown",
+    value: function onUnknown() {// 継承先のために残す
     }
   }]);
 
@@ -49623,20 +49774,14 @@ var Button = /*#__PURE__*/function (_TouchableSprite_1$To) {
       this.brightnessFilter.setBrightness(0);
     }
   }, {
-    key: "onDown",
-    value: function onDown() {
-      this.brightnessFilter.setBrightness(-0.25);
-    }
-  }, {
     key: "onOver",
     value: function onOver() {
       this.brightnessFilter.setBrightness(0.25);
     }
   }, {
-    key: "onClick",
-    value: function onClick() {
-      // 継承先のために残す
-      console.log("click");
+    key: "onPress",
+    value: function onPress() {
+      this.brightnessFilter.setBrightness(-0.25);
     }
   }]);
 
