@@ -26,5 +26,6 @@ export class Button extends TouchableSprite {
   }
   onClick() {
     // 継承先のために残す
+    console.log("click");
   }
 }

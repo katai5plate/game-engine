@@ -8,26 +8,37 @@ export class TouchableSprite extends PIXI.Sprite {
     { x, y }: { x?: number; y?: number } = {}
   ) {
     super(texture);
-    this.#touch = new Touch();
     this.x = x ?? 0;
     this.y = y ?? 0;
     this.interactive = true;
     this.buttonMode = true;
-    this.on("pointerdown", this.#onDown)
-      .on("pointerup", this.#onUp)
-      .on("pointerupoutside", this.#onUp)
-      .on("pointerover", this.#onOver)
-      .on("pointerout", this.#onOut)
+    this.#touch = new Touch().connect({
+      onClick: this.onClick.bind(this),
+      onDown: this.onDown.bind(this),
+      onOver: this.onOver.bind(this),
+      onNormal: this.onNormal.bind(this),
+    });
+    const [onDown, onUp, onOver, onOut] = [
+      () => this.#touch.onDown(),
+      () => this.#touch.onUp(),
+      () => this.#touch.onOver(),
+      () => this.#touch.onOut(),
+    ];
+    this.on("pointerdown", onDown)
+      .on("pointerup", onUp)
+      .on("pointerupoutside", onUp)
+      .on("pointerover", onOver)
+      .on("pointerout", onOut)
       // マウス限定
-      .on("mousedown", this.#onDown)
-      .on("mouseup", this.#onUp)
-      .on("mouseupoutside", this.#onUp)
-      .on("mouseover", this.#onOver)
-      .on("mouseout", this.#onOut)
+      .on("mousedown", onDown)
+      .on("mouseup", onUp)
+      .on("mouseupoutside", onUp)
+      .on("mouseover", onOver)
+      .on("mouseout", onOut)
       // タッチ限定
-      .on("touchstart", this.#onDown)
-      .on("touchend", this.#onUp)
-      .on("touchendoutside", this.#onUp);
+      .on("touchstart", onDown)
+      .on("touchend", onUp)
+      .on("touchendoutside", onUp);
   }
   onNormal() {
     // 継承先のために残す
@@ -40,27 +51,5 @@ export class TouchableSprite extends PIXI.Sprite {
   }
   onClick() {
     // 継承先のために残す
-  }
-  #onDown() {
-    this.#touch.onDown({
-      onClick: this.onClick.bind(this),
-      onDown: this.onDown.bind(this),
-    });
-  }
-  #onUp() {
-    this.#touch.onUp({
-      onOver: this.onOver.bind(this),
-      onNormal: this.onNormal.bind(this),
-    });
-  }
-  #onOver() {
-    this.#touch.onOver({
-      onOver: this.onOver.bind(this),
-    });
-  }
-  #onOut() {
-    this.#touch.onOut({
-      onNormal: this.onNormal.bind(this),
-    });
   }
 }
