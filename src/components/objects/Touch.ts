@@ -112,7 +112,7 @@ export class Touch {
   }
   #onDownOut() {
     if (this.#state !== TouchState.unknown) {
-      console.warn("ポインタが画面外なのに押下状態になっています");
+      // console.warn("ポインタが画面外なのに押下状態になっています");
     }
     this.#callbacks.onUnknown?.();
     this.#state = TouchState.unknown;

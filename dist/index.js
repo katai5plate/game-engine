@@ -50336,8 +50336,7 @@ _Touch_isDown = new WeakMap(), _Touch_isOver = new WeakMap(), _Touch_state = new
 }, _Touch_onDownOut = function _Touch_onDownOut() {
   var _a, _b;
 
-  if (__classPrivateFieldGet(this, _Touch_state, "f") !== TouchState.unknown) {
-    console.warn("ポインタが画面外なのに押下状態になっています");
+  if (__classPrivateFieldGet(this, _Touch_state, "f") !== TouchState.unknown) {// console.warn("ポインタが画面外なのに押下状態になっています");
   }
 
   (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onUnknown) === null || _b === void 0 ? void 0 : _b.call(_a);
