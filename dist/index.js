@@ -49235,7 +49235,7 @@ exports.createScene = exports.Scene = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
 /**
- * シーンの処理内容を定義
+ * シーンクラスで処理内容を定義
  * ```ts
  * class extends Scene {
  *   hoge: PIXI.Sprite;
@@ -49243,29 +49243,26 @@ var PIXI = __importStar(require("pixi.js"));
  *   constructor() {
  *     super();
  *     // 初期スポーン
- *     this.hoge = this.spawn(new Sprite())
+ *     this.hoge = this.spawn(new PIXI.Sprite());
  *     // 宣言のみ
- *     this.fuga = new Sprite()
+ *     this.fuga = new PIXI.Sprite();
  *   }
  *   async main() {
- *     new Flow(this, (start, $) =>
- *       start
- *         // 1 秒待つ
- *         .then(Flow.time(1))
- *         // スポーンさせる
- *         .then(() => $.spawn($.fuga))
- *         // ループ
- *         .then(Flow.loop((head) =>
- *           head
- *             // 0.1 秒ごとに回転
- *             .then(Flow.time(0.1, () => {
- *               $.fuga.angle++;
- *             })
- *           )
- *         ))
- *     );
+ *     new Flow(this, async ($) => {
+ *       // 1 秒待つ
+ *       await Flow.time(1);
+ *       // スポーンさせる
+ *       $.spawn($.fuga);
+ *       // ループ
+ *       await Flow.loop(async () => {
+ *         // 0.1 秒ごとに回転
+ *         await Flow.time(0.1, () => {
+ *           $.fuga.angle++;
+ *         });
+ *       });
+ *     });
  *   }
- * }
+ * };
  * ```
  */
 
@@ -49659,7 +49656,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
                 console.time("SCENE LOADED");
                 console.log("SCENE LOADING... (PRELOAD ASSETS)");
                 sceneData.assetUrls.forEach(function (url) {
-                  return _this2.loader.add(url, "./dist".concat(url));
+                  return _this2.loader.add(url, "./dist/".concat(url));
                 });
                 _context.next = 6;
                 return new Promise(function (r) {
@@ -49813,7 +49810,7 @@ _App_watchers = new WeakMap(), _App_instances = new WeakSet(), _App_onResize = f
   });
 };
 },{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/app/Keyboard":"components/app/Keyboard.ts","./components/objects/Scene":"components/objects/Scene.ts","./utils/helper":"utils/helper.ts"}],"../node_modules/easyrpg-rtp/Picture/Cloud.png":[function(require,module,exports) {
-module.exports="/Cloud.47e30f13.png";
+module.exports="Cloud.47e30f13.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
 
@@ -49999,58 +49996,68 @@ var Flow = /*#__PURE__*/function () {
   function Flow(target, fn) {
     _classCallCheck(this, Flow);
 
-    fn(Promise.resolve(), target);
+    fn(target);
   }
 
   _createClass(Flow, null, [{
     key: "time",
     value: function time(resolveTime, onProgress) {
-      return function () {
-        return $app.addTimeWatcher(resolveTime, onProgress);
-      };
+      return $app.addTimeWatcher(resolveTime, onProgress);
     }
   }, {
     key: "when",
     value: function when(resolveCondition, onProgress) {
-      return function () {
-        return $app.addWatcher(resolveCondition, onProgress);
-      };
+      return $app.addWatcher(resolveCondition, onProgress);
     }
   }, {
     key: "loop",
     value: function loop(fn) {
-      var _this = this;
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var _this = this;
 
-      return function () {
-        return __awaiter(_this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          return _regeneratorRuntime().wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  if (!1) {
-                    _context.next = 7;
-                    break;
-                  }
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return function () {
+                  return __awaiter(_this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+                    return _regeneratorRuntime().wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            if (!1) {
+                              _context.next = 7;
+                              break;
+                            }
 
-                  _context.next = 3;
-                  return fn(Promise.resolve());
+                            _context.next = 3;
+                            return fn(Promise.resolve());
 
-                case 3:
-                  _context.next = 5;
-                  return $app.waitNextFrame();
+                          case 3:
+                            _context.next = 5;
+                            return $app.waitNextFrame();
 
-                case 5:
-                  _context.next = 0;
-                  break;
+                          case 5:
+                            _context.next = 0;
+                            break;
 
-                case 7:
-                case "end":
-                  return _context.stop();
-              }
+                          case 7:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  }));
+                }();
+
+              case 2:
+              case "end":
+                return _context2.stop();
             }
-          }, _callee);
-        }));
-      };
+          }
+        }, _callee2);
+      }));
     }
   }]);
 
@@ -50909,6 +50916,46 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function (resolve) {
@@ -50992,75 +51039,188 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
   _createClass(_class, [{
     key: "main",
     value: function main() {
-      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var _this2 = this;
 
-        return _regeneratorRuntime().wrap(function _callee$(_context) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
-                new Flow_1.Flow(this, function (start, $) {
-                  return start.then(Flow_1.Flow.time(1)).then(function () {
-                    return _this2.spawn($.button2);
-                  }).then(Flow_1.Flow.loop(function (head) {
-                    $.button1.angle++;
-                    $.button2.angle += 5;
+                new Flow_1.Flow(this, function ($) {
+                  return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+                    var _this3 = this;
 
-                    if ($app.key.isPressed("LEFT")) {
-                      $.button2.x -= 10;
-                    }
+                    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            _context2.next = 2;
+                            return Flow_1.Flow.time(1);
 
-                    if ($app.key.isPressed("RIGHT")) {
-                      $.button2.x += 10;
-                    }
+                          case 2:
+                            this.spawn($.button2);
+                            _context2.next = 5;
+                            return Flow_1.Flow.loop(function () {
+                              return __awaiter(_this3, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+                                return _regeneratorRuntime().wrap(function _callee$(_context) {
+                                  while (1) {
+                                    switch (_context.prev = _context.next) {
+                                      case 0:
+                                        $.button1.angle++;
+                                        $.button2.angle += 5;
 
-                    if ($app.key.isPressed("UP")) {
-                      $.button2.y -= 10;
-                    }
+                                        if ($app.key.isPressed("LEFT")) {
+                                          $.button2.x -= 10;
+                                        }
 
-                    if ($app.key.isPressed("DOWN")) {
-                      $.button2.y += 10;
-                    }
+                                        if ($app.key.isPressed("RIGHT")) {
+                                          $.button2.x += 10;
+                                        }
 
-                    if ($app.key.isTriggered("A")) {
-                      console.log("AAAA!");
-                    }
+                                        if ($app.key.isPressed("UP")) {
+                                          $.button2.y -= 10;
+                                        }
 
-                    return Promise.resolve(0);
+                                        if ($app.key.isPressed("DOWN")) {
+                                          $.button2.y += 10;
+                                        }
+
+                                        if ($app.key.isTriggered("A")) {
+                                          console.log("AAAA!");
+                                        }
+
+                                      case 7:
+                                      case "end":
+                                        return _context.stop();
+                                    }
+                                  }
+                                }, _callee);
+                              }));
+                            });
+
+                          case 5:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, this);
                   }));
                 });
-                new Flow_1.Flow(this.button1, function (start, $) {
-                  return start.then(Flow_1.Flow.loop(function (head) {
-                    var rx = 100 + Math.random() * 700,
-                        ry = 100 + Math.random() * 500;
-                    var _ref = [$.x, $.y],
-                        ox = _ref[0],
-                        oy = _ref[1];
-                    return head.then(Flow_1.Flow.time(1, function (_ref2) {
-                      var resolvePer = _ref2.resolvePer;
-                      $.x = (0, math_1.lerp)("inOutExpo", $.x, rx, resolvePer);
-                      $.y = (0, math_1.lerp)("inOutBounce", $.y, ry, resolvePer);
-                    })).then(Flow_1.Flow.time(0.5, function (_ref3) {
-                      var resolvePer = _ref3.resolvePer;
-                      $.x = (0, math_1.lerp)("inOutExpo", $.x, ox, resolvePer);
-                      $.y = (0, math_1.lerp)("inOutBounce", $.y, oy, resolvePer);
-                    }));
+                new Flow_1.Flow(this.button1, function ($) {
+                  return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+                    var _this4 = this;
+
+                    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            _context4.next = 2;
+                            return Flow_1.Flow.loop(function () {
+                              return __awaiter(_this4, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+                                var rx, ry, _ref, ox, oy;
+
+                                return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                                  while (1) {
+                                    switch (_context3.prev = _context3.next) {
+                                      case 0:
+                                        rx = 100 + Math.random() * 700, ry = 100 + Math.random() * 500;
+                                        _ref = [$.x, $.y], ox = _ref[0], oy = _ref[1];
+                                        _context3.next = 4;
+                                        return Flow_1.Flow.time(1, function (_ref2) {
+                                          var resolvePer = _ref2.resolvePer;
+                                          $.x = (0, math_1.lerp)("inOutExpo", $.x, rx, resolvePer);
+                                          $.y = (0, math_1.lerp)("inOutBounce", $.y, ry, resolvePer);
+                                        });
+
+                                      case 4:
+                                        _context3.next = 6;
+                                        return Flow_1.Flow.time(0.5, function (_ref3) {
+                                          var resolvePer = _ref3.resolvePer;
+                                          $.x = (0, math_1.lerp)("inOutExpo", $.x, ox, resolvePer);
+                                          $.y = (0, math_1.lerp)("inOutBounce", $.y, oy, resolvePer);
+                                        });
+
+                                      case 6:
+                                      case "end":
+                                        return _context3.stop();
+                                    }
+                                  }
+                                }, _callee3);
+                              }));
+                            });
+
+                          case 2:
+                            console.error("ここには到達しない");
+
+                          case 3:
+                          case "end":
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4);
                   }));
                 });
 
               case 2:
               case "end":
-                return _context.stop();
+                return _context5.stop();
             }
           }
-        }, _callee, this);
+        }, _callee5, this);
       }));
     }
   }]);
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Flow":"components/objects/Flow.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts","../utils/math":"utils/math.ts"}],"index.ts":[function(require,module,exports) {
+
+var PIXI = __importStar(require("pixi.js"));
+
+var x = /*#__PURE__*/function (_Scene_1$Scene2) {
+  _inherits(ExampleScene, _Scene_1$Scene2);
+
+  var _super2 = _createSuper(ExampleScene);
+
+  function ExampleScene() {
+    var _this5;
+
+    _classCallCheck(this, ExampleScene);
+
+    _this5 = _super2.call(this); // 2. これで宣言とともにスポーン
+
+    _this5.初期スポーン物 = _this5.spawn(new PIXI.Container()); // this.spawn させない場合は記録されるがスポーンしない
+
+    _this5.後発スポーン物 = new PIXI.Container();
+
+    _this5.ready();
+
+    return _this5;
+  }
+
+  _createClass(ExampleScene, [{
+    key: "main",
+    value: function main() {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                // 3. 任意のタイミングでスポーン
+                this.spawn(this.後発スポーン物);
+
+              case 1:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+    }
+  }]);
+
+  return ExampleScene;
+}(Scene_1.Scene);
+},{"easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Flow":"components/objects/Flow.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts","../utils/math":"utils/math.ts","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51105,7 +51265,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1973" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "2222" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -51282,4 +51442,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.ts"], null)
-//# sourceMappingURL=/index.js.map
+//# sourceMappingURL=index.js.map

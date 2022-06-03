@@ -132,7 +132,7 @@ export class App extends PIXI.Application {
     console.time("SCENE LOADED");
     console.log("SCENE LOADING... (PRELOAD ASSETS)");
     sceneData.assetUrls.forEach((url: string) =>
-      this.loader.add(url, `./dist${url}`)
+      this.loader.add(url, `./dist/${url}`)
     );
     await new Promise((r) => this.loader.load(r));
     this.currentScene = new sceneData.scene();

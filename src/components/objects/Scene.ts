@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 /**
- * シーンの処理内容を定義
+ * シーンクラスで処理内容を定義
  * ```ts
  * class extends Scene {
  *   hoge: PIXI.Sprite;
@@ -9,29 +9,26 @@ import * as PIXI from "pixi.js";
  *   constructor() {
  *     super();
  *     // 初期スポーン
- *     this.hoge = this.spawn(new Sprite())
+ *     this.hoge = this.spawn(new PIXI.Sprite());
  *     // 宣言のみ
- *     this.fuga = new Sprite()
+ *     this.fuga = new PIXI.Sprite();
  *   }
  *   async main() {
- *     new Flow(this, (start, $) =>
- *       start
- *         // 1 秒待つ
- *         .then(Flow.time(1))
- *         // スポーンさせる
- *         .then(() => $.spawn($.fuga))
- *         // ループ
- *         .then(Flow.loop((head) =>
- *           head
- *             // 0.1 秒ごとに回転
- *             .then(Flow.time(0.1, () => {
- *               $.fuga.angle++;
- *             })
- *           )
- *         ))
- *     );
+ *     new Flow(this, async ($) => {
+ *       // 1 秒待つ
+ *       await Flow.time(1);
+ *       // スポーンさせる
+ *       $.spawn($.fuga);
+ *       // ループ
+ *       await Flow.loop(async () => {
+ *         // 0.1 秒ごとに回転
+ *         await Flow.time(0.1, () => {
+ *           $.fuga.angle++;
+ *         });
+ *       });
+ *     });
  *   }
- * }
+ * };
  * ```
  */
 export class Scene extends PIXI.Container {
