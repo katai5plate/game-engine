@@ -1,4 +1,3 @@
-import * as PIXI from "pixi.js";
 import { LabeledButton } from "../molecules/LabeledButton";
 
 type OriginCP = ConstructorParameters<typeof LabeledButton>;

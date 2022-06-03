@@ -1,13 +1,11 @@
 import {
-  WatcherManager,
   ProgressProps,
   ProgressPropsFromTime,
+  WatchManager,
 } from "../managers/WatcherManager";
 
-type ResolveCondition = Parameters<
-  typeof WatcherManager.prototype.waitCondition
->[0];
-type ResolveTime = Parameters<typeof WatcherManager.prototype.waitTime>[0];
+type ResolveCondition = Parameters<typeof WatchManager.prototype.waitOn>[0];
+type ResolveTime = Parameters<typeof WatchManager.prototype.waitTime>[0];
 
 export class Flow<T> {
   constructor(target: T, fn: ($: T) => Promise<void>) {
@@ -24,7 +22,7 @@ export class Flow<T> {
     resolveCondition: ResolveCondition,
     onProgress?: (props: ProgressProps) => void
   ) {
-    return $app._watcher.waitCondition(resolveCondition, onProgress);
+    return $app._watcher.waitOn(resolveCondition, onProgress);
   }
   static async loop(fn: <T extends Symbol>(end: T) => Promise<void | T>) {
     const loopEnd = Symbol("LOOP_END");

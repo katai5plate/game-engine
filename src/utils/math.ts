@@ -1,5 +1,4 @@
 import { easing as tsEasing } from "ts-easing";
-import { toGlobalForDebug } from "./helper";
 
 const easing = {
   ...tsEasing,

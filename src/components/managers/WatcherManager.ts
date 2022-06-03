@@ -32,10 +32,13 @@ export type ProgressProps = UpdateProps & {
 
 export type ProgressPropsFromTime = ProgressProps & FromTime;
 
-export class WatcherManager {
+export class WatchManager {
   /** ゲーム非同期監視リスト */
   #watchers: Set<Watcher> = new Set();
   constructor() {}
+  get size() {
+    return this.#watchers.size;
+  }
   _update(deltaTime: number) {
     const updateProps: UpdateProps = { deltaTime, time: $app.time };
     this.#watchers.forEach((watcher) => {
@@ -119,7 +122,7 @@ export class WatcherManager {
    * @param rejectCondition エラー条件
    * @param errorMessage エラーメッセージ
    */
-  waitCondition(
+  waitOn(
     resolveCondition: Watcher["resolveCondition"],
     // 書きやすさのために null スキップ
     onProgress?: (props: ProgressProps) => any | null,
