@@ -48275,7 +48275,848 @@ var filters = {
   NoiseFilter: _filterNoise.NoiseFilter
 };
 exports.filters = filters;
-},{"@pixi/polyfill":"../node_modules/@pixi/polyfill/dist/esm/polyfill.js","@pixi/utils":"../node_modules/@pixi/utils/dist/esm/utils.js","@pixi/accessibility":"../node_modules/pixi.js/node_modules/@pixi/accessibility/dist/esm/accessibility.js","@pixi/interaction":"../node_modules/@pixi/interaction/dist/esm/interaction.js","@pixi/app":"../node_modules/@pixi/app/dist/esm/app.js","@pixi/core":"../node_modules/@pixi/core/dist/esm/core.js","@pixi/extract":"../node_modules/pixi.js/node_modules/@pixi/extract/dist/esm/extract.js","@pixi/loaders":"../node_modules/@pixi/loaders/dist/esm/loaders.js","@pixi/compressed-textures":"../node_modules/pixi.js/node_modules/@pixi/compressed-textures/dist/esm/compressed-textures.js","@pixi/particle-container":"../node_modules/pixi.js/node_modules/@pixi/particle-container/dist/esm/particle-container.js","@pixi/prepare":"../node_modules/pixi.js/node_modules/@pixi/prepare/dist/esm/prepare.js","@pixi/spritesheet":"../node_modules/pixi.js/node_modules/@pixi/spritesheet/dist/esm/spritesheet.js","@pixi/sprite-tiling":"../node_modules/pixi.js/node_modules/@pixi/sprite-tiling/dist/esm/sprite-tiling.js","@pixi/text-bitmap":"../node_modules/pixi.js/node_modules/@pixi/text-bitmap/dist/esm/text-bitmap.js","@pixi/ticker":"../node_modules/@pixi/ticker/dist/esm/ticker.js","@pixi/filter-alpha":"../node_modules/pixi.js/node_modules/@pixi/filter-alpha/dist/esm/filter-alpha.js","@pixi/filter-blur":"../node_modules/pixi.js/node_modules/@pixi/filter-blur/dist/esm/filter-blur.js","@pixi/filter-color-matrix":"../node_modules/pixi.js/node_modules/@pixi/filter-color-matrix/dist/esm/filter-color-matrix.js","@pixi/filter-displacement":"../node_modules/pixi.js/node_modules/@pixi/filter-displacement/dist/esm/filter-displacement.js","@pixi/filter-fxaa":"../node_modules/pixi.js/node_modules/@pixi/filter-fxaa/dist/esm/filter-fxaa.js","@pixi/filter-noise":"../node_modules/pixi.js/node_modules/@pixi/filter-noise/dist/esm/filter-noise.js","@pixi/mixin-cache-as-bitmap":"../node_modules/pixi.js/node_modules/@pixi/mixin-cache-as-bitmap/dist/esm/mixin-cache-as-bitmap.js","@pixi/mixin-get-child-by-name":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-child-by-name/dist/esm/mixin-get-child-by-name.js","@pixi/mixin-get-global-position":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-global-position/dist/esm/mixin-get-global-position.js","@pixi/constants":"../node_modules/@pixi/constants/dist/esm/constants.js","@pixi/display":"../node_modules/@pixi/display/dist/esm/display.js","@pixi/graphics":"../node_modules/@pixi/graphics/dist/esm/graphics.js","@pixi/math":"../node_modules/@pixi/math/dist/esm/math.js","@pixi/mesh":"../node_modules/pixi.js/node_modules/@pixi/mesh/dist/esm/mesh.js","@pixi/mesh-extras":"../node_modules/pixi.js/node_modules/@pixi/mesh-extras/dist/esm/mesh-extras.js","@pixi/runner":"../node_modules/@pixi/runner/dist/esm/runner.js","@pixi/sprite":"../node_modules/@pixi/sprite/dist/esm/sprite.js","@pixi/sprite-animated":"../node_modules/pixi.js/node_modules/@pixi/sprite-animated/dist/esm/sprite-animated.js","@pixi/text":"../node_modules/@pixi/text/dist/esm/text.js","@pixi/settings":"../node_modules/@pixi/settings/dist/esm/settings.js"}],"components/objects/Scene.ts":[function(require,module,exports) {
+},{"@pixi/polyfill":"../node_modules/@pixi/polyfill/dist/esm/polyfill.js","@pixi/utils":"../node_modules/@pixi/utils/dist/esm/utils.js","@pixi/accessibility":"../node_modules/pixi.js/node_modules/@pixi/accessibility/dist/esm/accessibility.js","@pixi/interaction":"../node_modules/@pixi/interaction/dist/esm/interaction.js","@pixi/app":"../node_modules/@pixi/app/dist/esm/app.js","@pixi/core":"../node_modules/@pixi/core/dist/esm/core.js","@pixi/extract":"../node_modules/pixi.js/node_modules/@pixi/extract/dist/esm/extract.js","@pixi/loaders":"../node_modules/@pixi/loaders/dist/esm/loaders.js","@pixi/compressed-textures":"../node_modules/pixi.js/node_modules/@pixi/compressed-textures/dist/esm/compressed-textures.js","@pixi/particle-container":"../node_modules/pixi.js/node_modules/@pixi/particle-container/dist/esm/particle-container.js","@pixi/prepare":"../node_modules/pixi.js/node_modules/@pixi/prepare/dist/esm/prepare.js","@pixi/spritesheet":"../node_modules/pixi.js/node_modules/@pixi/spritesheet/dist/esm/spritesheet.js","@pixi/sprite-tiling":"../node_modules/pixi.js/node_modules/@pixi/sprite-tiling/dist/esm/sprite-tiling.js","@pixi/text-bitmap":"../node_modules/pixi.js/node_modules/@pixi/text-bitmap/dist/esm/text-bitmap.js","@pixi/ticker":"../node_modules/@pixi/ticker/dist/esm/ticker.js","@pixi/filter-alpha":"../node_modules/pixi.js/node_modules/@pixi/filter-alpha/dist/esm/filter-alpha.js","@pixi/filter-blur":"../node_modules/pixi.js/node_modules/@pixi/filter-blur/dist/esm/filter-blur.js","@pixi/filter-color-matrix":"../node_modules/pixi.js/node_modules/@pixi/filter-color-matrix/dist/esm/filter-color-matrix.js","@pixi/filter-displacement":"../node_modules/pixi.js/node_modules/@pixi/filter-displacement/dist/esm/filter-displacement.js","@pixi/filter-fxaa":"../node_modules/pixi.js/node_modules/@pixi/filter-fxaa/dist/esm/filter-fxaa.js","@pixi/filter-noise":"../node_modules/pixi.js/node_modules/@pixi/filter-noise/dist/esm/filter-noise.js","@pixi/mixin-cache-as-bitmap":"../node_modules/pixi.js/node_modules/@pixi/mixin-cache-as-bitmap/dist/esm/mixin-cache-as-bitmap.js","@pixi/mixin-get-child-by-name":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-child-by-name/dist/esm/mixin-get-child-by-name.js","@pixi/mixin-get-global-position":"../node_modules/pixi.js/node_modules/@pixi/mixin-get-global-position/dist/esm/mixin-get-global-position.js","@pixi/constants":"../node_modules/@pixi/constants/dist/esm/constants.js","@pixi/display":"../node_modules/@pixi/display/dist/esm/display.js","@pixi/graphics":"../node_modules/@pixi/graphics/dist/esm/graphics.js","@pixi/math":"../node_modules/@pixi/math/dist/esm/math.js","@pixi/mesh":"../node_modules/pixi.js/node_modules/@pixi/mesh/dist/esm/mesh.js","@pixi/mesh-extras":"../node_modules/pixi.js/node_modules/@pixi/mesh-extras/dist/esm/mesh-extras.js","@pixi/runner":"../node_modules/@pixi/runner/dist/esm/runner.js","@pixi/sprite":"../node_modules/@pixi/sprite/dist/esm/sprite.js","@pixi/sprite-animated":"../node_modules/pixi.js/node_modules/@pixi/sprite-animated/dist/esm/sprite-animated.js","@pixi/text":"../node_modules/@pixi/text/dist/esm/text.js","@pixi/settings":"../node_modules/@pixi/settings/dist/esm/settings.js"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CODE_Q = exports.CODE_PRINTSCREEN = exports.CODE_PERIOD = exports.CODE_PAUSE = exports.CODE_PAGE_UP = exports.CODE_PAGE_DOWN = exports.CODE_P = exports.CODE_OS_RIGHT = exports.CODE_OS_LEFT = exports.CODE_OPEN_BRACKET = exports.CODE_O = exports.CODE_NUM_LOCK = exports.CODE_NUMPAD_SUBTRACT = exports.CODE_NUMPAD_MULTIPLY = exports.CODE_NUMPAD_ENTER = exports.CODE_NUMPAD_DIVIDE = exports.CODE_NUMPAD_DECIMAL = exports.CODE_NUMPAD_ADD = exports.CODE_NUMPAD9 = exports.CODE_NUMPAD8 = exports.CODE_NUMPAD7 = exports.CODE_NUMPAD6 = exports.CODE_NUMPAD5 = exports.CODE_NUMPAD4 = exports.CODE_NUMPAD3 = exports.CODE_NUMPAD2 = exports.CODE_NUMPAD1 = exports.CODE_NUMPAD0 = exports.CODE_N = exports.CODE_MINUS = exports.CODE_META_RIGHT = exports.CODE_META_LEFT = exports.CODE_M = exports.CODE_LEFT = exports.CODE_L = exports.CODE_K = exports.CODE_J = exports.CODE_INSERT = exports.CODE_I = exports.CODE_HOME = exports.CODE_H = exports.CODE_G = exports.CODE_F9 = exports.CODE_F8 = exports.CODE_F7 = exports.CODE_F6 = exports.CODE_F5 = exports.CODE_F4 = exports.CODE_F3 = exports.CODE_F24 = exports.CODE_F23 = exports.CODE_F22 = exports.CODE_F21 = exports.CODE_F20 = exports.CODE_F2 = exports.CODE_F19 = exports.CODE_F18 = exports.CODE_F17 = exports.CODE_F16 = exports.CODE_F15 = exports.CODE_F14 = exports.CODE_F13 = exports.CODE_F12 = exports.CODE_F11 = exports.CODE_F10 = exports.CODE_F1 = exports.CODE_F = exports.CODE_ESCAPE = exports.CODE_EQUALS = exports.CODE_ENTER = exports.CODE_END = exports.CODE_E = exports.CODE_DOWN = exports.CODE_DELETE = exports.CODE_DASH = exports.CODE_D = exports.CODE_CONTROL_RIGHT = exports.CODE_CONTROL_LEFT = exports.CODE_CONTEXT_MENU = exports.CODE_COMMA = exports.CODE_CLOSE_BRACKET = exports.CODE_CAPS_LOCK = exports.CODE_C = exports.CODE_BACK_SPACE = exports.CODE_BACK_SLASH = exports.CODE_BACK_QUOTE = exports.CODE_B = exports.CODE_ALT_RIGHT = exports.CODE_ALT_LEFT = exports.CODE_A = exports.CODE_9 = exports.CODE_8 = exports.CODE_7 = exports.CODE_6 = exports.CODE_5 = exports.CODE_4 = exports.CODE_3 = exports.CODE_2 = exports.CODE_1 = exports.CODE_0 = void 0;
+exports.KEY_N = exports.KEY_MULTIPLY = exports.KEY_M = exports.KEY_LEFT_CMD = exports.KEY_LEFT = exports.KEY_L = exports.KEY_K = exports.KEY_J = exports.KEY_INSERT = exports.KEY_I = exports.KEY_HOME = exports.KEY_HELP = exports.KEY_H = exports.KEY_G = exports.KEY_FIREFOX_SEPARATOR = exports.KEY_FIREFOX_SEMICOLON = exports.KEY_FIREFOX_META = exports.KEY_FIREFOX_EQUALS = exports.KEY_FIREFOX_ENTER = exports.KEY_F9 = exports.KEY_F8 = exports.KEY_F7 = exports.KEY_F6 = exports.KEY_F5 = exports.KEY_F4 = exports.KEY_F3 = exports.KEY_F24 = exports.KEY_F23 = exports.KEY_F22 = exports.KEY_F21 = exports.KEY_F20 = exports.KEY_F2 = exports.KEY_F19 = exports.KEY_F18 = exports.KEY_F17 = exports.KEY_F16 = exports.KEY_F15 = exports.KEY_F14 = exports.KEY_F13 = exports.KEY_F12 = exports.KEY_F11 = exports.KEY_F10 = exports.KEY_F1 = exports.KEY_F = exports.KEY_ESCAPE = exports.KEY_EQUALS = exports.KEY_END = exports.KEY_E = exports.KEY_DOWN = exports.KEY_DIVIDE = exports.KEY_DELETE = exports.KEY_DECIMAL = exports.KEY_DASH = exports.KEY_D = exports.KEY_CONTROL = exports.KEY_CONTEXT_MENU = exports.KEY_COMMA = exports.KEY_CLOSE_BRACKET = exports.KEY_CLEAR = exports.KEY_CAPS_LOCK = exports.KEY_CANCEL = exports.KEY_C = exports.KEY_BACK_SPACE = exports.KEY_BACK_SLASH = exports.KEY_BACK_QUOTE = exports.KEY_B = exports.KEY_ALT = exports.KEY_ADD = exports.KEY_A = exports.KEY_9 = exports.KEY_8 = exports.KEY_7 = exports.KEY_6 = exports.KEY_5 = exports.KEY_4 = exports.KEY_3 = exports.KEY_2 = exports.KEY_1 = exports.KEY_0 = exports.CODE_Z = exports.CODE_Y = exports.CODE_X = exports.CODE_W = exports.CODE_V = exports.CODE_UP = exports.CODE_UNIDENTIFIED = exports.CODE_U = exports.CODE_TAB = exports.CODE_T = exports.CODE_SPACE = exports.CODE_SLASH = exports.CODE_SHIFT_RIGHT = exports.CODE_SHIFT_LEFT = exports.CODE_SEMICOLON = exports.CODE_SCROLL_LOCK = exports.CODE_S = exports.CODE_RIGHT = exports.CODE_RETURN = exports.CODE_R = exports.CODE_QUOTE = void 0;
+exports.VALUE_F7 = exports.VALUE_F6 = exports.VALUE_F5 = exports.VALUE_F4 = exports.VALUE_F3 = exports.VALUE_F24 = exports.VALUE_F23 = exports.VALUE_F22 = exports.VALUE_F21 = exports.VALUE_F20 = exports.VALUE_F2 = exports.VALUE_F19 = exports.VALUE_F18 = exports.VALUE_F17 = exports.VALUE_F16 = exports.VALUE_F15 = exports.VALUE_F14 = exports.VALUE_F13 = exports.VALUE_F12 = exports.VALUE_F11 = exports.VALUE_F10 = exports.VALUE_F1 = exports.VALUE_F = exports.VALUE_ESCAPE = exports.VALUE_EQUALS = exports.VALUE_ENTER = exports.VALUE_END = exports.VALUE_E = exports.VALUE_DOWN = exports.VALUE_DIVIDE = exports.VALUE_DELETE = exports.VALUE_DECIMAL = exports.VALUE_DASH = exports.VALUE_D = exports.VALUE_CONTROL = exports.VALUE_CONTEXT_MENU = exports.VALUE_COMMA = exports.VALUE_CLOSE_BRACKET = exports.VALUE_CLEAR = exports.VALUE_CAPS_LOCK = exports.VALUE_CANCEL = exports.VALUE_C = exports.VALUE_BACK_SPACE = exports.VALUE_BACK_SLASH = exports.VALUE_BACK_QUOTE = exports.VALUE_B = exports.VALUE_ALT = exports.VALUE_ADD = exports.VALUE_A = exports.VALUE_9 = exports.VALUE_8 = exports.VALUE_7 = exports.VALUE_6 = exports.VALUE_5 = exports.VALUE_4 = exports.VALUE_3 = exports.VALUE_2 = exports.VALUE_1 = exports.VALUE_0 = exports.KEY_Z = exports.KEY_Y = exports.KEY_X = exports.KEY_W = exports.KEY_V = exports.KEY_UP = exports.KEY_U = exports.KEY_TAB = exports.KEY_T = exports.KEY_SUBTRACT = exports.KEY_SPACE = exports.KEY_SLASH = exports.KEY_SHIFT = exports.KEY_SEMICOLON = exports.KEY_SCROLL_LOCK = exports.KEY_S = exports.KEY_RIGHT_CMD = exports.KEY_RIGHT = exports.KEY_RETURN = exports.KEY_R = exports.KEY_QUOTE = exports.KEY_Q = exports.KEY_PRINTSCREEN = exports.KEY_PERIOD = exports.KEY_PAUSE = exports.KEY_PAGE_UP = exports.KEY_PAGE_DOWN = exports.KEY_P = exports.KEY_OPEN_BRACKET = exports.KEY_O = exports.KEY_NUM_LOCK = exports.KEY_NUMPAD9 = exports.KEY_NUMPAD8 = exports.KEY_NUMPAD7 = exports.KEY_NUMPAD6 = exports.KEY_NUMPAD5 = exports.KEY_NUMPAD4 = exports.KEY_NUMPAD3 = exports.KEY_NUMPAD2 = exports.KEY_NUMPAD1 = exports.KEY_NUMPAD0 = void 0;
+exports.VALUE_Z = exports.VALUE_Y = exports.VALUE_X = exports.VALUE_W = exports.VALUE_V = exports.VALUE_UP = exports.VALUE_U = exports.VALUE_TAB = exports.VALUE_T = exports.VALUE_SUBTRACT = exports.VALUE_SPACE = exports.VALUE_SLASH = exports.VALUE_SHIFT = exports.VALUE_SEMICOLON = exports.VALUE_SCROLL_LOCK = exports.VALUE_S = exports.VALUE_RIGHT_CMD = exports.VALUE_RIGHT = exports.VALUE_RETURN = exports.VALUE_R = exports.VALUE_QUOTE = exports.VALUE_Q = exports.VALUE_PRINTSCREEN = exports.VALUE_PERIOD = exports.VALUE_PAUSE = exports.VALUE_PAGE_UP = exports.VALUE_PAGE_DOWN = exports.VALUE_P = exports.VALUE_OPEN_BRACKET = exports.VALUE_O = exports.VALUE_NUM_LOCK = exports.VALUE_NUMPAD9 = exports.VALUE_NUMPAD8 = exports.VALUE_NUMPAD7 = exports.VALUE_NUMPAD6 = exports.VALUE_NUMPAD5 = exports.VALUE_NUMPAD4 = exports.VALUE_NUMPAD3 = exports.VALUE_NUMPAD2 = exports.VALUE_NUMPAD1 = exports.VALUE_NUMPAD0 = exports.VALUE_N = exports.VALUE_MULTIPLY = exports.VALUE_META = exports.VALUE_M = exports.VALUE_LEFT_CMD = exports.VALUE_LEFT = exports.VALUE_L = exports.VALUE_K = exports.VALUE_J = exports.VALUE_INSERT = exports.VALUE_I = exports.VALUE_HOME = exports.VALUE_HELP = exports.VALUE_H = exports.VALUE_G = exports.VALUE_F9 = exports.VALUE_F8 = void 0;
+// Key code constants
+// Available values for `KeyboardEvent.keyCode` attribute.
+var KEY_CANCEL = 3;
+exports.KEY_CANCEL = KEY_CANCEL;
+var KEY_HELP = 6;
+exports.KEY_HELP = KEY_HELP;
+var KEY_BACK_SPACE = 8;
+exports.KEY_BACK_SPACE = KEY_BACK_SPACE;
+var KEY_TAB = 9;
+exports.KEY_TAB = KEY_TAB;
+var KEY_CLEAR = 12;
+exports.KEY_CLEAR = KEY_CLEAR;
+var KEY_RETURN = 13;
+exports.KEY_RETURN = KEY_RETURN;
+var KEY_SHIFT = 16;
+exports.KEY_SHIFT = KEY_SHIFT;
+var KEY_CONTROL = 17;
+exports.KEY_CONTROL = KEY_CONTROL;
+var KEY_ALT = 18;
+exports.KEY_ALT = KEY_ALT;
+var KEY_PAUSE = 19;
+exports.KEY_PAUSE = KEY_PAUSE;
+var KEY_CAPS_LOCK = 20;
+exports.KEY_CAPS_LOCK = KEY_CAPS_LOCK;
+var KEY_ESCAPE = 27;
+exports.KEY_ESCAPE = KEY_ESCAPE;
+var KEY_SPACE = 32;
+exports.KEY_SPACE = KEY_SPACE;
+var KEY_PAGE_UP = 33;
+exports.KEY_PAGE_UP = KEY_PAGE_UP;
+var KEY_PAGE_DOWN = 34;
+exports.KEY_PAGE_DOWN = KEY_PAGE_DOWN;
+var KEY_END = 35;
+exports.KEY_END = KEY_END;
+var KEY_HOME = 36;
+exports.KEY_HOME = KEY_HOME;
+var KEY_LEFT = 37;
+exports.KEY_LEFT = KEY_LEFT;
+var KEY_UP = 38;
+exports.KEY_UP = KEY_UP;
+var KEY_RIGHT = 39;
+exports.KEY_RIGHT = KEY_RIGHT;
+var KEY_DOWN = 40;
+exports.KEY_DOWN = KEY_DOWN;
+var KEY_PRINTSCREEN = 44;
+exports.KEY_PRINTSCREEN = KEY_PRINTSCREEN;
+var KEY_INSERT = 45;
+exports.KEY_INSERT = KEY_INSERT;
+var KEY_DELETE = 46;
+exports.KEY_DELETE = KEY_DELETE;
+var KEY_0 = 48;
+exports.KEY_0 = KEY_0;
+var KEY_1 = 49;
+exports.KEY_1 = KEY_1;
+var KEY_2 = 50;
+exports.KEY_2 = KEY_2;
+var KEY_3 = 51;
+exports.KEY_3 = KEY_3;
+var KEY_4 = 52;
+exports.KEY_4 = KEY_4;
+var KEY_5 = 53;
+exports.KEY_5 = KEY_5;
+var KEY_6 = 54;
+exports.KEY_6 = KEY_6;
+var KEY_7 = 55;
+exports.KEY_7 = KEY_7;
+var KEY_8 = 56;
+exports.KEY_8 = KEY_8;
+var KEY_9 = 57;
+exports.KEY_9 = KEY_9;
+var KEY_A = 65;
+exports.KEY_A = KEY_A;
+var KEY_B = 66;
+exports.KEY_B = KEY_B;
+var KEY_C = 67;
+exports.KEY_C = KEY_C;
+var KEY_D = 68;
+exports.KEY_D = KEY_D;
+var KEY_E = 69;
+exports.KEY_E = KEY_E;
+var KEY_F = 70;
+exports.KEY_F = KEY_F;
+var KEY_G = 71;
+exports.KEY_G = KEY_G;
+var KEY_H = 72;
+exports.KEY_H = KEY_H;
+var KEY_I = 73;
+exports.KEY_I = KEY_I;
+var KEY_J = 74;
+exports.KEY_J = KEY_J;
+var KEY_K = 75;
+exports.KEY_K = KEY_K;
+var KEY_L = 76;
+exports.KEY_L = KEY_L;
+var KEY_M = 77;
+exports.KEY_M = KEY_M;
+var KEY_N = 78;
+exports.KEY_N = KEY_N;
+var KEY_O = 79;
+exports.KEY_O = KEY_O;
+var KEY_P = 80;
+exports.KEY_P = KEY_P;
+var KEY_Q = 81;
+exports.KEY_Q = KEY_Q;
+var KEY_R = 82;
+exports.KEY_R = KEY_R;
+var KEY_S = 83;
+exports.KEY_S = KEY_S;
+var KEY_T = 84;
+exports.KEY_T = KEY_T;
+var KEY_U = 85;
+exports.KEY_U = KEY_U;
+var KEY_V = 86;
+exports.KEY_V = KEY_V;
+var KEY_W = 87;
+exports.KEY_W = KEY_W;
+var KEY_X = 88;
+exports.KEY_X = KEY_X;
+var KEY_Y = 89;
+exports.KEY_Y = KEY_Y;
+var KEY_Z = 90;
+exports.KEY_Z = KEY_Z;
+var KEY_LEFT_CMD = 91;
+exports.KEY_LEFT_CMD = KEY_LEFT_CMD;
+var KEY_RIGHT_CMD = 92;
+exports.KEY_RIGHT_CMD = KEY_RIGHT_CMD;
+var KEY_CONTEXT_MENU = 93;
+exports.KEY_CONTEXT_MENU = KEY_CONTEXT_MENU;
+var KEY_NUMPAD0 = 96;
+exports.KEY_NUMPAD0 = KEY_NUMPAD0;
+var KEY_NUMPAD1 = 97;
+exports.KEY_NUMPAD1 = KEY_NUMPAD1;
+var KEY_NUMPAD2 = 98;
+exports.KEY_NUMPAD2 = KEY_NUMPAD2;
+var KEY_NUMPAD3 = 99;
+exports.KEY_NUMPAD3 = KEY_NUMPAD3;
+var KEY_NUMPAD4 = 100;
+exports.KEY_NUMPAD4 = KEY_NUMPAD4;
+var KEY_NUMPAD5 = 101;
+exports.KEY_NUMPAD5 = KEY_NUMPAD5;
+var KEY_NUMPAD6 = 102;
+exports.KEY_NUMPAD6 = KEY_NUMPAD6;
+var KEY_NUMPAD7 = 103;
+exports.KEY_NUMPAD7 = KEY_NUMPAD7;
+var KEY_NUMPAD8 = 104;
+exports.KEY_NUMPAD8 = KEY_NUMPAD8;
+var KEY_NUMPAD9 = 105;
+exports.KEY_NUMPAD9 = KEY_NUMPAD9;
+var KEY_MULTIPLY = 106;
+exports.KEY_MULTIPLY = KEY_MULTIPLY;
+var KEY_ADD = 107;
+exports.KEY_ADD = KEY_ADD;
+var KEY_SUBTRACT = 109;
+exports.KEY_SUBTRACT = KEY_SUBTRACT;
+var KEY_DECIMAL = 110;
+exports.KEY_DECIMAL = KEY_DECIMAL;
+var KEY_DIVIDE = 111;
+exports.KEY_DIVIDE = KEY_DIVIDE;
+var KEY_F1 = 112;
+exports.KEY_F1 = KEY_F1;
+var KEY_F2 = 113;
+exports.KEY_F2 = KEY_F2;
+var KEY_F3 = 114;
+exports.KEY_F3 = KEY_F3;
+var KEY_F4 = 115;
+exports.KEY_F4 = KEY_F4;
+var KEY_F5 = 116;
+exports.KEY_F5 = KEY_F5;
+var KEY_F6 = 117;
+exports.KEY_F6 = KEY_F6;
+var KEY_F7 = 118;
+exports.KEY_F7 = KEY_F7;
+var KEY_F8 = 119;
+exports.KEY_F8 = KEY_F8;
+var KEY_F9 = 120;
+exports.KEY_F9 = KEY_F9;
+var KEY_F10 = 121;
+exports.KEY_F10 = KEY_F10;
+var KEY_F11 = 122;
+exports.KEY_F11 = KEY_F11;
+var KEY_F12 = 123;
+exports.KEY_F12 = KEY_F12;
+var KEY_F13 = 124;
+exports.KEY_F13 = KEY_F13;
+var KEY_F14 = 125;
+exports.KEY_F14 = KEY_F14;
+var KEY_F15 = 126;
+exports.KEY_F15 = KEY_F15;
+var KEY_F16 = 127;
+exports.KEY_F16 = KEY_F16;
+var KEY_F17 = 128;
+exports.KEY_F17 = KEY_F17;
+var KEY_F18 = 129;
+exports.KEY_F18 = KEY_F18;
+var KEY_F19 = 130;
+exports.KEY_F19 = KEY_F19;
+var KEY_F20 = 131;
+exports.KEY_F20 = KEY_F20;
+var KEY_F21 = 132;
+exports.KEY_F21 = KEY_F21;
+var KEY_F22 = 133;
+exports.KEY_F22 = KEY_F22;
+var KEY_F23 = 134;
+exports.KEY_F23 = KEY_F23;
+var KEY_F24 = 135;
+exports.KEY_F24 = KEY_F24;
+var KEY_NUM_LOCK = 144;
+exports.KEY_NUM_LOCK = KEY_NUM_LOCK;
+var KEY_SCROLL_LOCK = 145;
+exports.KEY_SCROLL_LOCK = KEY_SCROLL_LOCK;
+var KEY_SEMICOLON = 186;
+exports.KEY_SEMICOLON = KEY_SEMICOLON;
+var KEY_EQUALS = 187;
+exports.KEY_EQUALS = KEY_EQUALS;
+var KEY_COMMA = 188;
+exports.KEY_COMMA = KEY_COMMA;
+var KEY_DASH = 189;
+exports.KEY_DASH = KEY_DASH;
+var KEY_PERIOD = 190;
+exports.KEY_PERIOD = KEY_PERIOD;
+var KEY_SLASH = 191;
+exports.KEY_SLASH = KEY_SLASH;
+var KEY_BACK_QUOTE = 192;
+exports.KEY_BACK_QUOTE = KEY_BACK_QUOTE;
+var KEY_OPEN_BRACKET = 219;
+exports.KEY_OPEN_BRACKET = KEY_OPEN_BRACKET;
+var KEY_BACK_SLASH = 220;
+exports.KEY_BACK_SLASH = KEY_BACK_SLASH;
+var KEY_CLOSE_BRACKET = 221;
+exports.KEY_CLOSE_BRACKET = KEY_CLOSE_BRACKET;
+var KEY_QUOTE = 222; // Key code constants specific to firefox only.
+
+exports.KEY_QUOTE = KEY_QUOTE;
+var KEY_FIREFOX_ENTER = 14;
+exports.KEY_FIREFOX_ENTER = KEY_FIREFOX_ENTER;
+var KEY_FIREFOX_SEMICOLON = 59;
+exports.KEY_FIREFOX_SEMICOLON = KEY_FIREFOX_SEMICOLON;
+var KEY_FIREFOX_EQUALS = 61;
+exports.KEY_FIREFOX_EQUALS = KEY_FIREFOX_EQUALS;
+var KEY_FIREFOX_SEPARATOR = 108;
+exports.KEY_FIREFOX_SEPARATOR = KEY_FIREFOX_SEPARATOR;
+var KEY_FIREFOX_META = 224; // Key values constants
+// Available values for `KeyboardEvent.key` attribute.
+
+exports.KEY_FIREFOX_META = KEY_FIREFOX_META;
+var VALUE_CANCEL = 'Cancel';
+exports.VALUE_CANCEL = VALUE_CANCEL;
+var VALUE_HELP = 'Help';
+exports.VALUE_HELP = VALUE_HELP;
+var VALUE_BACK_SPACE = 'Backspace';
+exports.VALUE_BACK_SPACE = VALUE_BACK_SPACE;
+var VALUE_TAB = 'Tab';
+exports.VALUE_TAB = VALUE_TAB;
+var VALUE_CLEAR = 'Clear';
+exports.VALUE_CLEAR = VALUE_CLEAR;
+var VALUE_ENTER = 'Enter';
+exports.VALUE_ENTER = VALUE_ENTER;
+var VALUE_RETURN = 'Enter';
+exports.VALUE_RETURN = VALUE_RETURN;
+var VALUE_SHIFT = 'Shift';
+exports.VALUE_SHIFT = VALUE_SHIFT;
+var VALUE_CONTROL = 'Control';
+exports.VALUE_CONTROL = VALUE_CONTROL;
+var VALUE_ALT = 'Alt';
+exports.VALUE_ALT = VALUE_ALT;
+var VALUE_PAUSE = 'Pause';
+exports.VALUE_PAUSE = VALUE_PAUSE;
+var VALUE_CAPS_LOCK = 'CapsLock';
+exports.VALUE_CAPS_LOCK = VALUE_CAPS_LOCK;
+var VALUE_ESCAPE = 'Escape';
+exports.VALUE_ESCAPE = VALUE_ESCAPE;
+var VALUE_SPACE = ' ';
+exports.VALUE_SPACE = VALUE_SPACE;
+var VALUE_PAGE_UP = 'PageUp';
+exports.VALUE_PAGE_UP = VALUE_PAGE_UP;
+var VALUE_PAGE_DOWN = 'PageDown';
+exports.VALUE_PAGE_DOWN = VALUE_PAGE_DOWN;
+var VALUE_END = 'End';
+exports.VALUE_END = VALUE_END;
+var VALUE_HOME = 'Home';
+exports.VALUE_HOME = VALUE_HOME;
+var VALUE_LEFT = 'ArrowLeft';
+exports.VALUE_LEFT = VALUE_LEFT;
+var VALUE_UP = 'ArrowUp';
+exports.VALUE_UP = VALUE_UP;
+var VALUE_RIGHT = 'ArrowRight';
+exports.VALUE_RIGHT = VALUE_RIGHT;
+var VALUE_DOWN = 'ArrowDown';
+exports.VALUE_DOWN = VALUE_DOWN;
+var VALUE_PRINTSCREEN = 'PrintScreen';
+exports.VALUE_PRINTSCREEN = VALUE_PRINTSCREEN;
+var VALUE_INSERT = 'Insert';
+exports.VALUE_INSERT = VALUE_INSERT;
+var VALUE_DELETE = 'Delete';
+exports.VALUE_DELETE = VALUE_DELETE;
+var VALUE_0 = '0';
+exports.VALUE_0 = VALUE_0;
+var VALUE_1 = '1';
+exports.VALUE_1 = VALUE_1;
+var VALUE_2 = '2';
+exports.VALUE_2 = VALUE_2;
+var VALUE_3 = '3';
+exports.VALUE_3 = VALUE_3;
+var VALUE_4 = '4';
+exports.VALUE_4 = VALUE_4;
+var VALUE_5 = '5';
+exports.VALUE_5 = VALUE_5;
+var VALUE_6 = '6';
+exports.VALUE_6 = VALUE_6;
+var VALUE_7 = '7';
+exports.VALUE_7 = VALUE_7;
+var VALUE_8 = '8';
+exports.VALUE_8 = VALUE_8;
+var VALUE_9 = '9';
+exports.VALUE_9 = VALUE_9;
+var VALUE_A = 'a';
+exports.VALUE_A = VALUE_A;
+var VALUE_B = 'b';
+exports.VALUE_B = VALUE_B;
+var VALUE_C = 'c';
+exports.VALUE_C = VALUE_C;
+var VALUE_D = 'd';
+exports.VALUE_D = VALUE_D;
+var VALUE_E = 'e';
+exports.VALUE_E = VALUE_E;
+var VALUE_F = 'f';
+exports.VALUE_F = VALUE_F;
+var VALUE_G = 'g';
+exports.VALUE_G = VALUE_G;
+var VALUE_H = 'h';
+exports.VALUE_H = VALUE_H;
+var VALUE_I = 'i';
+exports.VALUE_I = VALUE_I;
+var VALUE_J = 'j';
+exports.VALUE_J = VALUE_J;
+var VALUE_K = 'k';
+exports.VALUE_K = VALUE_K;
+var VALUE_L = 'l';
+exports.VALUE_L = VALUE_L;
+var VALUE_M = 'm';
+exports.VALUE_M = VALUE_M;
+var VALUE_N = 'n';
+exports.VALUE_N = VALUE_N;
+var VALUE_O = 'o';
+exports.VALUE_O = VALUE_O;
+var VALUE_P = 'p';
+exports.VALUE_P = VALUE_P;
+var VALUE_Q = 'q';
+exports.VALUE_Q = VALUE_Q;
+var VALUE_R = 'r';
+exports.VALUE_R = VALUE_R;
+var VALUE_S = 's';
+exports.VALUE_S = VALUE_S;
+var VALUE_T = 't';
+exports.VALUE_T = VALUE_T;
+var VALUE_U = 'u';
+exports.VALUE_U = VALUE_U;
+var VALUE_V = 'v';
+exports.VALUE_V = VALUE_V;
+var VALUE_W = 'w';
+exports.VALUE_W = VALUE_W;
+var VALUE_X = 'x';
+exports.VALUE_X = VALUE_X;
+var VALUE_Y = 'y';
+exports.VALUE_Y = VALUE_Y;
+var VALUE_Z = 'z';
+exports.VALUE_Z = VALUE_Z;
+var VALUE_META = 'Meta';
+exports.VALUE_META = VALUE_META;
+var VALUE_LEFT_CMD = 'Meta';
+exports.VALUE_LEFT_CMD = VALUE_LEFT_CMD;
+var VALUE_RIGHT_CMD = 'Meta';
+exports.VALUE_RIGHT_CMD = VALUE_RIGHT_CMD;
+var VALUE_CONTEXT_MENU = 'ContextMenu';
+exports.VALUE_CONTEXT_MENU = VALUE_CONTEXT_MENU;
+var VALUE_NUMPAD0 = '0';
+exports.VALUE_NUMPAD0 = VALUE_NUMPAD0;
+var VALUE_NUMPAD1 = '1';
+exports.VALUE_NUMPAD1 = VALUE_NUMPAD1;
+var VALUE_NUMPAD2 = '2';
+exports.VALUE_NUMPAD2 = VALUE_NUMPAD2;
+var VALUE_NUMPAD3 = '3';
+exports.VALUE_NUMPAD3 = VALUE_NUMPAD3;
+var VALUE_NUMPAD4 = '4';
+exports.VALUE_NUMPAD4 = VALUE_NUMPAD4;
+var VALUE_NUMPAD5 = '5';
+exports.VALUE_NUMPAD5 = VALUE_NUMPAD5;
+var VALUE_NUMPAD6 = '6';
+exports.VALUE_NUMPAD6 = VALUE_NUMPAD6;
+var VALUE_NUMPAD7 = '7';
+exports.VALUE_NUMPAD7 = VALUE_NUMPAD7;
+var VALUE_NUMPAD8 = '8';
+exports.VALUE_NUMPAD8 = VALUE_NUMPAD8;
+var VALUE_NUMPAD9 = '9';
+exports.VALUE_NUMPAD9 = VALUE_NUMPAD9;
+var VALUE_MULTIPLY = '*';
+exports.VALUE_MULTIPLY = VALUE_MULTIPLY;
+var VALUE_ADD = '+';
+exports.VALUE_ADD = VALUE_ADD;
+var VALUE_SUBTRACT = '-';
+exports.VALUE_SUBTRACT = VALUE_SUBTRACT;
+var VALUE_DECIMAL = '.';
+exports.VALUE_DECIMAL = VALUE_DECIMAL;
+var VALUE_DIVIDE = '/';
+exports.VALUE_DIVIDE = VALUE_DIVIDE;
+var VALUE_F1 = 'F1';
+exports.VALUE_F1 = VALUE_F1;
+var VALUE_F2 = 'F2';
+exports.VALUE_F2 = VALUE_F2;
+var VALUE_F3 = 'F3';
+exports.VALUE_F3 = VALUE_F3;
+var VALUE_F4 = 'F4';
+exports.VALUE_F4 = VALUE_F4;
+var VALUE_F5 = 'F5';
+exports.VALUE_F5 = VALUE_F5;
+var VALUE_F6 = 'F6';
+exports.VALUE_F6 = VALUE_F6;
+var VALUE_F7 = 'F7';
+exports.VALUE_F7 = VALUE_F7;
+var VALUE_F8 = 'F8';
+exports.VALUE_F8 = VALUE_F8;
+var VALUE_F9 = 'F9';
+exports.VALUE_F9 = VALUE_F9;
+var VALUE_F10 = 'F10';
+exports.VALUE_F10 = VALUE_F10;
+var VALUE_F11 = 'F11';
+exports.VALUE_F11 = VALUE_F11;
+var VALUE_F12 = 'F12';
+exports.VALUE_F12 = VALUE_F12;
+var VALUE_F13 = 'F13';
+exports.VALUE_F13 = VALUE_F13;
+var VALUE_F14 = 'F14';
+exports.VALUE_F14 = VALUE_F14;
+var VALUE_F15 = 'F15';
+exports.VALUE_F15 = VALUE_F15;
+var VALUE_F16 = 'F16';
+exports.VALUE_F16 = VALUE_F16;
+var VALUE_F17 = 'F17';
+exports.VALUE_F17 = VALUE_F17;
+var VALUE_F18 = 'F18';
+exports.VALUE_F18 = VALUE_F18;
+var VALUE_F19 = 'F19';
+exports.VALUE_F19 = VALUE_F19;
+var VALUE_F20 = 'F20';
+exports.VALUE_F20 = VALUE_F20;
+var VALUE_F21 = 'F21';
+exports.VALUE_F21 = VALUE_F21;
+var VALUE_F22 = 'F22';
+exports.VALUE_F22 = VALUE_F22;
+var VALUE_F23 = 'F23';
+exports.VALUE_F23 = VALUE_F23;
+var VALUE_F24 = 'F24';
+exports.VALUE_F24 = VALUE_F24;
+var VALUE_NUM_LOCK = 'NumLock';
+exports.VALUE_NUM_LOCK = VALUE_NUM_LOCK;
+var VALUE_SCROLL_LOCK = 'ScrollLock';
+exports.VALUE_SCROLL_LOCK = VALUE_SCROLL_LOCK;
+var VALUE_SEMICOLON = ';';
+exports.VALUE_SEMICOLON = VALUE_SEMICOLON;
+var VALUE_EQUALS = '=';
+exports.VALUE_EQUALS = VALUE_EQUALS;
+var VALUE_COMMA = ',';
+exports.VALUE_COMMA = VALUE_COMMA;
+var VALUE_DASH = '-';
+exports.VALUE_DASH = VALUE_DASH;
+var VALUE_PERIOD = '.';
+exports.VALUE_PERIOD = VALUE_PERIOD;
+var VALUE_SLASH = '/';
+exports.VALUE_SLASH = VALUE_SLASH;
+var VALUE_BACK_QUOTE = '`';
+exports.VALUE_BACK_QUOTE = VALUE_BACK_QUOTE;
+var VALUE_OPEN_BRACKET = '[';
+exports.VALUE_OPEN_BRACKET = VALUE_OPEN_BRACKET;
+var VALUE_BACK_SLASH = '\\';
+exports.VALUE_BACK_SLASH = VALUE_BACK_SLASH;
+var VALUE_CLOSE_BRACKET = ']';
+exports.VALUE_CLOSE_BRACKET = VALUE_CLOSE_BRACKET;
+var VALUE_QUOTE = "'"; // Key code constants
+// Available values for `KeyboardEvent.code` attribute.
+
+exports.VALUE_QUOTE = VALUE_QUOTE;
+var CODE_UNIDENTIFIED = 'Unidentified';
+exports.CODE_UNIDENTIFIED = CODE_UNIDENTIFIED;
+var CODE_ESCAPE = 'Escape';
+exports.CODE_ESCAPE = CODE_ESCAPE;
+var CODE_MINUS = 'Minus';
+exports.CODE_MINUS = CODE_MINUS;
+var CODE_DASH = 'Minus';
+exports.CODE_DASH = CODE_DASH;
+var CODE_EQUALS = 'Equal';
+exports.CODE_EQUALS = CODE_EQUALS;
+var CODE_BACK_SPACE = 'Backspace';
+exports.CODE_BACK_SPACE = CODE_BACK_SPACE;
+var CODE_TAB = 'Tab';
+exports.CODE_TAB = CODE_TAB;
+var CODE_ENTER = 'Enter';
+exports.CODE_ENTER = CODE_ENTER;
+var CODE_RETURN = 'Enter';
+exports.CODE_RETURN = CODE_RETURN;
+var CODE_SHIFT_LEFT = 'ShiftLeft';
+exports.CODE_SHIFT_LEFT = CODE_SHIFT_LEFT;
+var CODE_SHIFT_RIGHT = 'ShiftRight';
+exports.CODE_SHIFT_RIGHT = CODE_SHIFT_RIGHT;
+var CODE_CONTROL_LEFT = 'ControlLeft';
+exports.CODE_CONTROL_LEFT = CODE_CONTROL_LEFT;
+var CODE_CONTROL_RIGHT = 'ControlRight';
+exports.CODE_CONTROL_RIGHT = CODE_CONTROL_RIGHT;
+var CODE_ALT_LEFT = 'AltLeft';
+exports.CODE_ALT_LEFT = CODE_ALT_LEFT;
+var CODE_ALT_RIGHT = 'AltRight';
+exports.CODE_ALT_RIGHT = CODE_ALT_RIGHT;
+var CODE_PAUSE = 'Pause';
+exports.CODE_PAUSE = CODE_PAUSE;
+var CODE_CAPS_LOCK = 'CapsLock';
+exports.CODE_CAPS_LOCK = CODE_CAPS_LOCK;
+var CODE_SPACE = 'Space';
+exports.CODE_SPACE = CODE_SPACE;
+var CODE_PAGE_UP = 'PageUp';
+exports.CODE_PAGE_UP = CODE_PAGE_UP;
+var CODE_PAGE_DOWN = 'PageDown';
+exports.CODE_PAGE_DOWN = CODE_PAGE_DOWN;
+var CODE_END = 'End';
+exports.CODE_END = CODE_END;
+var CODE_HOME = 'Home';
+exports.CODE_HOME = CODE_HOME;
+var CODE_LEFT = 'ArrowLeft';
+exports.CODE_LEFT = CODE_LEFT;
+var CODE_UP = 'ArrowUp';
+exports.CODE_UP = CODE_UP;
+var CODE_RIGHT = 'ArrowRight';
+exports.CODE_RIGHT = CODE_RIGHT;
+var CODE_DOWN = 'ArrowDown';
+exports.CODE_DOWN = CODE_DOWN;
+var CODE_PRINTSCREEN = 'PrintScreen';
+exports.CODE_PRINTSCREEN = CODE_PRINTSCREEN;
+var CODE_INSERT = 'Insert';
+exports.CODE_INSERT = CODE_INSERT;
+var CODE_DELETE = 'Delete';
+exports.CODE_DELETE = CODE_DELETE;
+var CODE_0 = 'Digit0';
+exports.CODE_0 = CODE_0;
+var CODE_1 = 'Digit1';
+exports.CODE_1 = CODE_1;
+var CODE_2 = 'Digit2';
+exports.CODE_2 = CODE_2;
+var CODE_3 = 'Digit3';
+exports.CODE_3 = CODE_3;
+var CODE_4 = 'Digit4';
+exports.CODE_4 = CODE_4;
+var CODE_5 = 'Digit5';
+exports.CODE_5 = CODE_5;
+var CODE_6 = 'Digit6';
+exports.CODE_6 = CODE_6;
+var CODE_7 = 'Digit7';
+exports.CODE_7 = CODE_7;
+var CODE_8 = 'Digit8';
+exports.CODE_8 = CODE_8;
+var CODE_9 = 'Digit9';
+exports.CODE_9 = CODE_9;
+var CODE_A = 'KeyA';
+exports.CODE_A = CODE_A;
+var CODE_B = 'KeyB';
+exports.CODE_B = CODE_B;
+var CODE_C = 'KeyC';
+exports.CODE_C = CODE_C;
+var CODE_D = 'KeyD';
+exports.CODE_D = CODE_D;
+var CODE_E = 'KeyE';
+exports.CODE_E = CODE_E;
+var CODE_F = 'KeyF';
+exports.CODE_F = CODE_F;
+var CODE_G = 'KeyG';
+exports.CODE_G = CODE_G;
+var CODE_H = 'KeyH';
+exports.CODE_H = CODE_H;
+var CODE_I = 'KeyI';
+exports.CODE_I = CODE_I;
+var CODE_J = 'KeyJ';
+exports.CODE_J = CODE_J;
+var CODE_K = 'KeyK';
+exports.CODE_K = CODE_K;
+var CODE_L = 'KeyL';
+exports.CODE_L = CODE_L;
+var CODE_M = 'KeyM';
+exports.CODE_M = CODE_M;
+var CODE_N = 'KeyN';
+exports.CODE_N = CODE_N;
+var CODE_O = 'KeyO';
+exports.CODE_O = CODE_O;
+var CODE_P = 'KeyP';
+exports.CODE_P = CODE_P;
+var CODE_Q = 'KeyQ';
+exports.CODE_Q = CODE_Q;
+var CODE_R = 'KeyR';
+exports.CODE_R = CODE_R;
+var CODE_S = 'KeyS';
+exports.CODE_S = CODE_S;
+var CODE_T = 'KeyT';
+exports.CODE_T = CODE_T;
+var CODE_U = 'KeyU';
+exports.CODE_U = CODE_U;
+var CODE_V = 'KeyV';
+exports.CODE_V = CODE_V;
+var CODE_W = 'KeyW';
+exports.CODE_W = CODE_W;
+var CODE_X = 'KeyX';
+exports.CODE_X = CODE_X;
+var CODE_Y = 'KeyY';
+exports.CODE_Y = CODE_Y;
+var CODE_Z = 'KeyZ';
+exports.CODE_Z = CODE_Z;
+var CODE_META_LEFT = 'MetaLeft';
+exports.CODE_META_LEFT = CODE_META_LEFT;
+var CODE_OS_LEFT = 'OSLeft';
+exports.CODE_OS_LEFT = CODE_OS_LEFT;
+var CODE_META_RIGHT = 'MetaRight';
+exports.CODE_META_RIGHT = CODE_META_RIGHT;
+var CODE_OS_RIGHT = 'OSRight';
+exports.CODE_OS_RIGHT = CODE_OS_RIGHT;
+var CODE_CONTEXT_MENU = 'ContextMenu';
+exports.CODE_CONTEXT_MENU = CODE_CONTEXT_MENU;
+var CODE_NUMPAD0 = 'Numpad0';
+exports.CODE_NUMPAD0 = CODE_NUMPAD0;
+var CODE_NUMPAD1 = 'Numpad1';
+exports.CODE_NUMPAD1 = CODE_NUMPAD1;
+var CODE_NUMPAD2 = 'Numpad2';
+exports.CODE_NUMPAD2 = CODE_NUMPAD2;
+var CODE_NUMPAD3 = 'Numpad3';
+exports.CODE_NUMPAD3 = CODE_NUMPAD3;
+var CODE_NUMPAD4 = 'Numpad4';
+exports.CODE_NUMPAD4 = CODE_NUMPAD4;
+var CODE_NUMPAD5 = 'Numpad5';
+exports.CODE_NUMPAD5 = CODE_NUMPAD5;
+var CODE_NUMPAD6 = 'Numpad6';
+exports.CODE_NUMPAD6 = CODE_NUMPAD6;
+var CODE_NUMPAD7 = 'Numpad7';
+exports.CODE_NUMPAD7 = CODE_NUMPAD7;
+var CODE_NUMPAD8 = 'Numpad8';
+exports.CODE_NUMPAD8 = CODE_NUMPAD8;
+var CODE_NUMPAD9 = 'Numpad9';
+exports.CODE_NUMPAD9 = CODE_NUMPAD9;
+var CODE_NUMPAD_MULTIPLY = 'NumpadMultiply';
+exports.CODE_NUMPAD_MULTIPLY = CODE_NUMPAD_MULTIPLY;
+var CODE_NUMPAD_ADD = 'NumpadAdd';
+exports.CODE_NUMPAD_ADD = CODE_NUMPAD_ADD;
+var CODE_NUMPAD_SUBTRACT = 'NumpadSubtract';
+exports.CODE_NUMPAD_SUBTRACT = CODE_NUMPAD_SUBTRACT;
+var CODE_NUMPAD_DECIMAL = 'NumpadDecimal';
+exports.CODE_NUMPAD_DECIMAL = CODE_NUMPAD_DECIMAL;
+var CODE_NUMPAD_DIVIDE = 'NumpadDivide';
+exports.CODE_NUMPAD_DIVIDE = CODE_NUMPAD_DIVIDE;
+var CODE_NUMPAD_ENTER = 'NumpadEnter';
+exports.CODE_NUMPAD_ENTER = CODE_NUMPAD_ENTER;
+var CODE_F1 = 'F1';
+exports.CODE_F1 = CODE_F1;
+var CODE_F2 = 'F2';
+exports.CODE_F2 = CODE_F2;
+var CODE_F3 = 'F3';
+exports.CODE_F3 = CODE_F3;
+var CODE_F4 = 'F4';
+exports.CODE_F4 = CODE_F4;
+var CODE_F5 = 'F5';
+exports.CODE_F5 = CODE_F5;
+var CODE_F6 = 'F6';
+exports.CODE_F6 = CODE_F6;
+var CODE_F7 = 'F7';
+exports.CODE_F7 = CODE_F7;
+var CODE_F8 = 'F8';
+exports.CODE_F8 = CODE_F8;
+var CODE_F9 = 'F9';
+exports.CODE_F9 = CODE_F9;
+var CODE_F10 = 'F10';
+exports.CODE_F10 = CODE_F10;
+var CODE_F11 = 'F11';
+exports.CODE_F11 = CODE_F11;
+var CODE_F12 = 'F12';
+exports.CODE_F12 = CODE_F12;
+var CODE_F13 = 'F13';
+exports.CODE_F13 = CODE_F13;
+var CODE_F14 = 'F14';
+exports.CODE_F14 = CODE_F14;
+var CODE_F15 = 'F15';
+exports.CODE_F15 = CODE_F15;
+var CODE_F16 = 'F16';
+exports.CODE_F16 = CODE_F16;
+var CODE_F17 = 'F17';
+exports.CODE_F17 = CODE_F17;
+var CODE_F18 = 'F18';
+exports.CODE_F18 = CODE_F18;
+var CODE_F19 = 'F19';
+exports.CODE_F19 = CODE_F19;
+var CODE_F20 = 'F20';
+exports.CODE_F20 = CODE_F20;
+var CODE_F21 = 'F21';
+exports.CODE_F21 = CODE_F21;
+var CODE_F22 = 'F22';
+exports.CODE_F22 = CODE_F22;
+var CODE_F23 = 'F23';
+exports.CODE_F23 = CODE_F23;
+var CODE_F24 = 'F24';
+exports.CODE_F24 = CODE_F24;
+var CODE_NUM_LOCK = 'NumLock';
+exports.CODE_NUM_LOCK = CODE_NUM_LOCK;
+var CODE_SCROLL_LOCK = 'ScrollLock';
+exports.CODE_SCROLL_LOCK = CODE_SCROLL_LOCK;
+var CODE_SEMICOLON = 'Semicolon';
+exports.CODE_SEMICOLON = CODE_SEMICOLON;
+var CODE_COMMA = 'Comma';
+exports.CODE_COMMA = CODE_COMMA;
+var CODE_PERIOD = 'Period';
+exports.CODE_PERIOD = CODE_PERIOD;
+var CODE_SLASH = 'Slash';
+exports.CODE_SLASH = CODE_SLASH;
+var CODE_BACK_QUOTE = 'Backquote';
+exports.CODE_BACK_QUOTE = CODE_BACK_QUOTE;
+var CODE_OPEN_BRACKET = 'BracketLeft';
+exports.CODE_OPEN_BRACKET = CODE_OPEN_BRACKET;
+var CODE_BACK_SLASH = 'Backslash';
+exports.CODE_BACK_SLASH = CODE_BACK_SLASH;
+var CODE_CLOSE_BRACKET = 'BracketRight';
+exports.CODE_CLOSE_BRACKET = CODE_CLOSE_BRACKET;
+var CODE_QUOTE = 'Quote';
+exports.CODE_QUOTE = CODE_QUOTE;
+},{}],"components/app/Keyboard.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var _Keyboard_instances, _Keyboard_keyboardState, _Keyboard_onKeyboardDown, _Keyboard_onKeyboardUp, _Keyboard_onKeyboardClear;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Keyboard = void 0;
+
+var KeyCode = __importStar(require("keycode-js"));
+
+var Keyboard = /*#__PURE__*/function () {
+  function Keyboard() {
+    _classCallCheck(this, Keyboard);
+
+    _Keyboard_instances.add(this);
+    /** キーボードの状態
+     * `{[code]: this.time}` */
+
+
+    _Keyboard_keyboardState.set(this, new Map());
+
+    document.addEventListener("keydown", __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_onKeyboardDown).bind(this));
+    document.addEventListener("keyup", __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_onKeyboardUp).bind(this));
+    window.addEventListener("blur", __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_onKeyboardClear).bind(this));
+  }
+
+  _createClass(Keyboard, [{
+    key: "isPressed",
+    value: function isPressed(code) {
+      return !!__classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
+    }
+  }, {
+    key: "isTriggered",
+    value: function isTriggered(code) {
+      return __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]) === $app.time;
+    }
+  }, {
+    key: "isNotPressed",
+    value: function isNotPressed(code) {
+      return !__classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
+    }
+  }]);
+
+  return Keyboard;
+}();
+
+exports.Keyboard = Keyboard;
+_Keyboard_keyboardState = new WeakMap(), _Keyboard_instances = new WeakSet(), _Keyboard_onKeyboardDown = function _Keyboard_onKeyboardDown(e) {
+  __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").set(e.code, $app.time);
+}, _Keyboard_onKeyboardUp = function _Keyboard_onKeyboardUp(e) {
+  __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").delete(e.code);
+}, _Keyboard_onKeyboardClear = function _Keyboard_onKeyboardClear() {
+  __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").clear();
+};
+},{"keycode-js":"../node_modules/keycode-js/dist/keycode.esm.js"}],"components/objects/Scene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -48672,6 +49513,8 @@ exports.App = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
 
+var Keyboard_1 = require("./components/app/Keyboard");
+
 var Scene_1 = require("./components/objects/Scene");
 
 var helper_1 = require("./utils/helper");
@@ -48696,15 +49539,18 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     /** ゲームが始まって何秒経ったか */
 
     _this.time = 0;
+    _this.deltaTime = 1;
     /** ゲーム非同期監視リスト */
 
     _App_watchers.set(_assertThisInitialized(_this), new Set());
 
     globalThis.$app = _assertThisInitialized(_this);
+    _this.key = new Keyboard_1.Keyboard();
 
     _this.gotoScene(initialScene);
 
     _this.ticker.add(function (deltaTime) {
+      _this.deltaTime = deltaTime;
       var updateProps = {
         deltaTime: deltaTime,
         time: _this.time
@@ -48755,7 +49601,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
         }() : {}));
       });
 
-      _this.time += deltaTime / 60;
+      _this.time += deltaTime / _this.ticker.FPS;
     });
 
     if (!!(window === null || window === void 0 ? void 0 : window.$isTest)) {
@@ -48873,7 +49719,6 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
       var now = this.time;
       return __classPrivateFieldGet(this, _App_instances, "m", _App_registerWatcher).call(this, function () {
-        console.log(now, _this3.time, now !== _this3.time);
         return now !== _this3.time;
       }, {});
     }
@@ -48955,7 +49800,7 @@ _App_watchers = new WeakMap(), _App_instances = new WeakSet(), _App_onResize = f
     } : {}));
   });
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/objects/Scene":"components/objects/Scene.ts","./utils/helper":"utils/helper.ts"}],"../node_modules/easyrpg-rtp/Picture/Cloud.png":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/app/Keyboard":"components/app/Keyboard.ts","./components/objects/Scene":"components/objects/Scene.ts","./utils/helper":"utils/helper.ts"}],"../node_modules/easyrpg-rtp/Picture/Cloud.png":[function(require,module,exports) {
 module.exports="/Cloud.47e30f13.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
@@ -49166,40 +50011,78 @@ var Flow = /*#__PURE__*/function () {
 
       return function () {
         return __awaiter(_this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var prev;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
+                case 0:
+                  if (!1) {
+                    _context.next = 7;
+                    break;
+                  }
+
+                  _context.next = 3;
+                  return fn(Promise.resolve());
+
+                case 3:
+                  _context.next = 5;
+                  return new Promise(function (r) {
+                    return setTimeout(r, $app.deltaTime);
+                  });
+
+                case 5:
+                  _context.next = 0;
+                  break;
+
+                case 7:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }));
+      };
+    }
+  }, {
+    key: "unsafeLoop",
+    value: function unsafeLoop(fn) {
+      var _this2 = this;
+
+      return function () {
+        return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+          var prev;
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
                 case 0:
                   prev = $app.time;
 
                 case 1:
                   if (!1) {
-                    _context.next = 8;
+                    _context2.next = 8;
                     break;
                   }
 
-                  _context.next = 4;
+                  _context2.next = 4;
                   return fn(Promise.resolve());
 
                 case 4:
                   if (!(prev === $app.time)) {
-                    _context.next = 6;
+                    _context2.next = 6;
                     break;
                   }
 
                   throw new Error("無限ループによるフリーズを回避しました");
 
                 case 6:
-                  _context.next = 1;
+                  _context2.next = 1;
                   break;
 
                 case 8:
                 case "end":
-                  return _context.stop();
+                  return _context2.stop();
               }
             }
-          }, _callee);
+          }, _callee2);
         }));
       };
     }
@@ -49337,7 +50220,7 @@ var _Touch_instances, _Touch_isDown, _Touch_isOver, _Touch_state, _Touch_callbac
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Touch = void 0;
+exports.Touch = exports.TouchState = void 0;
 var TouchState;
 
 (function (TouchState) {
@@ -49345,7 +50228,7 @@ var TouchState;
   TouchState[TouchState["over"] = 1] = "over";
   TouchState[TouchState["press"] = 2] = "press";
   TouchState[TouchState["unknown"] = 3] = "unknown";
-})(TouchState || (TouchState = {}));
+})(TouchState = exports.TouchState || (exports.TouchState = {}));
 
 var Touch = /*#__PURE__*/function () {
   function Touch() {
@@ -50157,6 +51040,22 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                     return head.then(Flow_1.Flow.time(0.1, function () {
                       $.button1.angle++;
                       $.button2.angle += 5;
+
+                      if ($app.key.isPressed("LEFT")) {
+                        $.button2.x -= 10;
+                      }
+
+                      if ($app.key.isPressed("RIGHT")) {
+                        $.button2.x += 10;
+                      }
+
+                      if ($app.key.isPressed("UP")) {
+                        $.button2.y -= 10;
+                      }
+
+                      if ($app.key.isPressed("DOWN")) {
+                        $.button2.y += 10;
+                      }
                     }));
                   }));
                 });

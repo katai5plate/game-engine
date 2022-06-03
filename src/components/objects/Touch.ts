@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 type ListenerFn = PIXI.utils.EventEmitter.ListenerFn;
 
-enum TouchState {
+export enum TouchState {
   normal,
   over,
   press,

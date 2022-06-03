@@ -35,6 +35,18 @@ export const TestScene = createScene(
                 Flow.time(0.1, () => {
                   $.button1.angle++;
                   $.button2.angle += 5;
+                  if ($app.key.isPressed("LEFT")) {
+                    $.button2.x -= 10;
+                  }
+                  if ($app.key.isPressed("RIGHT")) {
+                    $.button2.x += 10;
+                  }
+                  if ($app.key.isPressed("UP")) {
+                    $.button2.y -= 10;
+                  }
+                  if ($app.key.isPressed("DOWN")) {
+                    $.button2.y += 10;
+                  }
                 })
               )
             )

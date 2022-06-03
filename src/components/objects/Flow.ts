@@ -22,6 +22,14 @@ export class Flow<T> {
   }
   static loop(fn: (head: Promise<void>) => Promise<any>) {
     return async () => {
+      while (1) {
+        await fn(Promise.resolve());
+        await new Promise((r) => setTimeout(r, $app.deltaTime));
+      }
+    };
+  }
+  static unsafeLoop(fn: (head: Promise<void>) => Promise<any>) {
+    return async () => {
       const prev = $app.time;
       while (1) {
         await fn(Promise.resolve());

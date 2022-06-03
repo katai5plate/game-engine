@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { Keyboard } from "./components/app/Keyboard";
 import { Scene, SceneData } from "./components/objects/Scene";
 import { toGlobalForDebug } from "./utils/helper";
 
@@ -40,8 +41,12 @@ export class App extends PIXI.Application {
   currentScene: Scene = new Scene();
   /** ゲームが始まって何秒経ったか */
   time: number = 0;
+  deltaTime: number = 1;
   /** ゲーム非同期監視リスト */
   #watchers: Set<Watcher> = new Set();
+
+  key: Keyboard;
+
   constructor(
     initialScene: SceneData<any>,
     options: PIXI.IApplicationOptions & {}
@@ -50,8 +55,11 @@ export class App extends PIXI.Application {
     super(rest);
     globalThis.$app = this;
 
+    this.key = new Keyboard();
+
     this.gotoScene(initialScene);
     this.ticker.add((deltaTime) => {
+      this.deltaTime = deltaTime;
       const updateProps: UpdateProps = { deltaTime, time: this.time };
       this.#watchers.forEach((watcher) => {
         if (!!watcher.resolveCondition()) {
@@ -95,7 +103,7 @@ export class App extends PIXI.Application {
             : {}),
         });
       });
-      this.time += deltaTime / 60;
+      this.time += deltaTime / this.ticker.FPS;
     });
 
     if (!!window?.$isTest) {
@@ -246,7 +254,6 @@ export class App extends PIXI.Application {
   waitNextFrame() {
     const now = this.time;
     return this.#registerWatcher(() => {
-      console.log(now, this.time, now !== this.time);
       return now !== this.time;
     }, {});
   }
