@@ -27,15 +27,14 @@ export class App extends PIXI.Application {
   constructor(
     initialScene: SceneData<any>,
     options: PIXI.IApplicationOptions & {
-      // ここに追加オプション
+      title: string;
     }
   ) {
-    const {
-      // ここに追加オプション
-      ...rest
-    } = options;
+    const { title, ...rest } = options;
     super(rest);
     globalThis.$app = this;
+    document.title = title;
+    document.body.appendChild(this.view);
 
     this._key = new KeyboardManager();
     this._watcher = new WatchManager();
@@ -54,8 +53,6 @@ export class App extends PIXI.Application {
       this._key._update();
       this._watcher._update(deltaTime);
     });
-
-    document.body.appendChild(this.view);
   }
   getKey(code: KeyboardCodeNames) {
     return {

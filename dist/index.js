@@ -50906,8 +50906,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _classCallCheck(this, App);
 
-    var // ここに追加オプション
-    rest = __rest(options, []);
+    var title = options.title,
+        rest = __rest(options, ["title"]);
 
     _this = _super.call(this, rest);
     /** ゲームが始まって何秒経ったか */
@@ -50920,6 +50920,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     _App_scener.set(_assertThisInitialized(_this), void 0);
 
     globalThis.$app = _assertThisInitialized(_this);
+    document.title = title;
+    document.body.appendChild(_this.view);
     _this._key = new KeyboardManager_1.KeyboardManager();
     _this._watcher = new WatcherManager_1.WatchManager();
     /* this.#resizer = */
@@ -50945,7 +50947,6 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
       _this._watcher._update(deltaTime);
     });
 
-    document.body.appendChild(_this.view);
     return _this;
   }
 
@@ -52339,6 +52340,7 @@ var TestScene_1 = require("./game/TestScene"); // ゲーム開始
 
 
 new app_1.App(TestScene_1.TestScene, {
+  title: "H2A_GameEngineDemo",
   width: 816,
   height: 624,
   backgroundColor: 0xaaaaaa
