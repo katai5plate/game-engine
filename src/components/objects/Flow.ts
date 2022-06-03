@@ -20,11 +20,12 @@ export class Flow<T> {
   ) {
     return $app.addWatcher(resolveCondition, onProgress);
   }
-  static async loop(fn: (head: Promise<void>) => Promise<any>) {
+  static async loop(fn: <T extends Symbol>(end: T) => Promise<void | T>) {
+    const loopEnd = Symbol("LOOP_END");
     await (async () => {
       // const prev = $app.time;
       while (1) {
-        await fn(Promise.resolve());
+        if ((await fn(loopEnd)) === loopEnd) break;
         await $app.waitNextFrame();
         // if (prev === $app.time) {
         //   throw new Error("無限ループによるフリーズを回避しました");

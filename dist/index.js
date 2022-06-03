@@ -50015,11 +50015,13 @@ var Flow = /*#__PURE__*/function () {
       return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var _this = this;
 
+        var loopEnd;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.next = 2;
+                loopEnd = Symbol("LOOP_END");
+                _context2.next = 3;
                 return function () {
                   return __awaiter(_this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
                     return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -50027,22 +50029,33 @@ var Flow = /*#__PURE__*/function () {
                         switch (_context.prev = _context.next) {
                           case 0:
                             if (!1) {
-                              _context.next = 7;
+                              _context.next = 11;
                               break;
                             }
 
                             _context.next = 3;
-                            return fn(Promise.resolve());
+                            return fn(loopEnd);
 
                           case 3:
-                            _context.next = 5;
+                            _context.t0 = _context.sent;
+                            _context.t1 = loopEnd;
+
+                            if (!(_context.t0 === _context.t1)) {
+                              _context.next = 7;
+                              break;
+                            }
+
+                            return _context.abrupt("break", 11);
+
+                          case 7:
+                            _context.next = 9;
                             return $app.waitNextFrame();
 
-                          case 5:
+                          case 9:
                             _context.next = 0;
                             break;
 
-                          case 7:
+                          case 11:
                           case "end":
                             return _context.stop();
                         }
@@ -50051,7 +50064,7 @@ var Flow = /*#__PURE__*/function () {
                   }));
                 }();
 
-              case 2:
+              case 3:
               case "end":
                 return _context2.stop();
             }
@@ -51060,7 +51073,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                           case 2:
                             this.spawn($.button2);
                             _context2.next = 5;
-                            return Flow_1.Flow.loop(function () {
+                            return Flow_1.Flow.loop(function (end) {
                               return __awaiter(_this3, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
                                 return _regeneratorRuntime().wrap(function _callee$(_context) {
                                   while (1) {
@@ -51085,11 +51098,15 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                                           $.button2.y += 10;
                                         }
 
-                                        if ($app.key.isTriggered("A")) {
-                                          console.log("AAAA!");
+                                        if (!$app.key.isTriggered("A")) {
+                                          _context.next = 9;
+                                          break;
                                         }
 
-                                      case 7:
+                                        console.log("AAAA!");
+                                        return _context.abrupt("return", end);
+
+                                      case 9:
                                       case "end":
                                         return _context.stop();
                                     }
@@ -51099,6 +51116,9 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                             });
 
                           case 5:
+                            console.log("ループ終了");
+
+                          case 6:
                           case "end":
                             return _context2.stop();
                         }

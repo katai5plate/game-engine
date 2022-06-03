@@ -28,7 +28,7 @@ export const TestScene = createScene(
       new Flow(this, async ($) => {
         await Flow.time(1);
         this.spawn($.button2);
-        await Flow.loop(async () => {
+        await Flow.loop(async (end) => {
           $.button1.angle++;
           $.button2.angle += 5;
           if ($app.key.isPressed("LEFT")) {
@@ -45,8 +45,10 @@ export const TestScene = createScene(
           }
           if ($app.key.isTriggered("A")) {
             console.log("AAAA!");
+            return end;
           }
         });
+        console.log("ループ終了");
       });
       new Flow(this.button1, async ($) => {
         await Flow.loop(async () => {
