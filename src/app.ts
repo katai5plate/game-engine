@@ -41,7 +41,8 @@ export class App extends PIXI.Application {
   currentScene: Scene = new Scene();
   /** ゲームが始まって何秒経ったか */
   time: number = 0;
-  deltaTime: number = 1;
+  deltaTime: number = 0;
+  frameCount: number = 0;
   /** ゲーム非同期監視リスト */
   #watchers: Set<Watcher> = new Set();
 
@@ -60,6 +61,11 @@ export class App extends PIXI.Application {
     this.gotoScene(initialScene);
     this.ticker.add((deltaTime) => {
       this.deltaTime = deltaTime;
+      this.time += deltaTime / this.ticker.FPS;
+      this.frameCount++;
+
+      this.key._update();
+
       const updateProps: UpdateProps = { deltaTime, time: this.time };
       this.#watchers.forEach((watcher) => {
         if (!!watcher.resolveCondition()) {
@@ -103,7 +109,6 @@ export class App extends PIXI.Application {
             : {}),
         });
       });
-      this.time += deltaTime / this.ticker.FPS;
     });
 
     if (!!window?.$isTest) {
@@ -252,9 +257,6 @@ export class App extends PIXI.Application {
   }
   /** 次のフレームまで待つ */
   waitNextFrame() {
-    const now = this.time;
-    return this.#registerWatcher(() => {
-      return now !== this.time;
-    }, {});
+    return this.addTimeWatcher(0);
   }
 }

@@ -49078,7 +49078,7 @@ var Keyboard = /*#__PURE__*/function () {
 
     _Keyboard_instances.add(this);
     /** キーボードの状態
-     * `{[code]: this.time}` */
+     * `{[code]: keepTime}` */
 
 
     _Keyboard_keyboardState.set(this, new Map());
@@ -49089,6 +49089,15 @@ var Keyboard = /*#__PURE__*/function () {
   }
 
   _createClass(Keyboard, [{
+    key: "_update",
+    value: function _update() {
+      var _this = this;
+
+      __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").forEach(function (v, k) {
+        __classPrivateFieldGet(_this, _Keyboard_keyboardState, "f").set(k, v + 1);
+      });
+    }
+  }, {
     key: "isPressed",
     value: function isPressed(code) {
       return !!__classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
@@ -49096,7 +49105,7 @@ var Keyboard = /*#__PURE__*/function () {
   }, {
     key: "isTriggered",
     value: function isTriggered(code) {
-      return __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]) === $app.time;
+      return __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]) === 1;
     }
   }, {
     key: "isNotPressed",
@@ -49110,7 +49119,11 @@ var Keyboard = /*#__PURE__*/function () {
 
 exports.Keyboard = Keyboard;
 _Keyboard_keyboardState = new WeakMap(), _Keyboard_instances = new WeakSet(), _Keyboard_onKeyboardDown = function _Keyboard_onKeyboardDown(e) {
-  __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").set(e.code, $app.time);
+  var code = e.code; // 押しっぱなし対策
+
+  if (__classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(code) === undefined) {
+    __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").set(code, 0);
+  }
 }, _Keyboard_onKeyboardUp = function _Keyboard_onKeyboardUp(e) {
   __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").delete(e.code);
 }, _Keyboard_onKeyboardClear = function _Keyboard_onKeyboardClear() {
@@ -49539,7 +49552,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     /** ゲームが始まって何秒経ったか */
 
     _this.time = 0;
-    _this.deltaTime = 1;
+    _this.deltaTime = 0;
+    _this.frameCount = 0;
     /** ゲーム非同期監視リスト */
 
     _App_watchers.set(_assertThisInitialized(_this), new Set());
@@ -49551,6 +49565,11 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _this.ticker.add(function (deltaTime) {
       _this.deltaTime = deltaTime;
+      _this.time += deltaTime / _this.ticker.FPS;
+      _this.frameCount++;
+
+      _this.key._update();
+
       var updateProps = {
         deltaTime: deltaTime,
         time: _this.time
@@ -49600,8 +49619,6 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
           }() : {});
         }() : {}));
       });
-
-      _this.time += deltaTime / _this.ticker.FPS;
     });
 
     if (!!(window === null || window === void 0 ? void 0 : window.$isTest)) {
@@ -49715,12 +49732,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
   }, {
     key: "waitNextFrame",
     value: function waitNextFrame() {
-      var _this3 = this;
-
-      var now = this.time;
-      return __classPrivateFieldGet(this, _App_instances, "m", _App_registerWatcher).call(this, function () {
-        return now !== _this3.time;
-      }, {});
+      return this.addTimeWatcher(0);
     }
   }]);
 
@@ -49775,14 +49787,14 @@ _App_watchers = new WeakMap(), _App_instances = new WeakSet(), _App_onResize = f
 
   return;
 }, _App_registerWatcher = function _App_registerWatcher(resolveCondition, _ref) {
-  var _this4 = this;
+  var _this3 = this;
 
   var onProgress = _ref.onProgress,
       rejectCondition = _ref.rejectCondition,
       errorMessage = _ref.errorMessage,
       metaTime = _ref.metaTime;
   return new Promise(function (resolve, reject) {
-    __classPrivateFieldGet(_this4, _App_watchers, "f").add(Object.assign(Object.assign(Object.assign({
+    __classPrivateFieldGet(_this3, _App_watchers, "f").add(Object.assign(Object.assign(Object.assign({
       startTime: $app.time,
       resolveCondition: resolveCondition,
       onResolve: function onResolve() {
@@ -50025,9 +50037,7 @@ var Flow = /*#__PURE__*/function () {
 
                 case 3:
                   _context.next = 5;
-                  return new Promise(function (r) {
-                    return setTimeout(r, $app.deltaTime);
-                  });
+                  return $app.waitNextFrame();
 
                 case 5:
                   _context.next = 0;
@@ -50039,50 +50049,6 @@ var Flow = /*#__PURE__*/function () {
               }
             }
           }, _callee);
-        }));
-      };
-    }
-  }, {
-    key: "unsafeLoop",
-    value: function unsafeLoop(fn) {
-      var _this2 = this;
-
-      return function () {
-        return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-          var prev;
-          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  prev = $app.time;
-
-                case 1:
-                  if (!1) {
-                    _context2.next = 8;
-                    break;
-                  }
-
-                  _context2.next = 4;
-                  return fn(Promise.resolve());
-
-                case 4:
-                  if (!(prev === $app.time)) {
-                    _context2.next = 6;
-                    break;
-                  }
-
-                  throw new Error("無限ループによるフリーズを回避しました");
-
-                case 6:
-                  _context2.next = 1;
-                  break;
-
-                case 8:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee2);
         }));
       };
     }
@@ -51037,26 +51003,30 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                   return start.then(Flow_1.Flow.time(1)).then(function () {
                     return _this2.spawn($.button2);
                   }).then(Flow_1.Flow.loop(function (head) {
-                    return head.then(Flow_1.Flow.time(0.1, function () {
-                      $.button1.angle++;
-                      $.button2.angle += 5;
+                    $.button1.angle++;
+                    $.button2.angle += 5;
 
-                      if ($app.key.isPressed("LEFT")) {
-                        $.button2.x -= 10;
-                      }
+                    if ($app.key.isPressed("LEFT")) {
+                      $.button2.x -= 10;
+                    }
 
-                      if ($app.key.isPressed("RIGHT")) {
-                        $.button2.x += 10;
-                      }
+                    if ($app.key.isPressed("RIGHT")) {
+                      $.button2.x += 10;
+                    }
 
-                      if ($app.key.isPressed("UP")) {
-                        $.button2.y -= 10;
-                      }
+                    if ($app.key.isPressed("UP")) {
+                      $.button2.y -= 10;
+                    }
 
-                      if ($app.key.isPressed("DOWN")) {
-                        $.button2.y += 10;
-                      }
-                    }));
+                    if ($app.key.isPressed("DOWN")) {
+                      $.button2.y += 10;
+                    }
+
+                    if ($app.key.isTriggered("A")) {
+                      console.log("AAAA!");
+                    }
+
+                    return Promise.resolve(0);
                   }));
                 });
                 new Flow_1.Flow(this.button1, function (start, $) {

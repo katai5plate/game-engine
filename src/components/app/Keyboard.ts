@@ -14,15 +14,24 @@ export type KeyboardCodeValues = typeof KeyCode[Extract<
 
 export class Keyboard {
   /** キーボードの状態
-   * `{[code]: this.time}` */
+   * `{[code]: keepTime}` */
   #keyboardState: Map<KeyboardCodeValues, number> = new Map();
   constructor() {
     document.addEventListener("keydown", this.#onKeyboardDown.bind(this));
     document.addEventListener("keyup", this.#onKeyboardUp.bind(this));
     window.addEventListener("blur", this.#onKeyboardClear.bind(this));
   }
+  _update() {
+    this.#keyboardState.forEach((v, k) => {
+      this.#keyboardState.set(k, v + 1);
+    });
+  }
   #onKeyboardDown(e: KeyboardEvent) {
-    this.#keyboardState.set(e.code as KeyboardCodeValues, $app.time);
+    const code = e.code as KeyboardCodeValues;
+    // 押しっぱなし対策
+    if (this.#keyboardState.get(code) === undefined) {
+      this.#keyboardState.set(code, 0);
+    }
   }
   #onKeyboardUp(e: KeyboardEvent) {
     this.#keyboardState.delete(e.code as KeyboardCodeValues);
@@ -34,7 +43,7 @@ export class Keyboard {
     return !!this.#keyboardState.get(KeyCode[`CODE_${code}`]);
   }
   isTriggered(code: KeyboardCodeNames) {
-    return this.#keyboardState.get(KeyCode[`CODE_${code}`]) === $app.time;
+    return this.#keyboardState.get(KeyCode[`CODE_${code}`]) === 1;
   }
   isNotPressed(code: KeyboardCodeNames) {
     return !this.#keyboardState.get(KeyCode[`CODE_${code}`]);

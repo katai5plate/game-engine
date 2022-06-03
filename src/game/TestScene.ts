@@ -30,26 +30,26 @@ export const TestScene = createScene(
           .then(Flow.time(1))
           .then(() => this.spawn($.button2))
           .then(
-            Flow.loop((head) =>
-              head.then(
-                Flow.time(0.1, () => {
-                  $.button1.angle++;
-                  $.button2.angle += 5;
-                  if ($app.key.isPressed("LEFT")) {
-                    $.button2.x -= 10;
-                  }
-                  if ($app.key.isPressed("RIGHT")) {
-                    $.button2.x += 10;
-                  }
-                  if ($app.key.isPressed("UP")) {
-                    $.button2.y -= 10;
-                  }
-                  if ($app.key.isPressed("DOWN")) {
-                    $.button2.y += 10;
-                  }
-                })
-              )
-            )
+            Flow.loop((head) => {
+              $.button1.angle++;
+              $.button2.angle += 5;
+              if ($app.key.isPressed("LEFT")) {
+                $.button2.x -= 10;
+              }
+              if ($app.key.isPressed("RIGHT")) {
+                $.button2.x += 10;
+              }
+              if ($app.key.isPressed("UP")) {
+                $.button2.y -= 10;
+              }
+              if ($app.key.isPressed("DOWN")) {
+                $.button2.y += 10;
+              }
+              if ($app.key.isTriggered("A")) {
+                console.log("AAAA!");
+              }
+              return Promise.resolve(0);
+            })
           )
       );
       new Flow(this.button1, (start, $) =>
