@@ -92,14 +92,19 @@ export class Flow<T> {
     async moveLikeRPG(
       target: { x: number; y: number },
       time: number,
-      step: number,
-      keys?: {
-        up: KeyboardCodeNames[];
-        down: KeyboardCodeNames[];
-        left: KeyboardCodeNames[];
-        right: KeyboardCodeNames[];
-      } | null,
-      ease?: EasingType | null
+      range: number,
+      {
+        keys,
+        ease,
+      }: {
+        keys?: {
+          up: KeyboardCodeNames[];
+          down: KeyboardCodeNames[];
+          left: KeyboardCodeNames[];
+          right: KeyboardCodeNames[];
+        };
+        ease?: EasingType;
+      } = {}
     ) {
       const _keys = keys ?? {
         up: ["UP"],
@@ -117,7 +122,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: x,
-            to: x - step,
+            to: x - range,
           },
           (n) => {
             target.x = n;
@@ -129,7 +134,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: x,
-            to: x + step,
+            to: x + range,
           },
           (n) => {
             target.x = n;
@@ -141,7 +146,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: y,
-            to: y - step,
+            to: y - range,
           },
           (n) => {
             target.y = n;
@@ -153,7 +158,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: y,
-            to: y + step,
+            to: y + range,
           },
           (n) => {
             target.y = n;

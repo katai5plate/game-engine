@@ -44,18 +44,15 @@ export const TestScene = createScene(
       });
       new Flow(this.player2, async ($) => {
         await Flow.loop(async (end) => {
-          await Flow.use.moveLikeRPG(
-            $,
-            1,
-            48,
-            {
+          await Flow.use.moveLikeRPG($, 1, 48, {
+            keys: {
               up: ["W", "NUMPAD8"],
               down: ["S", "NUMPAD2"],
               left: ["A", "NUMPAD4"],
               right: ["D", "NUMPAD6"],
             },
-            "outBounce"
-          );
+            ease: "outBounce",
+          });
           if ($app.getKey("T").isTriggered) {
             console.log("BBBB!");
             return end;

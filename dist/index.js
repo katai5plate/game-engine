@@ -51446,7 +51446,11 @@ var Flow = /*#__PURE__*/function () {
 exports.Flow = Flow;
 Flow.LOOPBACK = Symbol("LOOPBACK");
 Flow.use = {
-  moveLikeRPG: function moveLikeRPG(target, time, step, keys, ease) {
+  moveLikeRPG: function moveLikeRPG(target, time, range) {
+    var _ref6 = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {},
+        keys = _ref6.keys,
+        ease = _ref6.ease;
+
     return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
       var _keys, _ease, x, y, pressed;
 
@@ -51479,7 +51483,7 @@ Flow.use = {
                 ease: _ease,
                 time: time,
                 from: x,
-                to: x - step
+                to: x - range
               }, function (n) {
                 target.x = n;
               });
@@ -51499,7 +51503,7 @@ Flow.use = {
                 ease: _ease,
                 time: time,
                 from: x,
-                to: x + step
+                to: x + range
               }, function (n) {
                 target.x = n;
               });
@@ -51519,7 +51523,7 @@ Flow.use = {
                 ease: _ease,
                 time: time,
                 from: y,
-                to: y - step
+                to: y - range
               }, function (n) {
                 target.y = n;
               });
@@ -51539,7 +51543,7 @@ Flow.use = {
                 ease: _ease,
                 time: time,
                 from: y,
-                to: y + step
+                to: y + range
               }, function (n) {
                 target.y = n;
               });
@@ -52420,11 +52424,14 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                                       case 0:
                                         _context3.next = 2;
                                         return Flow_1.Flow.use.moveLikeRPG($, 1, 48, {
-                                          up: ["W", "NUMPAD8"],
-                                          down: ["S", "NUMPAD2"],
-                                          left: ["A", "NUMPAD4"],
-                                          right: ["D", "NUMPAD6"]
-                                        }, "outBounce");
+                                          keys: {
+                                            up: ["W", "NUMPAD8"],
+                                            down: ["S", "NUMPAD2"],
+                                            left: ["A", "NUMPAD4"],
+                                            right: ["D", "NUMPAD6"]
+                                          },
+                                          ease: "outBounce"
+                                        });
 
                                       case 2:
                                         if (!$app.getKey("T").isTriggered) {
