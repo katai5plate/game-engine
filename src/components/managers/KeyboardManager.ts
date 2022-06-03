@@ -12,7 +12,7 @@ export type KeyboardCodeValues = typeof KeyCode[Extract<
   `CODE_${string}`
 >];
 
-export class Keyboard {
+export class KeyboardManager {
   /** キーボードの状態
    * `{[code]: keepTime}` */
   #keyboardState: Map<KeyboardCodeValues, number> = new Map();

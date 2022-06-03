@@ -31,19 +31,19 @@ export const TestScene = createScene(
         await Flow.loop(async (end) => {
           $.button1.angle++;
           $.button2.angle += 5;
-          if ($app.key.isPressed("LEFT")) {
+          if ($app.getKey("LEFT").isPressed) {
             $.button2.x -= 10;
           }
-          if ($app.key.isPressed("RIGHT")) {
+          if ($app.getKey("RIGHT").isPressed) {
             $.button2.x += 10;
           }
-          if ($app.key.isPressed("UP")) {
+          if ($app.getKey("UP").isPressed) {
             $.button2.y -= 10;
           }
-          if ($app.key.isPressed("DOWN")) {
+          if ($app.getKey("DOWN").isPressed) {
             $.button2.y += 10;
           }
-          if ($app.key.isTriggered("A")) {
+          if ($app.getKey("A").isTriggered) {
             console.log("AAAA!");
             return end;
           }
@@ -71,23 +71,3 @@ export const TestScene = createScene(
     }
   }
 );
-
-import * as PIXI from "pixi.js";
-
-const x = class ExampleScene extends Scene {
-  // 1. ここで型定義
-  初期スポーン物: PIXI.Container;
-  後発スポーン物: PIXI.Container;
-  constructor() {
-    super();
-    // 2. これで宣言とともにスポーン
-    this.初期スポーン物 = this.spawn(new PIXI.Container());
-    // this.spawn させない場合は記録されるがスポーンしない
-    this.後発スポーン物 = new PIXI.Container();
-    this.ready();
-  }
-  async main() {
-    // 3. 任意のタイミングでスポーン
-    this.spawn(this.後発スポーン物);
-  }
-};

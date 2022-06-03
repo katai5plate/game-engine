@@ -1,7 +1,13 @@
-import { ProgressProps, ProgressPropsFromTime } from "../../app";
+import {
+  WatcherManager,
+  ProgressProps,
+  ProgressPropsFromTime,
+} from "../managers/WatcherManager";
 
-type ResolveCondition = Parameters<typeof $app.addWatcher>[0];
-type ResolveTime = Parameters<typeof $app.addTimeWatcher>[0];
+type ResolveCondition = Parameters<
+  typeof WatcherManager.prototype.waitCondition
+>[0];
+type ResolveTime = Parameters<typeof WatcherManager.prototype.waitTime>[0];
 
 export class Flow<T> {
   constructor(target: T, fn: ($: T) => Promise<void>) {
@@ -12,13 +18,13 @@ export class Flow<T> {
     resolveTime: ResolveTime,
     onProgress?: (props: ProgressPropsFromTime) => void
   ) {
-    return $app.addTimeWatcher(resolveTime, onProgress);
+    return $app._watcher.waitTime(resolveTime, onProgress);
   }
   static when(
     resolveCondition: ResolveCondition,
     onProgress?: (props: ProgressProps) => void
   ) {
-    return $app.addWatcher(resolveCondition, onProgress);
+    return $app._watcher.waitCondition(resolveCondition, onProgress);
   }
   static async loop(fn: <T extends Symbol>(end: T) => Promise<void | T>) {
     const loopEnd = Symbol("LOOP_END");
@@ -26,7 +32,7 @@ export class Flow<T> {
       // const prev = $app.time;
       while (1) {
         if ((await fn(loopEnd)) === loopEnd) break;
-        await $app.waitNextFrame();
+        await $app._watcher.waitNextFrame();
         // if (prev === $app.time) {
         //   throw new Error("無限ループによるフリーズを回避しました");
         // }

@@ -49008,7 +49008,7 @@ var CODE_CLOSE_BRACKET = 'BracketRight';
 exports.CODE_CLOSE_BRACKET = CODE_CLOSE_BRACKET;
 var CODE_QUOTE = 'Quote';
 exports.CODE_QUOTE = CODE_QUOTE;
-},{}],"components/app/Keyboard.ts":[function(require,module,exports) {
+},{}],"components/managers/KeyboardManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49063,73 +49063,248 @@ var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (re
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var _Keyboard_instances, _Keyboard_keyboardState, _Keyboard_onKeyboardDown, _Keyboard_onKeyboardUp, _Keyboard_onKeyboardClear;
+var _KeyboardManager_instances, _KeyboardManager_keyboardState, _KeyboardManager_onKeyboardDown, _KeyboardManager_onKeyboardUp, _KeyboardManager_onKeyboardClear;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Keyboard = void 0;
+exports.KeyboardManager = void 0;
 
 var KeyCode = __importStar(require("keycode-js"));
 
-var Keyboard = /*#__PURE__*/function () {
-  function Keyboard() {
-    _classCallCheck(this, Keyboard);
+var KeyboardManager = /*#__PURE__*/function () {
+  function KeyboardManager() {
+    _classCallCheck(this, KeyboardManager);
 
-    _Keyboard_instances.add(this);
+    _KeyboardManager_instances.add(this);
     /** キーボードの状態
      * `{[code]: keepTime}` */
 
 
-    _Keyboard_keyboardState.set(this, new Map());
+    _KeyboardManager_keyboardState.set(this, new Map());
 
-    document.addEventListener("keydown", __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_onKeyboardDown).bind(this));
-    document.addEventListener("keyup", __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_onKeyboardUp).bind(this));
-    window.addEventListener("blur", __classPrivateFieldGet(this, _Keyboard_instances, "m", _Keyboard_onKeyboardClear).bind(this));
+    document.addEventListener("keydown", __classPrivateFieldGet(this, _KeyboardManager_instances, "m", _KeyboardManager_onKeyboardDown).bind(this));
+    document.addEventListener("keyup", __classPrivateFieldGet(this, _KeyboardManager_instances, "m", _KeyboardManager_onKeyboardUp).bind(this));
+    window.addEventListener("blur", __classPrivateFieldGet(this, _KeyboardManager_instances, "m", _KeyboardManager_onKeyboardClear).bind(this));
   }
 
-  _createClass(Keyboard, [{
+  _createClass(KeyboardManager, [{
     key: "_update",
     value: function _update() {
       var _this = this;
 
-      __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").forEach(function (v, k) {
-        __classPrivateFieldGet(_this, _Keyboard_keyboardState, "f").set(k, v + 1);
+      __classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").forEach(function (v, k) {
+        __classPrivateFieldGet(_this, _KeyboardManager_keyboardState, "f").set(k, v + 1);
       });
     }
   }, {
     key: "isPressed",
     value: function isPressed(code) {
-      return !!__classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
+      return !!__classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
     }
   }, {
     key: "isTriggered",
     value: function isTriggered(code) {
-      return __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]) === 1;
+      return __classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").get(KeyCode["CODE_".concat(code)]) === 1;
     }
   }, {
     key: "isNotPressed",
     value: function isNotPressed(code) {
-      return !__classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
+      return !__classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
     }
   }]);
 
-  return Keyboard;
+  return KeyboardManager;
 }();
 
-exports.Keyboard = Keyboard;
-_Keyboard_keyboardState = new WeakMap(), _Keyboard_instances = new WeakSet(), _Keyboard_onKeyboardDown = function _Keyboard_onKeyboardDown(e) {
+exports.KeyboardManager = KeyboardManager;
+_KeyboardManager_keyboardState = new WeakMap(), _KeyboardManager_instances = new WeakSet(), _KeyboardManager_onKeyboardDown = function _KeyboardManager_onKeyboardDown(e) {
   var code = e.code; // 押しっぱなし対策
 
-  if (__classPrivateFieldGet(this, _Keyboard_keyboardState, "f").get(code) === undefined) {
-    __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").set(code, 0);
+  if (__classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").get(code) === undefined) {
+    __classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").set(code, 0);
   }
-}, _Keyboard_onKeyboardUp = function _Keyboard_onKeyboardUp(e) {
-  __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").delete(e.code);
-}, _Keyboard_onKeyboardClear = function _Keyboard_onKeyboardClear() {
-  __classPrivateFieldGet(this, _Keyboard_keyboardState, "f").clear();
+}, _KeyboardManager_onKeyboardUp = function _KeyboardManager_onKeyboardUp(e) {
+  __classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").delete(e.code);
+}, _KeyboardManager_onKeyboardClear = function _KeyboardManager_onKeyboardClear() {
+  __classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").clear();
 };
-},{"keycode-js":"../node_modules/keycode-js/dist/keycode.esm.js"}],"components/objects/Scene.ts":[function(require,module,exports) {
+},{"keycode-js":"../node_modules/keycode-js/dist/keycode.esm.js"}],"components/managers/WatcherManager.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var _WatcherManager_instances, _WatcherManager_watchers, _WatcherManager_registerWatcher;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WatcherManager = void 0;
+
+var WatcherManager = /*#__PURE__*/function () {
+  function WatcherManager() {
+    _classCallCheck(this, WatcherManager);
+
+    _WatcherManager_instances.add(this);
+    /** ゲーム非同期監視リスト */
+
+
+    _WatcherManager_watchers.set(this, new Set());
+  }
+
+  _createClass(WatcherManager, [{
+    key: "_update",
+    value: function _update(deltaTime) {
+      var _this = this;
+
+      var updateProps = {
+        deltaTime: deltaTime,
+        time: $app.time
+      };
+
+      __classPrivateFieldGet(this, _WatcherManager_watchers, "f").forEach(function (watcher) {
+        var _a, _b, _c;
+
+        if (!!watcher.resolveCondition()) {
+          // 条件一致なら解決
+          watcher.onResolve();
+
+          __classPrivateFieldGet(_this, _WatcherManager_watchers, "f").delete(watcher);
+        } else if (!!((_a = watcher.rejectCondition) === null || _a === void 0 ? void 0 : _a.call(watcher))) {
+          // エラー条件一致ならエラー
+          (_b = watcher.onReject) === null || _b === void 0 ? void 0 : _b.call(watcher);
+
+          __classPrivateFieldGet(_this, _WatcherManager_watchers, "f").delete(watcher);
+        } // onProgress 引数の設置画
+
+
+        var startTime = watcher.startTime;
+        (_c = watcher.onProgress) === null || _c === void 0 ? void 0 : _c.call(watcher, Object.assign(Object.assign(Object.assign({}, updateProps), {
+          isFromTime: !!watcher.metaTime,
+          startTime: startTime
+        }), !!watcher.metaTime ? function () {
+          var _watcher$metaTime = watcher.metaTime,
+              resolveTime = _watcher$metaTime.resolveTime,
+              rejectTime = _watcher$metaTime.rejectTime;
+
+          var per = function per(left, time) {
+            return 1 + left / (startTime - time);
+          };
+
+          var resolveLeft = resolveTime - $app.time;
+          return Object.assign({
+            resolveTime: resolveTime,
+            resolvePer: per(resolveLeft, resolveTime),
+            resolveLeft: resolveLeft
+          }, rejectTime !== undefined ? function () {
+            var rejectLeft = rejectTime - $app.time;
+            return {
+              rejectTime: rejectTime,
+              rejectLeft: rejectLeft,
+              rejectPer: per(rejectLeft, rejectTime)
+            };
+          }() : {});
+        }() : {}));
+      });
+    }
+    /**
+     * 特定条件まで待つ
+     * @param resolveCondition 達成条件
+     * @param onProgress 途中の毎フレーム処理
+     * @param rejectCondition エラー条件
+     * @param errorMessage エラーメッセージ
+     */
+
+  }, {
+    key: "waitCondition",
+    value: function waitCondition(resolveCondition, // 書きやすさのために null スキップ
+    onProgress, rejectCondition, errorMessage) {
+      return __classPrivateFieldGet(this, _WatcherManager_instances, "m", _WatcherManager_registerWatcher).call(this, resolveCondition, {
+        onProgress: onProgress !== null && onProgress !== void 0 ? onProgress : undefined,
+        rejectCondition: rejectCondition !== null && rejectCondition !== void 0 ? rejectCondition : undefined,
+        errorMessage: errorMessage !== null && errorMessage !== void 0 ? errorMessage : undefined
+      });
+    }
+    /**
+     * 特定の時間まで待つ
+     * @param resolveTime 指定秒後に達成
+     * @param onProgress 途中の毎フレーム処理
+     * @param rejectTime 指定秒を超えたらエラー
+     * @param errorMessage エラーメッセージ
+     */
+
+  }, {
+    key: "waitTime",
+    value: function waitTime(resolveTime, // 書きやすさのために null スキップ
+    onProgress, rejectTime, errorMessage) {
+      var _a;
+
+      var now = $app.time;
+      var metaTime = {
+        resolveTime: now + resolveTime,
+        rejectTime: rejectTime ? now + rejectTime : undefined
+      };
+      return __classPrivateFieldGet(this, _WatcherManager_instances, "m", _WatcherManager_registerWatcher).call(this, function () {
+        return $app.time >= now + resolveTime;
+      }, {
+        onProgress: (_a = onProgress) !== null && _a !== void 0 ? _a : undefined,
+        rejectCondition: rejectTime ? function () {
+          return $app.time >= now + rejectTime;
+        } : undefined,
+        errorMessage: errorMessage !== null && errorMessage !== void 0 ? errorMessage : undefined,
+        metaTime: metaTime
+      });
+    }
+    /** 次のフレームまで待つ */
+
+  }, {
+    key: "waitNextFrame",
+    value: function waitNextFrame() {
+      return this.waitTime(0);
+    }
+  }]);
+
+  return WatcherManager;
+}();
+
+exports.WatcherManager = WatcherManager;
+_WatcherManager_watchers = new WeakMap(), _WatcherManager_instances = new WeakSet(), _WatcherManager_registerWatcher = function _WatcherManager_registerWatcher(resolveCondition, _ref) {
+  var _this2 = this;
+
+  var onProgress = _ref.onProgress,
+      rejectCondition = _ref.rejectCondition,
+      errorMessage = _ref.errorMessage,
+      metaTime = _ref.metaTime;
+  return new Promise(function (resolve, reject) {
+    __classPrivateFieldGet(_this2, _WatcherManager_watchers, "f").add(Object.assign(Object.assign(Object.assign({
+      startTime: $app.time,
+      resolveCondition: resolveCondition,
+      onResolve: function onResolve() {
+        return resolve(true);
+      }
+    }, onProgress ? {
+      onProgress: onProgress
+    } : {}), rejectCondition ? {
+      rejectCondition: rejectCondition,
+      onReject: function onReject() {
+        return reject(new Error(errorMessage !== null && errorMessage !== void 0 ? errorMessage : ""));
+      }
+    } : {}), metaTime ? {
+      metaTime: metaTime
+    } : {}));
+  });
+};
+},{}],"components/objects/Scene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -49514,7 +49689,7 @@ var __rest = this && this.__rest || function (s, e) {
   return t;
 };
 
-var _App_instances, _App_watchers, _App_onResize, _App_registerWatcher;
+var _App_instances, _App_onResize;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -49523,7 +49698,9 @@ exports.App = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
 
-var Keyboard_1 = require("./components/app/Keyboard");
+var KeyboardManager_1 = require("./components/managers/KeyboardManager");
+
+var WatcherManager_1 = require("./components/managers/WatcherManager");
 
 var Scene_1 = require("./components/objects/Scene");
 
@@ -49551,12 +49728,9 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     _this.time = 0;
     _this.deltaTime = 0;
     _this.frameCount = 0;
-    /** ゲーム非同期監視リスト */
-
-    _App_watchers.set(_assertThisInitialized(_this), new Set());
-
     globalThis.$app = _assertThisInitialized(_this);
-    _this.key = new Keyboard_1.Keyboard();
+    _this._key = new KeyboardManager_1.KeyboardManager();
+    _this._watcher = new WatcherManager_1.WatcherManager();
 
     _this.gotoScene(initialScene);
 
@@ -49565,57 +49739,9 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
       _this.time += deltaTime / _this.ticker.FPS;
       _this.frameCount++;
 
-      _this.key._update();
+      _this._key._update();
 
-      var updateProps = {
-        deltaTime: deltaTime,
-        time: _this.time
-      };
-
-      __classPrivateFieldGet(_assertThisInitialized(_this), _App_watchers, "f").forEach(function (watcher) {
-        var _a, _b, _c;
-
-        if (!!watcher.resolveCondition()) {
-          // 条件一致なら解決
-          watcher.onResolve();
-
-          __classPrivateFieldGet(_assertThisInitialized(_this), _App_watchers, "f").delete(watcher);
-        } else if (!!((_a = watcher.rejectCondition) === null || _a === void 0 ? void 0 : _a.call(watcher))) {
-          // エラー条件一致ならエラー
-          (_b = watcher.onReject) === null || _b === void 0 ? void 0 : _b.call(watcher);
-
-          __classPrivateFieldGet(_assertThisInitialized(_this), _App_watchers, "f").delete(watcher);
-        } // onProgress 引数の設置画
-
-
-        var startTime = watcher.startTime;
-        (_c = watcher.onProgress) === null || _c === void 0 ? void 0 : _c.call(watcher, Object.assign(Object.assign(Object.assign({}, updateProps), {
-          isFromTime: !!watcher.metaTime,
-          startTime: startTime
-        }), !!watcher.metaTime ? function () {
-          var _watcher$metaTime = watcher.metaTime,
-              resolveTime = _watcher$metaTime.resolveTime,
-              rejectTime = _watcher$metaTime.rejectTime;
-
-          var per = function per(left, time) {
-            return 1 + left / (startTime - time);
-          };
-
-          var resolveLeft = resolveTime - _this.time;
-          return Object.assign({
-            resolveTime: resolveTime,
-            resolvePer: per(resolveLeft, resolveTime),
-            resolveLeft: resolveLeft
-          }, rejectTime !== undefined ? function () {
-            var rejectLeft = rejectTime - _this.time;
-            return {
-              rejectTime: rejectTime,
-              rejectLeft: rejectLeft,
-              rejectPer: per(rejectLeft, rejectTime)
-            };
-          }() : {});
-        }() : {}));
-      });
+      _this._watcher._update(deltaTime);
     });
 
     if (!!(window === null || window === void 0 ? void 0 : window.$isTest)) {
@@ -49676,60 +49802,14 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
         }, _callee, this);
       }));
     }
-    /**
-     * 特定条件まで待つ
-     * @param resolveCondition 達成条件
-     * @param onProgress 途中の毎フレーム処理
-     * @param rejectCondition エラー条件
-     * @param errorMessage エラーメッセージ
-     */
-
   }, {
-    key: "addWatcher",
-    value: function addWatcher(resolveCondition, // 書きやすさのために null スキップ
-    onProgress, rejectCondition, errorMessage) {
-      return __classPrivateFieldGet(this, _App_instances, "m", _App_registerWatcher).call(this, resolveCondition, {
-        onProgress: onProgress !== null && onProgress !== void 0 ? onProgress : undefined,
-        rejectCondition: rejectCondition !== null && rejectCondition !== void 0 ? rejectCondition : undefined,
-        errorMessage: errorMessage !== null && errorMessage !== void 0 ? errorMessage : undefined
-      });
-    }
-    /**
-     * 特定の時間まで待つ
-     * @param resolveTime 指定秒後に達成
-     * @param onProgress 途中の毎フレーム処理
-     * @param rejectTime 指定秒を超えたらエラー
-     * @param errorMessage エラーメッセージ
-     */
-
-  }, {
-    key: "addTimeWatcher",
-    value: function addTimeWatcher(resolveTime, // 書きやすさのために null スキップ
-    onProgress, rejectTime, errorMessage) {
-      var _a;
-
-      var now = $app.time;
-      var metaTime = {
-        resolveTime: now + resolveTime,
-        rejectTime: rejectTime ? now + rejectTime : undefined
+    key: "getKey",
+    value: function getKey(code) {
+      return {
+        isPressed: this._key.isPressed(code),
+        isTriggered: this._key.isTriggered(code),
+        isNotPressed: this._key.isNotPressed(code)
       };
-      return __classPrivateFieldGet(this, _App_instances, "m", _App_registerWatcher).call(this, function () {
-        return $app.time >= now + resolveTime;
-      }, {
-        onProgress: (_a = onProgress) !== null && _a !== void 0 ? _a : undefined,
-        rejectCondition: rejectTime ? function () {
-          return $app.time >= now + rejectTime;
-        } : undefined,
-        errorMessage: errorMessage !== null && errorMessage !== void 0 ? errorMessage : undefined,
-        metaTime: metaTime
-      });
-    }
-    /** 次のフレームまで待つ */
-
-  }, {
-    key: "waitNextFrame",
-    value: function waitNextFrame() {
-      return this.addTimeWatcher(0);
     }
   }]);
 
@@ -49737,7 +49817,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 }(PIXI.Application);
 
 exports.App = App;
-_App_watchers = new WeakMap(), _App_instances = new WeakSet(), _App_onResize = function _App_onResize() {
+_App_instances = new WeakSet(), _App_onResize = function _App_onResize() {
   var _window = window,
       innerWidth = _window.innerWidth,
       innerHeight = _window.innerHeight;
@@ -49783,33 +49863,8 @@ _App_watchers = new WeakMap(), _App_instances = new WeakSet(), _App_onResize = f
   }
 
   return;
-}, _App_registerWatcher = function _App_registerWatcher(resolveCondition, _ref) {
-  var _this3 = this;
-
-  var onProgress = _ref.onProgress,
-      rejectCondition = _ref.rejectCondition,
-      errorMessage = _ref.errorMessage,
-      metaTime = _ref.metaTime;
-  return new Promise(function (resolve, reject) {
-    __classPrivateFieldGet(_this3, _App_watchers, "f").add(Object.assign(Object.assign(Object.assign({
-      startTime: $app.time,
-      resolveCondition: resolveCondition,
-      onResolve: function onResolve() {
-        return resolve(true);
-      }
-    }, onProgress ? {
-      onProgress: onProgress
-    } : {}), rejectCondition ? {
-      rejectCondition: rejectCondition,
-      onReject: function onReject() {
-        return reject(new Error(errorMessage !== null && errorMessage !== void 0 ? errorMessage : ""));
-      }
-    } : {}), metaTime ? {
-      metaTime: metaTime
-    } : {}));
-  });
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/app/Keyboard":"components/app/Keyboard.ts","./components/objects/Scene":"components/objects/Scene.ts","./utils/helper":"utils/helper.ts"}],"../node_modules/easyrpg-rtp/Picture/Cloud.png":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./components/objects/Scene":"components/objects/Scene.ts","./utils/helper":"utils/helper.ts"}],"../node_modules/easyrpg-rtp/Picture/Cloud.png":[function(require,module,exports) {
 module.exports="Cloud.47e30f13.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
@@ -50002,12 +50057,12 @@ var Flow = /*#__PURE__*/function () {
   _createClass(Flow, null, [{
     key: "time",
     value: function time(resolveTime, onProgress) {
-      return $app.addTimeWatcher(resolveTime, onProgress);
+      return $app._watcher.waitTime(resolveTime, onProgress);
     }
   }, {
     key: "when",
     value: function when(resolveCondition, onProgress) {
-      return $app.addWatcher(resolveCondition, onProgress);
+      return $app._watcher.waitCondition(resolveCondition, onProgress);
     }
   }, {
     key: "loop",
@@ -50049,7 +50104,7 @@ var Flow = /*#__PURE__*/function () {
 
                           case 7:
                             _context.next = 9;
-                            return $app.waitNextFrame();
+                            return $app._watcher.waitNextFrame();
 
                           case 9:
                             _context.next = 0;
@@ -50928,46 +50983,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
-      }
-    };
-  }
-
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function (resolve) {
@@ -51081,23 +51096,23 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                                         $.button1.angle++;
                                         $.button2.angle += 5;
 
-                                        if ($app.key.isPressed("LEFT")) {
+                                        if ($app.getKey("LEFT").isPressed) {
                                           $.button2.x -= 10;
                                         }
 
-                                        if ($app.key.isPressed("RIGHT")) {
+                                        if ($app.getKey("RIGHT").isPressed) {
                                           $.button2.x += 10;
                                         }
 
-                                        if ($app.key.isPressed("UP")) {
+                                        if ($app.getKey("UP").isPressed) {
                                           $.button2.y -= 10;
                                         }
 
-                                        if ($app.key.isPressed("DOWN")) {
+                                        if ($app.getKey("DOWN").isPressed) {
                                           $.button2.y += 10;
                                         }
 
-                                        if (!$app.key.isTriggered("A")) {
+                                        if (!$app.getKey("A").isTriggered) {
                                           _context.next = 9;
                                           break;
                                         }
@@ -51192,54 +51207,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-
-var PIXI = __importStar(require("pixi.js"));
-
-var x = /*#__PURE__*/function (_Scene_1$Scene2) {
-  _inherits(ExampleScene, _Scene_1$Scene2);
-
-  var _super2 = _createSuper(ExampleScene);
-
-  function ExampleScene() {
-    var _this5;
-
-    _classCallCheck(this, ExampleScene);
-
-    _this5 = _super2.call(this); // 2. これで宣言とともにスポーン
-
-    _this5.初期スポーン物 = _this5.spawn(new PIXI.Container()); // this.spawn させない場合は記録されるがスポーンしない
-
-    _this5.後発スポーン物 = new PIXI.Container();
-
-    _this5.ready();
-
-    return _this5;
-  }
-
-  _createClass(ExampleScene, [{
-    key: "main",
-    value: function main() {
-      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                // 3. 任意のタイミングでスポーン
-                this.spawn(this.後発スポーン物);
-
-              case 1:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6, this);
-      }));
-    }
-  }]);
-
-  return ExampleScene;
-}(Scene_1.Scene);
-},{"easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Flow":"components/objects/Flow.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts","../utils/math":"utils/math.ts","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Flow":"components/objects/Flow.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts","../utils/math":"utils/math.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51284,7 +51252,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "3179" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "4079" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
