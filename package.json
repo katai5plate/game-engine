@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "rimraf dist && parcel ./src/index.ts --public-url ./",
-    "build": "rimraf dist && parcel build ./src/index.ts --public-url ./"
+    "dev": "rimraf dist && parcel ./src/index.ts --public-url .",
+    "build": "rimraf dist && parcel build ./src/index.ts --public-url ."
   },
   "dependencies": {
     "@pixi/tilemap": "^3.2.2",
