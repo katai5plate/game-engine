@@ -8,63 +8,107 @@ import { lerp } from "../utils/math";
 export const TestScene = createScene(
   [Cloud],
   class extends Scene {
-    button1: LabeledButton;
-    button2: LabeledButton;
+    enemy: LabeledButton;
+    player1: LabeledButton;
+    player2: LabeledButton;
     constructor() {
       super();
-      this.button1 = this.spawn(
-        new LabeledButton(new Asset(Cloud).toTexture(), "←", {
-          x: 100,
+      this.enemy = new LabeledButton(new Asset(Cloud).toTexture(), "敵", {
+        x: 100,
+        y: 100,
+      });
+      this.player1 = this.spawn(
+        new LabeledButton(new Asset(Cloud).toTexture(), "方向キー", {
+          x: 300,
           y: 100,
         })
       );
-      this.button2 = new LabeledButton(new Asset(Cloud).toTexture(), "→", {
-        x: 300,
-        y: 100,
-      });
+      this.player2 = this.spawn(
+        new LabeledButton(new Asset(Cloud).toTexture(), "WASD", {
+          x: 300,
+          y: 300,
+        })
+      );
       this.ready();
     }
     async main() {
-      new Flow(this, async ($) => {
-        await Flow.time(1);
-        this.spawn($.button2);
+      new Flow(this.player1, async ($) => {
         await Flow.loop(async (end) => {
-          $.button1.angle++;
-          $.button2.angle += 5;
-          if ($app.getKey("LEFT").isPressed) {
-            $.button2.x -= 10;
-          }
-          if ($app.getKey("RIGHT").isPressed) {
-            $.button2.x += 10;
-          }
-          if ($app.getKey("UP").isPressed) {
-            $.button2.y -= 10;
-          }
-          if ($app.getKey("DOWN").isPressed) {
-            $.button2.y += 10;
-          }
-          if ($app.getKey("A").isTriggered) {
+          await Flow.use.moveLikeRPG($, 0.25, 48);
+          if ($app.getKey("R").isTriggered) {
             console.log("AAAA!");
             return end;
           }
         });
         console.log("ループ終了");
       });
-      new Flow(this.button1, async ($) => {
+      new Flow(this.player2, async ($) => {
+        await Flow.loop(async (end) => {
+          await Flow.use.moveLikeRPG(
+            $,
+            1,
+            48,
+            {
+              up: ["W", "NUMPAD8"],
+              down: ["S", "NUMPAD2"],
+              left: ["A", "NUMPAD4"],
+              right: ["D", "NUMPAD6"],
+            },
+            "outBounce"
+          );
+          if ($app.getKey("T").isTriggered) {
+            console.log("BBBB!");
+            return end;
+          }
+        });
+        console.log("ループ終了");
+      });
+      new Flow(this.enemy, async ($) => {
+        await Flow.time(1);
+        this.spawn($);
         await Flow.loop(async () => {
-          const [rx, ry] = [
-            100 + Math.random() * 700,
-            100 + Math.random() * 500,
-          ];
-          const [ox, oy] = [$.x, $.y];
-          await Flow.time(1, ({ resolvePer }) => {
-            $.x = lerp("inOutExpo", $.x, rx, resolvePer);
-            $.y = lerp("inOutBounce", $.y, ry, resolvePer);
-          });
-          await Flow.time(0.5, ({ resolvePer }) => {
-            $.x = lerp("inOutExpo", $.x, ox, resolvePer);
-            $.y = lerp("inOutBounce", $.y, oy, resolvePer);
-          });
+          await Flow.tween(
+            {
+              ease: "outElastic",
+              time: 1,
+              from: $.angle,
+              to: $.angle + 45,
+            },
+            (x) => {
+              $.angle = x;
+            }
+          );
+          const origin = { x: $.x, y: $.y };
+          await Flow.tween2D(
+            {
+              ease: {
+                x: "inOutExpo",
+                y: "inOutBounce",
+              },
+              time: 1,
+              from: $,
+              to: {
+                x: 100 + Math.random() * 700,
+                y: 100 + Math.random() * 500,
+              },
+            },
+            ({ x, y }) => {
+              $.x = x;
+              $.y = y;
+            }
+          );
+          await Flow.tween2D(
+            {
+              ease: "inOutCirc",
+              time: 3,
+              from: $,
+              to: origin,
+            },
+            ({ x, y }) => {
+              $.x = x;
+              $.y = y;
+            }
+          );
         });
         console.error("ここには到達しない");
       });

@@ -67,12 +67,9 @@ const easing = {
   },
 };
 
-export const lerp = (
-  ease: keyof typeof easing,
-  a: number,
-  b: number,
-  x: number
-) => {
+export type EasingType = keyof typeof easing;
+
+export const lerp = (ease: EasingType, a: number, b: number, x: number) => {
   const f = easing[ease];
   const d = b - a;
   const t = f(0 > x ? 0 : 1 < x ? 1 : x);
