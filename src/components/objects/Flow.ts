@@ -27,13 +27,12 @@ export class Flow<T> {
   static async loop(fn: <T extends Symbol>(end: T) => Promise<void | T>) {
     const loopEnd = Symbol("LOOP_END");
     await (async () => {
-      // const prev = $app.time;
       while (1) {
+        const prev = $app.frameCount;
         if ((await fn(loopEnd)) === loopEnd) break;
-        await $app._watcher.waitNextFrame();
-        // if (prev === $app.time) {
-        //   throw new Error("無限ループによるフリーズを回避しました");
-        // }
+        if (prev === $app.frameCount) {
+          await $app._watcher.waitNextFrame();
+        }
       }
     })();
   }
