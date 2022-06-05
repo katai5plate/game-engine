@@ -40,10 +40,10 @@ export class Touch {
    */
   createInput() {
     return {
-      onDown: (e: ListenerFn) => this.#onDown(e),
-      onUp: (e: ListenerFn) => this.#onUp(e),
-      onOver: (e: ListenerFn) => this.#onOver(e),
-      onOut: (e: ListenerFn) => this.#onOut(e),
+      onDown: () => this.#onDown(),
+      onUp: () => this.#onUp(),
+      onOver: () => this.#onOver(),
+      onOut: () => this.#onOut(),
     };
   }
   /**
@@ -138,25 +138,25 @@ export class Touch {
     this.#state = TouchState.normal;
     this.#callbacks.onNormal?.();
   }
-  #onDown(e: ListenerFn) {
+  #onDown() {
     if (this.#isDown === false) {
       this.#isDown = true;
       this.#event();
     }
   }
-  #onUp(e: ListenerFn) {
+  #onUp() {
     if (this.#isDown === true) {
       this.#isDown = false;
       this.#event();
     }
   }
-  #onOver(e: ListenerFn) {
+  #onOver() {
     if (this.#isOver === false) {
       this.#isOver = true;
       this.#event();
     }
   }
-  #onOut(e: ListenerFn) {
+  #onOut() {
     if (this.#isOver === true) {
       this.#isOver = false;
       this.#event();

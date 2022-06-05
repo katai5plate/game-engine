@@ -8,6 +8,7 @@ import { ResizeManager } from "./components/managers/ResizeManager";
 import { SceneManager } from "./components/managers/SceneManager";
 import { WatchManager } from "./components/managers/WatcherManager";
 import { SceneData } from "./components/objects/Scene";
+import { TouchableSprite } from "./components/ui/atoms/TouchableSprite";
 import { toGlobalForDebug, uuid } from "./utils/helper";
 
 export class App extends PIXI.Application {
@@ -15,8 +16,8 @@ export class App extends PIXI.Application {
   time: number = 0;
   deltaTime: number = 0;
   frameCount: number = 0;
-
-  _appkey: string = uuid();
+  width: number;
+  height: number;
 
   _key: KeyboardManager;
   _watcher: WatchManager;
@@ -27,12 +28,18 @@ export class App extends PIXI.Application {
   constructor(
     initialScene: SceneData<any>,
     options: PIXI.IApplicationOptions & {
+      // 元からあるものを必須にする用
+      width: number;
+      height: number;
+      // ここから固有
       title: string;
     }
   ) {
     const { title, ...rest } = options;
     super(rest);
     globalThis.$app = this;
+    this.width = rest.width;
+    this.height = rest.height;
     document.title = title;
     document.body.appendChild(this.view);
 
@@ -53,6 +60,10 @@ export class App extends PIXI.Application {
       this._key._update();
       this._watcher._update(deltaTime);
     });
+
+    // ドット絵ぼやけ対策
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    this.view.style.imageRendering = "pixelated";
   }
   getKey(code: KeyboardCodeNames) {
     return {

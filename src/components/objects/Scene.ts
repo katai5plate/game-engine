@@ -34,10 +34,16 @@ import * as PIXI from "pixi.js";
 export class Scene extends PIXI.Container {
   isReady: boolean;
   isPlaying: boolean;
+  interactivePanel: PIXI.Sprite;
   static assetUrls: string[] = [];
   constructor() {
     super();
     this.isReady = this.isPlaying = false;
+    this.interactivePanel = new PIXI.Sprite();
+    this.interactivePanel.width = $app.width;
+    this.interactivePanel.height = $app.height;
+    this.interactivePanel.interactive = true;
+    this.spawn(this.interactivePanel);
   }
   /** main() を実行 */
   ready() {

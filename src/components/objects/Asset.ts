@@ -29,6 +29,9 @@ export class Asset {
     if (type === this.#extToAssetType(ext)) return;
     throw new Error("素材フォーマットに対応していない機能は使用できません");
   }
+  toLoaderResource() {
+    return this.#resource;
+  }
   toTexture() {
     this.#checkDataExt("image");
     return this.#resource.texture!;

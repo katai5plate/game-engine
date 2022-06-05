@@ -50385,6 +50385,13 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
 
     _this = _super.call(this);
     _this.isReady = _this.isPlaying = false;
+    _this.interactivePanel = new PIXI.Sprite();
+    _this.interactivePanel.width = $app.width;
+    _this.interactivePanel.height = $app.height;
+    _this.interactivePanel.interactive = true;
+
+    _this.spawn(_this.interactivePanel);
+
     return _this;
   }
   /** main() を実行 */
@@ -50893,8 +50900,6 @@ var SceneManager_1 = require("./components/managers/SceneManager");
 
 var WatcherManager_1 = require("./components/managers/WatcherManager");
 
-var helper_1 = require("./utils/helper");
-
 var App = /*#__PURE__*/function (_PIXI$Application) {
   _inherits(App, _PIXI$Application);
 
@@ -50914,12 +50919,13 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
     _this.time = 0;
     _this.deltaTime = 0;
-    _this.frameCount = 0;
-    _this._appkey = (0, helper_1.uuid)(); // #resizer: ResizeManager;
+    _this.frameCount = 0; // #resizer: ResizeManager;
 
     _App_scener.set(_assertThisInitialized(_this), void 0);
 
     globalThis.$app = _assertThisInitialized(_this);
+    _this.width = rest.width;
+    _this.height = rest.height;
     document.title = title;
     document.body.appendChild(_this.view);
     _this._key = new KeyboardManager_1.KeyboardManager();
@@ -50945,8 +50951,11 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
       _this._key._update();
 
       _this._watcher._update(deltaTime);
-    });
+    }); // ドット絵ぼやけ対策
 
+
+    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+    _this.view.style.imageRendering = "pixelated";
     return _this;
   }
 
@@ -50984,8 +50993,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 exports.App = App;
 _App_scener = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./utils/helper":"utils/helper.ts"}],"../node_modules/easyrpg-rtp/Picture/Cloud.png":[function(require,module,exports) {
-module.exports="Cloud.47e30f13.png";
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
+module.exports="World.bd98eeb1.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
 
@@ -51069,6 +51078,11 @@ var Asset = /*#__PURE__*/function () {
   }
 
   _createClass(Asset, [{
+    key: "toLoaderResource",
+    value: function toLoaderResource() {
+      return __classPrivateFieldGet(this, _Asset_resource, "f");
+    }
+  }, {
     key: "toTexture",
     value: function toTexture() {
       __classPrivateFieldGet(this, _Asset_instances, "m", _Asset_checkDataExt).call(this, "image");
@@ -51117,1131 +51131,1854 @@ _Asset_resource = new WeakMap(), _Asset_instances = new WeakSet(), _Asset_extToA
   if (type === __classPrivateFieldGet(this, _Asset_instances, "m", _Asset_extToAssetType).call(this, ext)) return;
   throw new Error("素材フォーマットに対応していない機能は使用できません");
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"../node_modules/ts-easing/lib/index.js":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.easing = {
-    // No easing, no acceleration
-    linear: function (t) { return t; },
-    // Accelerates fast, then slows quickly towards end.
-    quadratic: function (t) { return t * (-(t * t) * t + 4 * t * t - 6 * t + 4); },
-    // Overshoots over 1 and then returns to 1 towards end.
-    cubic: function (t) { return t * (4 * t * t - 9 * t + 6); },
-    // Overshoots over 1 multiple times - wiggles around 1.
-    elastic: function (t) { return t * (33 * t * t * t * t - 106 * t * t * t + 126 * t * t - 67 * t + 15); },
-    // Accelerating from zero velocity
-    inQuad: function (t) { return t * t; },
-    // Decelerating to zero velocity
-    outQuad: function (t) { return t * (2 - t); },
-    // Acceleration until halfway, then deceleration
-    inOutQuad: function (t) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; },
-    // Accelerating from zero velocity
-    inCubic: function (t) { return t * t * t; },
-    // Decelerating to zero velocity
-    outCubic: function (t) { return (--t) * t * t + 1; },
-    // Acceleration until halfway, then deceleration
-    inOutCubic: function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1; },
-    // Accelerating from zero velocity
-    inQuart: function (t) { return t * t * t * t; },
-    // Decelerating to zero velocity
-    outQuart: function (t) { return 1 - (--t) * t * t * t; },
-    // Acceleration until halfway, then deceleration
-    inOutQuart: function (t) { return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t; },
-    // Accelerating from zero velocity
-    inQuint: function (t) { return t * t * t * t * t; },
-    // Decelerating to zero velocity
-    outQuint: function (t) { return 1 + (--t) * t * t * t * t; },
-    // Acceleration until halfway, then deceleration
-    inOutQuint: function (t) { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; },
-    // Accelerating from zero velocity
-    inSine: function (t) { return -Math.cos(t * (Math.PI / 2)) + 1; },
-    // Decelerating to zero velocity
-    outSine: function (t) { return Math.sin(t * (Math.PI / 2)); },
-    // Accelerating until halfway, then decelerating
-    inOutSine: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
-    // Exponential accelerating from zero velocity
-    inExpo: function (t) { return Math.pow(2, 10 * (t - 1)); },
-    // Exponential decelerating to zero velocity
-    outExpo: function (t) { return -Math.pow(2, -10 * t) + 1; },
-    // Exponential accelerating until halfway, then decelerating
-    inOutExpo: function (t) {
-        t /= .5;
-        if (t < 1)
-            return Math.pow(2, 10 * (t - 1)) / 2;
-        t--;
-        return (-Math.pow(2, -10 * t) + 2) / 2;
-    },
-    // Circular accelerating from zero velocity
-    inCirc: function (t) { return -Math.sqrt(1 - t * t) + 1; },
-    // Circular decelerating to zero velocity Moves VERY fast at the beginning and
-    // then quickly slows down in the middle. This tween can actually be used
-    // in continuous transitions where target value changes all the time,
-    // because of the very quick start, it hides the jitter between target value changes.
-    outCirc: function (t) { return Math.sqrt(1 - (t = t - 1) * t); },
-    // Circular acceleration until halfway, then deceleration
-    inOutCirc: function (t) {
-        t /= .5;
-        if (t < 1)
-            return -(Math.sqrt(1 - t * t) - 1) / 2;
-        t -= 2;
-        return (Math.sqrt(1 - t * t) + 1) / 2;
-    }
-};
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js":[function(require,module,exports) {
 
-},{}],"utils/math.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.lerp = void 0;
+exports.TilemapShader = exports.TilemapGeometry = exports.Tilemap = exports.TileRenderer = exports.TextileResource = exports.RectTileLayer = exports.POINT_STRUCT_SIZE = exports.Constant = exports.CompositeTilemap = exports.CompositeRectTileLayer = exports.CanvasTileRenderer = void 0;
+exports.fillSamplers = fillSamplers;
+exports.generateFragmentSrc = generateFragmentSrc;
+exports.settings = exports.pixi_tilemap = void 0;
 
-var ts_easing_1 = require("ts-easing");
+var _display = require("@pixi/display");
 
-var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
-  inElastic: function inElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
-  },
-  outElastic: function outElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
-  },
-  inOutElastic: function inOutElastic(x) {
-    var a = 2 * Math.PI / 4.5;
-    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
-  },
-  inBack: function inBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return b * x * x * x - a * x * x;
-  },
-  outBack: function outBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
-  },
-  inOutBack: function inOutBack(x) {
-    var a = 1.70158;
-    var b = a * 1.525;
-    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
-  },
-  inBounce: function inBounce(x) {
-    return 1 - easing.outBounce(1 - x);
-  },
-  outBounce: function outBounce(x) {
-    var a = 7.5625;
-    var b = 2.75;
+var _core = require("@pixi/core");
 
-    if (x < 1 / b) {
-      return a * x * x;
-    } else if (x < 2 / b) {
-      return a * (x -= 1.5 / b) * x + 0.75;
-    } else if (x < 2.5 / b) {
-      return a * (x -= 2.25 / b) * x + 0.9375;
-    } else {
-      return a * (x -= 2.625 / b) * x + 0.984375;
-    }
-  },
-  inOutBounce: function inOutBounce(x) {
-    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
+var _constants = require("@pixi/constants");
+
+var _math = require("@pixi/math");
+
+var _utils = require("@pixi/utils");
+
+/* eslint-disable */
+
+/*!
+ * @pixi/tilemap - v3.2.2
+ * Compiled Fri, 22 Oct 2021 12:27:49 UTC
+ *
+ * @pixi/tilemap is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ * 
+ * Copyright 2019-2020, Ivan Popelyshev, All Rights Reserved
+ */
+
+/**
+ * The renderer plugin for canvas. It isn't registered by default.
+ *
+ * ```
+ * import { CanvasTileRenderer } from '@pixi/tilemap';
+ * import { CanvasRenderer } from '@pixi/canvas-core';
+ *
+ * // You must register this yourself (optional). @pixi/tilemap doesn't do it to
+ * // prevent a hard dependency on @pixi/canvas-core.
+ * CanvasRenderer.registerPlugin('tilemap', CanvasTileRenderer);
+ * ```
+ */
+// TODO: Move to @pixi/tilemap-canvas
+class CanvasTileRenderer {
+  /** The renderer */
+
+  /** The global tile animation state */
+  __init() {
+    this.tileAnim = [0, 0];
   }
-});
+  /** @deprecated */
 
-var lerp = function lerp(ease, a, b, x) {
-  var f = easing[ease];
-  var d = b - a;
-  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
-  var r = a + t * d;
-  return r;
-};
 
-exports.lerp = lerp;
-},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/Flow.ts":[function(require,module,exports) {
-"use strict";
+  __init2() {
+    this.dontUseTransform = false;
+  }
+  /** @param renderer */
 
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+  constructor(renderer) {
+    CanvasTileRenderer.prototype.__init.call(this);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+    CanvasTileRenderer.prototype.__init2.call(this);
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+    this.renderer = renderer;
+    this.tileAnim = [0, 0];
+  } // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
+  static getInstance(renderer) {
+    if (!renderer.plugins.tilemap) {
+      renderer.plugins.tilemap = new CanvasTileRenderer(renderer);
+    }
+
+    return renderer.plugins.tilemap;
   }
 
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
+}
+/**
+ * These are additional @pixi/tilemap options.
+ *
+ * This settings should not be changed after the renderer has initialized; otherwise, the behavior
+ * is undefined.
+ */
 
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
 
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
+exports.CanvasTileRenderer = CanvasTileRenderer;
+const settings = {
+  /** The default number of textures per tilemap in a tilemap composite. */
+  TEXTURES_PER_TILEMAP: 16,
 
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
+  /**
+   * The width/height of each texture tile in a {@link TEXTILE_DIMEN}. This is 1024px by default.
+   *
+   * This should fit all tile base-textures; otherwise, {@link TextileResource} may fail to correctly
+   * upload the textures togther in a tiled fashion.
+   */
+  TEXTILE_DIMEN: 1024,
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Flow = void 0;
+  /**
+   * The number of texture tiles per {@link TextileResource}.
+   *
+   * Texture tiling is disabled by default, and so this is set to `1` by default. If it is set to a
+   * higher value, textures will be uploaded together in a tiled fashion.
+   *
+   * Since {@link TextileResource} is a dual-column format, this should be even for packing
+   * efficiency. The optimal value is usually 4.
+   */
+  TEXTILE_UNITS: 1,
 
-var math_1 = require("../../utils/math");
+  /** The scaling mode of the combined texture tiling. */
+  TEXTILE_SCALE_MODE: _constants.SCALE_MODES.LINEAR,
 
-var Flow = /*#__PURE__*/function () {
-  function Flow(target, fn) {
-    _classCallCheck(this, Flow);
+  /** This will enable 32-bit index buffers. It's useful when you have more than 16K tiles. */
+  use32bitIndex: false,
 
-    fn(target);
+  /** Flags whether textiles should be cleared when each tile is uploaded. */
+  DO_CLEAR: true,
+
+  // Backward compatibility
+  get maxTextures() {
+    return this.MAX_TEXTURES;
+  },
+
+  set maxTextures(value) {
+    this.MAX_TEXTURES = value;
+  },
+
+  get boundSize() {
+    return this.TEXTURE_TILE_DIMEN;
+  },
+
+  set boundSize(value) {
+    this.TILE_TEXTURE_DIMEN = value;
+  },
+
+  get boundCountPerBuffer() {
+    return this.TEXTILE_UNITS;
+  },
+
+  set boundCountPerBuffer(value) {
+    this.TEXTILE_UNITS = value;
   }
 
-  _createClass(Flow, null, [{
-    key: "time",
-    value: function time(resolveTime, onProgress) {
-      return $app._watcher.waitTime(resolveTime, onProgress);
-    }
-  }, {
-    key: "tween",
-    value: function tween(_ref, fn) {
-      var ease = _ref.ease,
-          time = _ref.time,
-          from = _ref.from,
-          to = _ref.to;
-      return Flow.time(time, function (_ref2) {
-        var resolvePer = _ref2.resolvePer;
-        fn((0, math_1.lerp)(ease, from, to, resolvePer));
-      });
-    }
-  }, {
-    key: "tween2D",
-    value: function tween2D(_ref3, fn) {
-      var ease = _ref3.ease,
-          time = _ref3.time,
-          from = _ref3.from,
-          to = _ref3.to;
-      var easeX;
-      var easeY;
+}; // @deprecated
 
-      if (_typeof(ease) === "object") {
-        var _ref4 = [ease.x, ease.y];
-        easeX = _ref4[0];
-        easeY = _ref4[1];
-      } else {
-        easeX = ease;
-        easeY = ease;
-      }
+exports.settings = settings;
+const Constant = settings;
+exports.Constant = Constant;
 
-      return Flow.time(time, function (_ref5) {
-        var resolvePer = _ref5.resolvePer;
-        fn({
-          x: (0, math_1.lerp)(easeX, from.x, to.x, resolvePer),
-          y: (0, math_1.lerp)(easeY, from.y, to.y, resolvePer)
-        });
-      });
-    }
-  }, {
-    key: "parallel",
-    value: function parallel(promises) {
-      return Promise.all(promises);
-    }
-  }, {
-    key: "when",
-    value: function when(resolveCondition, onProgress) {
-      return $app._watcher.waitOn(resolveCondition, onProgress);
-    }
-  }, {
-    key: "loop",
-    value: function loop(fn) {
-      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var _this = this;
-
-        var loopEnd;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                loopEnd = Symbol("LOOP_END");
-                _context2.next = 3;
-                return function () {
-                  return __awaiter(_this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-                    var prev;
-                    return _regeneratorRuntime().wrap(function _callee$(_context) {
-                      while (1) {
-                        switch (_context.prev = _context.next) {
-                          case 0:
-                            if (!1) {
-                              _context.next = 13;
-                              break;
-                            }
-
-                            prev = $app.frameCount;
-                            _context.next = 4;
-                            return fn(loopEnd);
-
-                          case 4:
-                            _context.t0 = _context.sent;
-                            _context.t1 = loopEnd;
-
-                            if (!(_context.t0 === _context.t1)) {
-                              _context.next = 8;
-                              break;
-                            }
-
-                            return _context.abrupt("break", 13);
-
-                          case 8:
-                            if (!(prev === $app.frameCount)) {
-                              _context.next = 11;
-                              break;
-                            }
-
-                            _context.next = 11;
-                            return $app._watcher.waitNextFrame();
-
-                          case 11:
-                            _context.next = 0;
-                            break;
-
-                          case 13:
-                          case "end":
-                            return _context.stop();
-                        }
-                      }
-                    }, _callee);
-                  }));
-                }();
-
-              case 3:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-    }
-  }]);
-
-  return Flow;
-}();
-
-exports.Flow = Flow;
-Flow.LOOPBACK = Symbol("LOOPBACK");
-Flow.use = {
-  moveLikeRPG: function moveLikeRPG(target, time, range) {
-    var _ref6 = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {},
-        keys = _ref6.keys,
-        ease = _ref6.ease;
-
-    return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _keys, _ease, x, y, pressed;
-
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _keys = keys !== null && keys !== void 0 ? keys : {
-                up: ["UP"],
-                down: ["DOWN"],
-                left: ["LEFT"],
-                right: ["RIGHT"]
-              };
-              _ease = ease !== null && ease !== void 0 ? ease : "linear";
-              x = target.x, y = target.y;
-
-              pressed = function pressed(names) {
-                return names.find(function (k) {
-                  return $app.getKey(k).isPressed;
-                });
-              };
-
-              if (!pressed(_keys.left)) {
-                _context3.next = 9;
-                break;
-              }
-
-              _context3.next = 7;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: x,
-                to: x - range
-              }, function (n) {
-                target.x = n;
-              });
-
-            case 7:
-              _context3.next = 22;
-              break;
-
-            case 9:
-              if (!pressed(_keys.right)) {
-                _context3.next = 14;
-                break;
-              }
-
-              _context3.next = 12;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: x,
-                to: x + range
-              }, function (n) {
-                target.x = n;
-              });
-
-            case 12:
-              _context3.next = 22;
-              break;
-
-            case 14:
-              if (!pressed(_keys.up)) {
-                _context3.next = 19;
-                break;
-              }
-
-              _context3.next = 17;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: y,
-                to: y - range
-              }, function (n) {
-                target.y = n;
-              });
-
-            case 17:
-              _context3.next = 22;
-              break;
-
-            case 19:
-              if (!pressed(_keys.down)) {
-                _context3.next = 22;
-                break;
-              }
-
-              _context3.next = 22;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: y,
-                to: y + range
-              }, function (n) {
-                target.y = n;
-              });
-
-            case 22:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3);
-    }));
+function _nullishCoalesce(lhs, rhsFn) {
+  if (lhs != null) {
+    return lhs;
+  } else {
+    return rhsFn();
   }
-};
-},{"../../utils/math":"utils/math.ts"}],"filters/BrightnessFilter.ts":[function(require,module,exports) {
-"use strict";
+}
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+var POINT_STRUCT;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+(function (POINT_STRUCT) {
+  const U = 0;
+  POINT_STRUCT[POINT_STRUCT["U"] = U] = "U";
+  const V = U + 1;
+  POINT_STRUCT[POINT_STRUCT["V"] = V] = "V";
+  const X = V + 1;
+  POINT_STRUCT[POINT_STRUCT["X"] = X] = "X";
+  const Y = X + 1;
+  POINT_STRUCT[POINT_STRUCT["Y"] = Y] = "Y";
+  const TILE_WIDTH = Y + 1;
+  POINT_STRUCT[POINT_STRUCT["TILE_WIDTH"] = TILE_WIDTH] = "TILE_WIDTH";
+  const TILE_HEIGHT = TILE_WIDTH + 1;
+  POINT_STRUCT[POINT_STRUCT["TILE_HEIGHT"] = TILE_HEIGHT] = "TILE_HEIGHT";
+  const ROTATE = TILE_HEIGHT + 1;
+  POINT_STRUCT[POINT_STRUCT["ROTATE"] = ROTATE] = "ROTATE";
+  const ANIM_X = ROTATE + 1;
+  POINT_STRUCT[POINT_STRUCT["ANIM_X"] = ANIM_X] = "ANIM_X";
+  const ANIM_Y = ANIM_X + 1;
+  POINT_STRUCT[POINT_STRUCT["ANIM_Y"] = ANIM_Y] = "ANIM_Y";
+  const TEXTURE_INDEX = ANIM_Y + 1;
+  POINT_STRUCT[POINT_STRUCT["TEXTURE_INDEX"] = TEXTURE_INDEX] = "TEXTURE_INDEX";
+  const ANIM_COUNT_X = TEXTURE_INDEX + 1;
+  POINT_STRUCT[POINT_STRUCT["ANIM_COUNT_X"] = ANIM_COUNT_X] = "ANIM_COUNT_X";
+  const ANIM_COUNT_Y = ANIM_COUNT_X + 1;
+  POINT_STRUCT[POINT_STRUCT["ANIM_COUNT_Y"] = ANIM_COUNT_Y] = "ANIM_COUNT_Y";
+  const ANIM_DIVISOR = ANIM_COUNT_Y + 1;
+  POINT_STRUCT[POINT_STRUCT["ANIM_DIVISOR"] = ANIM_DIVISOR] = "ANIM_DIVISOR";
+  const ALPHA = ANIM_DIVISOR + 1;
+  POINT_STRUCT[POINT_STRUCT["ALPHA"] = ALPHA] = "ALPHA";
+})(POINT_STRUCT || (POINT_STRUCT = {}));
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+const POINT_STRUCT_SIZE = Object.keys(POINT_STRUCT).length / 2;
+/**
+ * A rectangular tilemap implementation that renders a predefined set of tile textures.
+ *
+ * The {@link Tilemap.tileset tileset} of a tilemap defines the list of base-textures that can be painted in the
+ * tilemap. A texture is identified using its base-texture's index into the this list, i.e. changing the base-texture
+ * at a given index in the tileset modifies the paint of all tiles pointing to that index.
+ *
+ * The size of the tileset is limited by the texture units supported by the client device. The minimum supported
+ * value is 8, as defined by the WebGL 1 specification. `gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS`) can be used
+ * to extract this limit. {@link CompositeTilemap} can be used to get around this limit by layering multiple tilemap
+ * instances.
+ *
+ * @example
+ * import { Tilemap } from '@pixi/tilemap';
+ * import { Loader } from '@pixi/loaders';
+ *
+ * // Add the spritesheet into your loader!
+ * Loader.shared.add('atlas', 'assets/atlas.json');
+ *
+ * // Make the tilemap once the tileset assets are available.
+ * Loader.shared.load(function onTilesetLoaded()
+ * {
+ *      // The base-texture is shared between all the tile textures.
+ *      const tilemap = new Tilemap([Texture.from('grass.png').baseTexture])
+ *          .tile('grass.png', 0, 0)
+ *          .tile('grass.png', 100, 100)
+ *          .tile('brick_wall.png', 0, 100);
+ * });
+ */
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+exports.POINT_STRUCT_SIZE = POINT_STRUCT_SIZE;
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
-      }
-    };
+class Tilemap extends _display.Container {
+  __init() {
+    this.shadowColor = new Float32Array([0.0, 0.0, 0.0, 0.5]);
   }
 
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BrightnessFilter = void 0;
-
-var PIXI = __importStar(require("pixi.js"));
-/** 明るさフィルター */
-
-
-var BrightnessFilter = /*#__PURE__*/function (_PIXI$filters$ColorMa) {
-  _inherits(BrightnessFilter, _PIXI$filters$ColorMa);
-
-  var _super = _createSuper(BrightnessFilter);
-
-  function BrightnessFilter() {
-    _classCallCheck(this, BrightnessFilter);
-
-    return _super.call(this);
-  }
-  /** @param v -1 - 1 */
-
-
-  _createClass(BrightnessFilter, [{
-    key: "setBrightness",
-    value: function setBrightness(v) {
-      var b = 1 - v;
-      this.matrix = [b, 0, 0, 0, v].concat([0, b, 0, 0, v], [0, 0, b, 0, v], [0, 0, 0, 1, 0]);
-      return this;
-    }
-  }]);
-
-  return BrightnessFilter;
-}(PIXI.filters.ColorMatrixFilter);
-
-exports.BrightnessFilter = BrightnessFilter;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/Touch.ts":[function(require,module,exports) {
-"use strict";
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
-  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-
-var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
-  if (kind === "m") throw new TypeError("Private method is not writable");
-  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
-};
-
-var _Touch_instances, _Touch_isDown, _Touch_isOver, _Touch_state, _Touch_callbacks, _Touch_event, _Touch_onDownOver, _Touch_onDownOut, _Touch_onUpOver, _Touch_onUpOut, _Touch_onDown, _Touch_onUp, _Touch_onOver, _Touch_onOut;
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Touch = exports.TouchState = void 0;
-var TouchState;
-
-(function (TouchState) {
-  TouchState[TouchState["normal"] = 0] = "normal";
-  TouchState[TouchState["over"] = 1] = "over";
-  TouchState[TouchState["press"] = 2] = "press";
-  TouchState[TouchState["unknown"] = 3] = "unknown";
-})(TouchState = exports.TouchState || (exports.TouchState = {}));
-
-var Touch = /*#__PURE__*/function () {
-  function Touch() {
-    _classCallCheck(this, Touch);
-
-    _Touch_instances.add(this);
-
-    _Touch_isDown.set(this, false);
-
-    _Touch_isOver.set(this, false);
-
-    _Touch_state.set(this, TouchState.normal);
-
-    _Touch_callbacks.set(this, {});
+  __init2() {
+    this._globalMat = null;
   }
   /**
-   * 押下判定と当たり判定を設定するハンドラーを取得する
-   * ```ts
-   * const touch = new Touch();
-   * const {
-   *   onDown, // 押している状態
-   *   onUp, // 押していない状態
-   *   onOver, // 当たり判定内
-   *   onOut // 当たり判定外
-   * } = touch.createInput();
-   * this.on("touchstart", onDown)
-   * // :
-   * ```
+   * The tile animation frame.
+   *
+   * @see CompositeTilemap.tileAnim
    */
 
 
-  _createClass(Touch, [{
-    key: "createInput",
-    value: function createInput() {
-      var _this = this;
+  __init3() {
+    this.tileAnim = null;
+  }
+  /**
+   * This is the last uploaded size of the tilemap geometry.
+   * @ignore
+   */
 
-      return {
-        onDown: function onDown(e) {
-          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onDown).call(_this, e);
-        },
-        onUp: function onUp(e) {
-          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onUp).call(_this, e);
-        },
-        onOver: function onOver(e) {
-          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onOver).call(_this, e);
-        },
-        onOut: function onOut(e) {
-          return __classPrivateFieldGet(_this, _Touch_instances, "m", _Touch_onOut).call(_this, e);
+
+  __init4() {
+    this.modificationMarker = 0;
+  }
+  /** @ignore */
+
+
+  __init5() {
+    this.offsetX = 0;
+  }
+  /** @ignore */
+
+
+  __init6() {
+    this.offsetY = 0;
+  }
+  /** @ignore */
+
+
+  __init7() {
+    this.compositeParent = false;
+  }
+  /**
+   * The list of base-textures being used in the tilemap.
+   *
+   * This should not be shuffled after tiles have been added into this tilemap. Usually, only tile textures
+   * should be added after tiles have been added into the map.
+   */
+
+  /**
+   * The local bounds of the tilemap itself. This does not include DisplayObject children.
+   */
+
+
+  __init8() {
+    this.tilemapBounds = new _display.Bounds();
+  }
+  /** Flags whether any animated tile was added. */
+
+
+  __init9() {
+    this.hasAnimatedTile = false;
+  }
+  /** The interleaved geometry of the tilemap. */
+
+
+  __init10() {
+    this.pointsBuf = [];
+  }
+  /**
+   * @param tileset - The tileset to use for the tilemap. This can be reset later with {@link Tilemap.setTileset}. The
+   *      base-textures in this array must not be duplicated.
+   */
+
+
+  constructor(tileset) {
+    super();
+
+    Tilemap.prototype.__init.call(this);
+
+    Tilemap.prototype.__init2.call(this);
+
+    Tilemap.prototype.__init3.call(this);
+
+    Tilemap.prototype.__init4.call(this);
+
+    Tilemap.prototype.__init5.call(this);
+
+    Tilemap.prototype.__init6.call(this);
+
+    Tilemap.prototype.__init7.call(this);
+
+    Tilemap.prototype.__init8.call(this);
+
+    Tilemap.prototype.__init9.call(this);
+
+    Tilemap.prototype.__init10.call(this);
+
+    Tilemap.prototype.__init11.call(this);
+
+    Tilemap.prototype.__init12.call(this);
+
+    Tilemap.prototype.__init13.call(this);
+
+    Tilemap.prototype.__init14.call(this);
+
+    Tilemap.prototype.__init15.call(this);
+
+    Tilemap.prototype.__init16.call(this);
+
+    this.setTileset(tileset);
+  }
+  /**
+   * @returns The tileset of this tilemap.
+   */
+
+
+  getTileset() {
+    return this.tileset;
+  }
+  /**
+   * Define the tileset used by the tilemap.
+   *
+   * @param tileset - The list of textures to use in the tilemap. If a base-texture (not array) is passed, it will
+   *  be wrapped into an array. This should not contain any duplicates.
+   */
+
+
+  setTileset(tileset = []) {
+    if (!Array.isArray(tileset)) {
+      tileset = [tileset];
+    }
+
+    for (let i = 0; i < tileset.length; i++) {
+      if (tileset[i].baseTexture) {
+        tileset[i] = tileset[i].baseTexture;
+      }
+    }
+
+    this.tileset = tileset;
+    return this;
+  }
+  /**  Clears all the tiles added into this tilemap. */
+
+
+  clear() {
+    this.pointsBuf.length = 0;
+    this.modificationMarker = 0;
+    this.tilemapBounds.clear();
+    this.hasAnimatedTile = false;
+    return this;
+  }
+  /**
+   * Adds a tile that paints the given texture at (x, y).
+   *
+   * @param tileTexture - The tiling texture to render.
+   * @param x - The local x-coordinate of the tile's position.
+   * @param y - The local y-coordinate of the tile's position.
+   * @param options - Additional tile options.
+   * @param [options.u=texture.frame.x] - The x-coordinate of the texture in its base-texture's space.
+   * @param [options.v=texture.frame.y] - The y-coordinate of the texture in its base-texture's space.
+   * @param [options.tileWidth=texture.orig.width] - The local width of the tile.
+   * @param [options.tileHeight=texture.orig.height] - The local height of the tile.
+   * @param [options.animX=0] - For animated tiles, this is the "offset" along the x-axis for adjacent
+   *      animation frame textures in the base-texture.
+   * @param [options.animY=0] - For animated tiles, this is the "offset" along the y-axis for adjacent
+   *      animation frames textures in the base-texture.
+   * @param [options.rotate=0]
+   * @param [options.animCountX=1024] - For animated tiles, this is the number of animation frame textures
+   *      per row.
+   * @param [options.animCountY=1024] - For animated tiles, this is the number of animation frame textures
+   *      per column.
+   * @param [options.animDivisor=1] - For animated tiles, this is the animation duration of each frame
+   * @param [options.alpha=1] - Tile alpha
+   * @return This tilemap, good for chaining.
+   */
+
+
+  tile(tileTexture, x, y, options = {}) {
+    let baseTexture;
+    let textureIndex = -1;
+
+    if (typeof tileTexture === 'number') {
+      textureIndex = tileTexture;
+      baseTexture = this.tileset[textureIndex];
+    } else {
+      let texture;
+
+      if (typeof tileTexture === 'string') {
+        texture = _core.Texture.from(tileTexture);
+      } else {
+        texture = tileTexture;
+      }
+
+      const textureList = this.tileset;
+
+      for (let i = 0; i < textureList.length; i++) {
+        if (textureList[i] === texture.castToBaseTexture()) {
+          textureIndex = i;
+          break;
         }
+      }
+
+      if ('baseTexture' in texture) {
+        options.u = _nullishCoalesce(options.u, () => texture.frame.x);
+        options.v = _nullishCoalesce(options.v, () => texture.frame.y);
+        options.tileWidth = _nullishCoalesce(options.tileWidth, () => texture.orig.width);
+        options.tileHeight = _nullishCoalesce(options.tileHeight, () => texture.orig.height);
+      }
+
+      baseTexture = texture.castToBaseTexture();
+    }
+
+    if (!baseTexture || textureIndex < 0) {
+      console.error('The tile texture was not found in the tilemap tileset.');
+      return this;
+    }
+
+    const {
+      u = 0,
+      v = 0,
+      tileWidth = baseTexture.realWidth,
+      tileHeight = baseTexture.realHeight,
+      animX = 0,
+      animY = 0,
+      rotate = 0,
+      animCountX = 1024,
+      animCountY = 1024,
+      animDivisor = 1,
+      alpha = 1
+    } = options;
+    const pb = this.pointsBuf;
+    this.hasAnimatedTile = this.hasAnimatedTile || animX > 0 || animY > 0;
+    pb.push(u);
+    pb.push(v);
+    pb.push(x);
+    pb.push(y);
+    pb.push(tileWidth);
+    pb.push(tileHeight);
+    pb.push(rotate);
+    pb.push(animX | 0);
+    pb.push(animY | 0);
+    pb.push(textureIndex);
+    pb.push(animCountX);
+    pb.push(animCountY);
+    pb.push(animDivisor);
+    pb.push(alpha);
+    this.tilemapBounds.addFramePad(x, y, x + tileWidth, y + tileHeight, 0, 0);
+    return this;
+  }
+  /** Changes the rotation of the last tile. */
+
+
+  tileRotate(rotate) {
+    const pb = this.pointsBuf;
+    pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.TEXTURE_INDEX)] = rotate;
+  }
+  /** Changes the `animX`, `animCountX` of the last tile. */
+
+
+  tileAnimX(offset, count) {
+    const pb = this.pointsBuf;
+    pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ANIM_X)] = offset;
+    pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ANIM_COUNT_X)] = count; // pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ANIM_DIVISOR)] = duration;
+  }
+  /** Changes the `animY`, `animCountY` of the last tile. */
+
+
+  tileAnimY(offset, count) {
+    const pb = this.pointsBuf;
+    pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ANIM_Y)] = offset;
+    pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ANIM_COUNT_Y)] = count;
+  }
+  /** Changes the `animDivisor` value of the last tile. */
+
+
+  tileAnimDivisor(divisor) {
+    const pb = this.pointsBuf;
+    pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ANIM_DIVISOR)] = divisor;
+  }
+
+  tileAlpha(alpha) {
+    const pb = this.pointsBuf;
+    pb[pb.length - (POINT_STRUCT_SIZE - POINT_STRUCT.ALPHA)] = alpha;
+  }
+
+  __init11() {
+    this.renderCanvas = renderer => {
+      const plugin = CanvasTileRenderer.getInstance(renderer);
+
+      if (plugin && !plugin.dontUseTransform) {
+        const wt = this.worldTransform;
+        renderer.context.setTransform(wt.a, wt.b, wt.c, wt.d, wt.tx * renderer.resolution, wt.ty * renderer.resolution);
+      }
+
+      this.renderCanvasCore(renderer);
+    };
+  }
+
+  renderCanvasCore(renderer) {
+    if (this.tileset.length === 0) return;
+    const points = this.pointsBuf;
+    const tileAnim = this.tileAnim || renderer.plugins.tilemap && renderer.plugins.tilemap.tileAnim;
+    renderer.context.fillStyle = '#000000';
+
+    for (let i = 0, n = points.length; i < n; i += POINT_STRUCT_SIZE) {
+      let x1 = points[i + POINT_STRUCT.U];
+      let y1 = points[i + POINT_STRUCT.V];
+      const x2 = points[i + POINT_STRUCT.X];
+      const y2 = points[i + POINT_STRUCT.Y];
+      const w = points[i + POINT_STRUCT.TILE_WIDTH];
+      const h = points[i + POINT_STRUCT.TILE_HEIGHT];
+      x1 += points[i + POINT_STRUCT.ANIM_X] * tileAnim[0];
+      y1 += points[i + POINT_STRUCT.ANIM_Y] * tileAnim[1];
+      const textureIndex = points[i + POINT_STRUCT.TEXTURE_INDEX];
+      const alpha = points[i + POINT_STRUCT.ALPHA]; // canvas does not work with rotate yet
+
+      if (textureIndex >= 0 && this.tileset[textureIndex]) {
+        renderer.context.globalAlpha = alpha;
+        renderer.context.drawImage(this.tileset[textureIndex].getDrawableSource(), x1, y1, w, h, x2, y2, w, h);
+      } else {
+        renderer.context.globalAlpha = 0.5;
+        renderer.context.fillRect(x2, y2, w, h);
+      }
+
+      renderer.context.globalAlpha = 1;
+    }
+  }
+
+  __init12() {
+    this.vbId = 0;
+  }
+
+  __init13() {
+    this.vb = null;
+  }
+
+  __init14() {
+    this.vbBuffer = null;
+  }
+
+  __init15() {
+    this.vbArray = null;
+  }
+
+  __init16() {
+    this.vbInts = null;
+  }
+
+  destroyVb() {
+    if (this.vb) {
+      this.vb.destroy();
+      this.vb = null;
+    }
+  }
+
+  render(renderer) {
+    const plugin = renderer.plugins.tilemap;
+    const shader = plugin.getShader();
+    renderer.batch.setObjectRenderer(plugin);
+    this._globalMat = shader.uniforms.projTransMatrix;
+    renderer.globalUniforms.uniforms.projectionMatrix.copyTo(this._globalMat).append(this.worldTransform);
+    shader.uniforms.shadowColor = this.shadowColor;
+    shader.uniforms.animationFrame = this.tileAnim || plugin.tileAnim;
+    this.renderWebGLCore(renderer, plugin);
+  }
+
+  renderWebGLCore(renderer, plugin) {
+    const points = this.pointsBuf;
+    if (points.length === 0) return;
+    const rectsCount = points.length / POINT_STRUCT_SIZE;
+    const shader = plugin.getShader();
+    const textures = this.tileset;
+    if (textures.length === 0) return;
+    plugin.bindTileTextures(renderer, textures);
+    renderer.shader.bind(shader, false); // lost context! recover!
+
+    let vb = this.vb;
+
+    if (!vb) {
+      vb = plugin.createVb();
+      this.vb = vb;
+      this.vbId = vb.id;
+      this.vbBuffer = null;
+      this.modificationMarker = 0;
+    }
+
+    plugin.checkIndexBuffer(rectsCount, vb);
+    const boundCountPerBuffer = settings.TEXTILE_UNITS;
+    const vertexBuf = vb.getBuffer('aVertexPosition'); // if layer was changed, re-upload vertices
+
+    const vertices = rectsCount * vb.vertPerQuad;
+    if (vertices === 0) return;
+
+    if (this.modificationMarker !== vertices) {
+      this.modificationMarker = vertices;
+      const vs = vb.stride * vertices;
+
+      if (!this.vbBuffer || this.vbBuffer.byteLength < vs) {
+        // !@#$ happens, need resize
+        let bk = vb.stride;
+
+        while (bk < vs) {
+          bk *= 2;
+        }
+
+        this.vbBuffer = new ArrayBuffer(bk);
+        this.vbArray = new Float32Array(this.vbBuffer);
+        this.vbInts = new Uint32Array(this.vbBuffer);
+        vertexBuf.update(this.vbBuffer);
+      }
+
+      const arr = this.vbArray; // const ints = this.vbInts;
+      // upload vertices!
+
+      let sz = 0; // let tint = 0xffffffff;
+
+      let textureId = 0;
+      let shiftU = this.offsetX;
+      let shiftV = this.offsetY; // let tint = 0xffffffff;
+      // const tint = -1;
+
+      for (let i = 0; i < points.length; i += POINT_STRUCT_SIZE) {
+        const eps = 0.5;
+
+        if (this.compositeParent) {
+          const textureIndex = points[i + POINT_STRUCT.TEXTURE_INDEX];
+
+          if (boundCountPerBuffer > 1) {
+            // TODO: what if its more than 4?
+            textureId = textureIndex >> 2;
+            shiftU = this.offsetX * (textureIndex & 1);
+            shiftV = this.offsetY * (textureIndex >> 1 & 1);
+          } else {
+            textureId = textureIndex;
+            shiftU = 0;
+            shiftV = 0;
+          }
+        }
+
+        const x = points[i + POINT_STRUCT.X];
+        const y = points[i + POINT_STRUCT.Y];
+        const w = points[i + POINT_STRUCT.TILE_WIDTH];
+        const h = points[i + POINT_STRUCT.TILE_HEIGHT];
+        const u = points[i + POINT_STRUCT.U] + shiftU;
+        const v = points[i + POINT_STRUCT.V] + shiftV;
+        let rotate = points[i + POINT_STRUCT.ROTATE];
+        const animX = points[i + POINT_STRUCT.ANIM_X];
+        const animY = points[i + POINT_STRUCT.ANIM_Y];
+        const animWidth = points[i + POINT_STRUCT.ANIM_COUNT_X] || 1024;
+        const animHeight = points[i + POINT_STRUCT.ANIM_COUNT_Y] || 1024;
+        const animXEncoded = animX + animWidth * 2048;
+        const animYEncoded = animY + animHeight * 2048;
+        const animDivisor = points[i + POINT_STRUCT.ANIM_DIVISOR];
+        const alpha = points[i + POINT_STRUCT.ALPHA];
+        let u0;
+        let v0;
+        let u1;
+        let v1;
+        let u2;
+        let v2;
+        let u3;
+        let v3;
+
+        if (rotate === 0) {
+          u0 = u;
+          v0 = v;
+          u1 = u + w;
+          v1 = v;
+          u2 = u + w;
+          v2 = v + h;
+          u3 = u;
+          v3 = v + h;
+        } else {
+          let w2 = w / 2;
+          let h2 = h / 2;
+
+          if (rotate % 4 !== 0) {
+            w2 = h / 2;
+            h2 = w / 2;
+          }
+
+          const cX = u + w2;
+          const cY = v + h2;
+          rotate = _math.groupD8.add(rotate, _math.groupD8.NW);
+          u0 = cX + w2 * _math.groupD8.uX(rotate);
+          v0 = cY + h2 * _math.groupD8.uY(rotate);
+          rotate = _math.groupD8.add(rotate, 2); // rotate 90 degrees clockwise
+
+          u1 = cX + w2 * _math.groupD8.uX(rotate);
+          v1 = cY + h2 * _math.groupD8.uY(rotate);
+          rotate = _math.groupD8.add(rotate, 2);
+          u2 = cX + w2 * _math.groupD8.uX(rotate);
+          v2 = cY + h2 * _math.groupD8.uY(rotate);
+          rotate = _math.groupD8.add(rotate, 2);
+          u3 = cX + w2 * _math.groupD8.uX(rotate);
+          v3 = cY + h2 * _math.groupD8.uY(rotate);
+        }
+
+        arr[sz++] = x;
+        arr[sz++] = y;
+        arr[sz++] = u0;
+        arr[sz++] = v0;
+        arr[sz++] = u + eps;
+        arr[sz++] = v + eps;
+        arr[sz++] = u + w - eps;
+        arr[sz++] = v + h - eps;
+        arr[sz++] = animXEncoded;
+        arr[sz++] = animYEncoded;
+        arr[sz++] = textureId;
+        arr[sz++] = animDivisor;
+        arr[sz++] = alpha;
+        arr[sz++] = x + w;
+        arr[sz++] = y;
+        arr[sz++] = u1;
+        arr[sz++] = v1;
+        arr[sz++] = u + eps;
+        arr[sz++] = v + eps;
+        arr[sz++] = u + w - eps;
+        arr[sz++] = v + h - eps;
+        arr[sz++] = animXEncoded;
+        arr[sz++] = animYEncoded;
+        arr[sz++] = textureId;
+        arr[sz++] = animDivisor;
+        arr[sz++] = alpha;
+        arr[sz++] = x + w;
+        arr[sz++] = y + h;
+        arr[sz++] = u2;
+        arr[sz++] = v2;
+        arr[sz++] = u + eps;
+        arr[sz++] = v + eps;
+        arr[sz++] = u + w - eps;
+        arr[sz++] = v + h - eps;
+        arr[sz++] = animXEncoded;
+        arr[sz++] = animYEncoded;
+        arr[sz++] = textureId;
+        arr[sz++] = animDivisor;
+        arr[sz++] = alpha;
+        arr[sz++] = x;
+        arr[sz++] = y + h;
+        arr[sz++] = u3;
+        arr[sz++] = v3;
+        arr[sz++] = u + eps;
+        arr[sz++] = v + eps;
+        arr[sz++] = u + w - eps;
+        arr[sz++] = v + h - eps;
+        arr[sz++] = animXEncoded;
+        arr[sz++] = animYEncoded;
+        arr[sz++] = textureId;
+        arr[sz++] = animDivisor;
+        arr[sz++] = alpha;
+      }
+
+      vertexBuf.update(arr);
+    }
+
+    renderer.geometry.bind(vb, shader);
+    renderer.geometry.draw(_constants.DRAW_MODES.TRIANGLES, rectsCount * 6, 0);
+  }
+  /**
+   * @internal
+   * @ignore
+   */
+
+
+  isModified(anim) {
+    if (this.modificationMarker !== this.pointsBuf.length || anim && this.hasAnimatedTile) {
+      return true;
+    }
+
+    return false;
+  }
+  /**
+   * This will pull forward the modification marker.
+   *
+   * @internal
+   * @ignore
+   */
+
+
+  clearModify() {
+    this.modificationMarker = this.pointsBuf.length;
+  }
+  /** @override */
+
+
+  _calculateBounds() {
+    const {
+      minX,
+      minY,
+      maxX,
+      maxY
+    } = this.tilemapBounds;
+
+    this._bounds.addFrame(this.transform, minX, minY, maxX, maxY);
+  }
+  /** @override */
+
+
+  getLocalBounds(rect) {
+    // we can do a fast local bounds if the sprite has no children!
+    if (this.children.length === 0) {
+      return this.tilemapBounds.getRectangle(rect);
+    }
+
+    return super.getLocalBounds.call(this, rect);
+  }
+  /** @override */
+
+
+  destroy(options) {
+    super.destroy(options);
+    this.destroyVb();
+  }
+  /**
+   * Deprecated signature for {@link Tilemap.tile tile}.
+   *
+   * @deprecated Since @pixi/tilemap 3.
+   */
+
+
+  addFrame(texture, x, y, animX, animY) {
+    this.tile(texture, x, y, {
+      animX,
+      animY
+    });
+    return true;
+  }
+  /**
+   * Deprecated signature for {@link Tilemap.tile tile}.
+   *
+   * @deprecated Since @pixi/tilemap 3.
+   */
+  // eslint-disable-next-line max-params
+
+
+  addRect(textureIndex, u, v, x, y, tileWidth, tileHeight, animX = 0, animY = 0, rotate = 0, animCountX = 1024, animCountY = 1024, animDivisor = 1, alpha = 1) {
+    return this.tile(textureIndex, x, y, {
+      u,
+      v,
+      tileWidth,
+      tileHeight,
+      animX,
+      animY,
+      rotate,
+      animCountX,
+      animCountY,
+      animDivisor,
+      alpha
+    });
+  }
+
+}
+/**
+ * A tilemap composite that lazily builds tilesets layered into multiple tilemaps.
+ *
+ * The composite tileset is the concatenatation of the individual tilesets used in the tilemaps. You can
+ * preinitialized it by passing a list of tile textures to the constructor. Otherwise, the composite tilemap
+ * is lazily built as you add more tiles with newer tile textures. A new tilemap is created once the last
+ * tilemap has reached its limit (as set by {@link CompositeTilemap.texturesPerTilemap texturesPerTilemap}).
+ *
+ * @example
+ * import { Application } from '@pixi/app';
+ * import { CompositeTilemap } from '@pixi/tilemap';
+ * import { Loader } from '@pixi/loaders';
+ *
+ * // Setup view & stage.
+ * const app = new Application();
+ *
+ * document.body.appendChild(app.renderer.view);
+ * app.stage.interactive = true;
+ *
+ * // Global reference to the tilemap.
+ * let globalTilemap: CompositeTilemap;
+ *
+ * // Load the tileset spritesheet!
+ * Loader.shared.load('atlas.json');
+ *
+ * // Initialize the tilemap scene when the assets load.
+ * Loader.shared.load(function onTilesetLoaded()
+ * {
+ *      const tilemap = new CompositeTilemap();
+ *
+ *      // Setup the game level with grass and dungeons!
+ *      for (let x = 0; x < 10; x++)
+ *      {
+ *          for (let y = 0; y < 10; y++)
+ *          {
+ *              tilemap.tile(
+ *                  x % 2 === 0 && (x === y || x + y === 10) ? 'dungeon.png' : 'grass.png',
+ *                  x * 100,
+ *                  y * 100,
+ *              );
+ *          }
+ *      }
+ *
+ *      globalTilemap = app.stage.addChild(tilemap);
+ * });
+ *
+ * // Show a bomb at a random location whenever the user clicks!
+ * app.stage.on('click', function onClick()
+ * {
+ *      if (!globalTilemap) return;
+ *
+ *      const x = Math.floor(Math.random() * 10);
+ *      const y = Math.floor(Math.random() * 10);
+ *
+ *      globalTilemap.tile('bomb.png', x * 100, y * 100);
+ * });
+ */
+
+
+exports.Tilemap = exports.RectTileLayer = Tilemap;
+
+class CompositeTilemap extends _display.Container {
+  /** The hard limit on the number of tile textures used in each tilemap. */
+
+  /**
+   * The animation frame vector.
+   *
+   * Animated tiles have four parameters - `animX`, `animY`, `animCountX`, `animCountY`. The textures
+   * of adjacent animation frames are at offset `animX` or `animY` of each other, with `animCountX` per
+   * row and `animCountY` per column.
+   *
+   * The animation frame vector specifies which animation frame texture to use. If the x/y coordinate is
+   * larger than the `animCountX` or `animCountY` for a specific tile, the modulus is taken.
+   */
+  __init() {
+    this.tileAnim = null;
+  }
+  /** The last modified tilemap. */
+
+
+  __init2() {
+    this.lastModifiedTilemap = null;
+  }
+
+  __init3() {
+    this.modificationMarker = 0;
+  }
+
+  __init4() {
+    this.shadowColor = new Float32Array([0.0, 0.0, 0.0, 0.5]);
+  }
+
+  __init5() {
+    this._globalMat = null;
+  }
+  /**
+   * @param tileset - A list of tile base-textures that will be used to eagerly initialized the layered
+   *  tilemaps. This is only an performance optimization, and using {@link CompositeTilemap.tile tile}
+   *  will work equivalently.
+   */
+
+
+  constructor(tileset) {
+    super();
+
+    CompositeTilemap.prototype.__init.call(this);
+
+    CompositeTilemap.prototype.__init2.call(this);
+
+    CompositeTilemap.prototype.__init3.call(this);
+
+    CompositeTilemap.prototype.__init4.call(this);
+
+    CompositeTilemap.prototype.__init5.call(this);
+
+    CompositeTilemap.prototype.__init6.call(this);
+
+    this.tileset(tileset);
+    this.texturesPerTilemap = settings.TEXTURES_PER_TILEMAP;
+  }
+  /**
+   * This will preinitialize the tilesets of the layered tilemaps.
+   *
+   * If used after a tilemap has been created (or a tile added), this will overwrite the tile textures of the
+   * existing tilemaps. Passing the tileset to the constructor instead is the best practice.
+   *
+   * @param tileTextures - The list of tile textures that make up the tileset.
+   */
+
+
+  tileset(tileTextures) {
+    if (!tileTextures) {
+      tileTextures = [];
+    }
+
+    const texPerChild = this.texturesPerTilemap;
+    const len1 = this.children.length;
+    const len2 = Math.ceil(tileTextures.length / texPerChild);
+
+    for (let i = 0; i < Math.min(len1, len2); i++) {
+      this.children[i].setTileset(tileTextures.slice(i * texPerChild, (i + 1) * texPerChild));
+    }
+
+    for (let i = len1; i < len2; i++) {
+      const tilemap = new Tilemap(tileTextures.slice(i * texPerChild, (i + 1) * texPerChild));
+      tilemap.compositeParent = true;
+      tilemap.offsetX = settings.TEXTILE_DIMEN;
+      tilemap.offsetY = settings.TEXTILE_DIMEN; // TODO: Don't use children
+
+      this.addChild(tilemap);
+    }
+
+    return this;
+  }
+  /** Clears the tilemap composite. */
+
+
+  clear() {
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].clear();
+    }
+
+    this.modificationMarker = 0;
+    return this;
+  }
+  /** Changes the rotation of the last added tile. */
+
+
+  tileRotate(rotate) {
+    if (this.lastModifiedTilemap) {
+      this.lastModifiedTilemap.tileRotate(rotate);
+    }
+
+    return this;
+  }
+  /** Changes `animX`, `animCountX` of the last added tile. */
+
+
+  tileAnimX(offset, count) {
+    if (this.lastModifiedTilemap) {
+      this.lastModifiedTilemap.tileAnimX(offset, count);
+    }
+
+    return this;
+  }
+  /** Changes `animY`, `animCountY` of the last added tile. */
+
+
+  tileAnimY(offset, count) {
+    if (this.lastModifiedTilemap) {
+      this.lastModifiedTilemap.tileAnimY(offset, count);
+    }
+
+    return this;
+  }
+  /** Changes `tileAnimDivisor` value of the last added tile. */
+
+
+  tileAnimDivisor(divisor) {
+    if (this.lastModifiedTilemap) {
+      this.lastModifiedTilemap.tileAnimDivisor(divisor);
+    }
+
+    return this;
+  }
+  /**
+   * Adds a tile that paints the given tile texture at (x, y).
+   *
+   * @param tileTexture - The tile texture. You can pass an index into the composite tilemap as well.
+   * @param x - The local x-coordinate of the tile's location.
+   * @param y - The local y-coordinate of the tile's location.
+   * @param options - Additional options to pass to {@link Tilemap.tile}.
+   * @param [options.u=texture.frame.x] - The x-coordinate of the texture in its base-texture's space.
+   * @param [options.v=texture.frame.y] - The y-coordinate of the texture in its base-texture's space.
+   * @param [options.tileWidth=texture.orig.width] - The local width of the tile.
+   * @param [options.tileHeight=texture.orig.height] - The local height of the tile.
+   * @param [options.animX=0] - For animated tiles, this is the "offset" along the x-axis for adjacent
+   *      animation frame textures in the base-texture.
+   * @param [options.animY=0] - For animated tiles, this is the "offset" along the y-axis for adjacent
+   *      animation frames textures in the base-texture.
+   * @param [options.rotate=0]
+   * @param [options.animCountX=1024] - For animated tiles, this is the number of animation frame textures
+   *      per row.
+   * @param [options.animCountY=1024] - For animated tiles, this is the number of animation frame textures
+   *      per column.
+   * @param [options.animDivisor=1] - For animated tiles, this is the animation duration each frame
+   * @param [options.alpha=1] - Tile alpha
+   * @return This tilemap, good for chaining.
+   */
+
+
+  tile(tileTexture, x, y, options = {}) {
+    let tilemap = null;
+    const children = this.children;
+    this.lastModifiedTilemap = null;
+
+    if (typeof tileTexture === 'number') {
+      const childIndex = tileTexture / this.texturesPerTilemap >> 0;
+      let tileIndex = 0;
+      tilemap = children[childIndex];
+
+      if (!tilemap) {
+        tilemap = children[0]; // Silently fail if the tilemap doesn't exist
+
+        if (!tilemap) return this;
+        tileIndex = 0;
+      } else {
+        tileIndex = tileTexture % this.texturesPerTilemap;
+      }
+
+      tilemap.tile(tileIndex, x, y, options);
+    } else {
+      if (typeof tileTexture === 'string') {
+        tileTexture = _core.Texture.from(tileTexture);
+      } // Probe all tilemaps to find which tileset contains the base-texture.
+
+
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const tex = child.getTileset();
+
+        for (let j = 0; j < tex.length; j++) {
+          if (tex[j] === tileTexture.baseTexture) {
+            tilemap = child;
+            break;
+          }
+        }
+
+        if (tilemap) {
+          break;
+        }
+      } // If no tileset contains the base-texture, attempt to add it.
+
+
+      if (!tilemap) {
+        // Probe the tilemaps to find one below capacity. If so, add the texture into that tilemap.
+        for (let i = children.length - 1; i >= 0; i--) {
+          const child = children[i];
+
+          if (child.getTileset().length < this.texturesPerTilemap) {
+            tilemap = child;
+            child.getTileset().push(tileTexture.baseTexture);
+            break;
+          }
+        } // Otherwise, create a new tilemap initialized with that tile texture.
+
+
+        if (!tilemap) {
+          tilemap = new Tilemap(tileTexture.baseTexture);
+          tilemap.compositeParent = true;
+          tilemap.offsetX = settings.TEXTILE_DIMEN;
+          tilemap.offsetY = settings.TEXTILE_DIMEN;
+          this.addChild(tilemap);
+        }
+      }
+
+      tilemap.tile(tileTexture, x, y, options);
+    }
+
+    this.lastModifiedTilemap = tilemap;
+    return this;
+  }
+
+  renderCanvas(renderer) {
+    if (!this.visible || this.worldAlpha <= 0 || !this.renderable) {
+      return;
+    }
+
+    const tilemapPlugin = CanvasTileRenderer.getInstance(renderer);
+
+    if (tilemapPlugin && !tilemapPlugin.dontUseTransform) {
+      const wt = this.worldTransform;
+      renderer.context.setTransform(wt.a, wt.b, wt.c, wt.d, wt.tx * renderer.resolution, wt.ty * renderer.resolution);
+    }
+
+    const layers = this.children;
+
+    for (let i = 0; i < layers.length; i++) {
+      const layer = layers[i];
+      layer.tileAnim = this.tileAnim;
+      layer.renderCanvasCore(renderer);
+    }
+  }
+
+  render(renderer) {
+    if (!this.visible || this.worldAlpha <= 0 || !this.renderable) {
+      return;
+    }
+
+    const plugin = renderer.plugins.tilemap;
+    const shader = plugin.getShader();
+    renderer.batch.setObjectRenderer(plugin); // TODO: dont create new array, please
+
+    this._globalMat = shader.uniforms.projTransMatrix;
+    renderer.globalUniforms.uniforms.projectionMatrix.copyTo(this._globalMat).append(this.worldTransform);
+    shader.uniforms.shadowColor = this.shadowColor;
+    shader.uniforms.animationFrame = this.tileAnim || plugin.tileAnim;
+    renderer.shader.bind(shader, false);
+    const layers = this.children;
+
+    for (let i = 0; i < layers.length; i++) {
+      layers[i].renderWebGLCore(renderer, plugin);
+    }
+  }
+  /**
+   * @internal
+   * @ignore
+   */
+
+
+  isModified(anim) {
+    const layers = this.children;
+
+    if (this.modificationMarker !== layers.length) {
+      return true;
+    }
+
+    for (let i = 0; i < layers.length; i++) {
+      if (layers[i].isModified(anim)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+  /**
+   * @internal
+   * @ignore
+   */
+
+
+  clearModify() {
+    const layers = this.children;
+    this.modificationMarker = layers.length;
+
+    for (let i = 0; i < layers.length; i++) {
+      layers[i].clearModify();
+    }
+  }
+  /**
+   * @deprecated Since @pixi/tilemap 3.
+   * @see CompositeTilemap.tile
+   */
+
+
+  addFrame(texture, x, y, animX, animY, animWidth, animHeight, animDivisor, alpha) {
+    return this.tile(texture, x, y, {
+      animX,
+      animY,
+      animCountX: animWidth,
+      animCountY: animHeight,
+      animDivisor,
+      alpha
+    });
+  }
+  /**
+   * @deprecated @pixi/tilemap 3
+   * @see CompositeTilemap.tile
+   */
+  // eslint-disable-next-line max-params
+
+
+  addRect(textureIndex, u, v, x, y, tileWidth, tileHeight, animX, animY, rotate, animWidth, animHeight) {
+    const childIndex = textureIndex / this.texturesPerTilemap >> 0;
+    const textureId = textureIndex % this.texturesPerTilemap;
+
+    if (this.children[childIndex] && this.children[childIndex].getTileset()) {
+      this.lastModifiedTilemap = this.children[childIndex];
+      this.lastModifiedTilemap.addRect(textureId, u, v, x, y, tileWidth, tileHeight, animX, animY, rotate, animWidth, animHeight);
+    } else {
+      this.lastModifiedTilemap = null;
+    }
+
+    return this;
+  }
+  /**
+   * Alias for {@link CompositeTilemap.tileset tileset}.
+   *
+   * @deprecated Since @pixi/tilemap 3.
+   */
+
+
+  __init6() {
+    this.setBitmaps = this.tileset;
+  }
+  /**
+   * @deprecated Since @pixi/tilemap 3.
+   * @readonly
+   * @see CompositeTilemap.texturesPerTilemap
+   */
+
+
+  get texPerChild() {
+    return this.texturesPerTilemap;
+  }
+
+} // For some reason ESLint goes mad with indendation in this file ^&^
+
+/* eslint-disable indent */
+
+/**
+ * This texture tiling resource can be used to upload multiple base-textures together.
+ *
+ * This resource combines multiple base-textures into a "textile". They're laid out in
+ * a dual column format, placed in row-order order. The size of each tile is predefined,
+ * and defaults to {@link settings.TEXTILE_DIMEN}. This means that each input base-texture
+ * must is smaller than that along both its width and height.
+ *
+ * @see settings.TEXTILE_UNITS
+ */
+
+
+exports.CompositeTilemap = exports.CompositeRectTileLayer = CompositeTilemap;
+
+class TextileResource extends _core.Resource {
+  /** The base-texture that contains all the texture tiles. */
+  __init() {
+    this.baseTexture = null;
+  }
+
+  __init2() {
+    this._clearBuffer = null;
+  }
+  /**
+   * @param options - This will default to the "settings" exported by @pixi/tilemap.
+   * @param options.TEXTILE_DIMEN - The dimensions of each tile.
+   * @param options.TEXTILE_UNITS - The number of texture tiles.
+   */
+
+
+  constructor(options = settings) {
+    super(options.TEXTILE_DIMEN * 2, options.TEXTILE_DIMEN * Math.ceil(options.TEXTILE_UNITS / 2));
+
+    TextileResource.prototype.__init.call(this);
+
+    TextileResource.prototype.__init2.call(this);
+
+    const tiles = this.tiles = new Array(options.TEXTILE_UNITS);
+    this.doClear = !!options.DO_CLEAR;
+    this.tileDimen = options.TEXTILE_DIMEN;
+
+    for (let j = 0; j < options.TEXTILE_UNITS; j++) {
+      tiles[j] = {
+        dirtyId: 0,
+        x: options.TEXTILE_DIMEN * (j & 1),
+        y: options.TEXTILE_DIMEN * (j >> 1),
+        baseTexture: _core.Texture.WHITE.baseTexture
       };
     }
-    /**
-     * 各判定時に実行するコールバック関数を設定する
-     * @param callbacks
-     * ```ts
-     * const touch = new Touch();
-     * touch.connectOutput({
-     *   // クリックしたとき
-     *   onClick: this.onClick.bind(this),
-     *   // 押し終えたとき
-     *   onRelease: this.onRelease.bind(this),
-     *   // 当たり判定内に入った時
-     *   onFocus: this.onFocus.bind(this),
-     *   // 当たり判定外に出た時
-     *   onBlur: this.onBlur.bind(this),
-     *   // 通常状態になった時
-     *   onNormal: this.onNormal.bind(this),
-     *   // マウスオーバー状態になった時
-     *   onOver: this.onOver.bind(this),
-     *   // 押している状態になった時
-     *   onPress: this.onPress.bind(this),
-     *   // 当たり判定外なのに押下状態になっている時
-     *   onUnknown: this.onUnknown.bind(this),
-     * });
-     * ```
-     */
+  }
+  /**
+   * Sets the texture to be uploaded for the given tile.
+   *
+   * @param index - The index of the tile being set.
+   * @param texture - The texture with the base-texture to upload.
+   */
 
-  }, {
-    key: "connectOutput",
-    value: function connectOutput(callbacks) {
-      __classPrivateFieldSet(this, _Touch_callbacks, callbacks, "f");
+
+  tile(index, texture) {
+    const tile = this.tiles[index];
+
+    if (tile.baseTexture === texture) {
+      return;
     }
-  }]);
 
-  return Touch;
-}();
+    tile.baseTexture = texture;
+    this.baseTexture.update();
+    this.tiles[index].dirtyId = this.baseTexture.dirtyId;
+  }
+  /** @override */
 
-exports.Touch = Touch;
-_Touch_isDown = new WeakMap(), _Touch_isOver = new WeakMap(), _Touch_state = new WeakMap(), _Touch_callbacks = new WeakMap(), _Touch_instances = new WeakSet(), _Touch_event = function _Touch_event() {
-  if (__classPrivateFieldGet(this, _Touch_isDown, "f")) {
-    if (__classPrivateFieldGet(this, _Touch_isOver, "f")) {
-      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onDownOver).call(this);
-    } else {
-      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onDownOut).call(this);
+
+  bind(baseTexture) {
+    if (this.baseTexture) {
+      throw new Error('Only one baseTexture is allowed for this resource!');
     }
-  } else {
-    if (__classPrivateFieldGet(this, _Touch_isOver, "f")) {
-      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onUpOver).call(this);
-    } else {
-      __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_onUpOut).call(this);
+
+    this.baseTexture = baseTexture;
+    super.bind(baseTexture);
+  }
+  /** @override */
+
+
+  upload(renderer, texture, glTexture) {
+    const {
+      gl
+    } = renderer;
+    const {
+      width,
+      height
+    } = this;
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.alphaMode === undefined || texture.alphaMode === _constants.ALPHA_MODES.UNPACK);
+
+    if (glTexture.dirtyId < 0) {
+      glTexture.width = width;
+      glTexture.height = height;
+      gl.texImage2D(texture.target, 0, texture.format, width, height, 0, texture.format, texture.type, null);
     }
-  }
-}, _Touch_onDownOver = function _Touch_onDownOver() {
-  var _a, _b, _c, _d, _e, _f;
 
-  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.normal) {
-    (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onFocus) === null || _b === void 0 ? void 0 : _b.call(_a);
+    const doClear = this.doClear;
+    const tiles = this.tiles;
 
-    __classPrivateFieldSet(this, _Touch_state, TouchState.over, "f");
-  }
+    if (doClear && !this._clearBuffer) {
+      this._clearBuffer = new Uint8Array(settings.TEXTILE_DIMEN * settings.TEXTILE_DIMEN * 4);
+    }
 
-  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.over) {
-    (_d = (_c = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onClick) === null || _d === void 0 ? void 0 : _d.call(_c);
-  }
+    for (let i = 0; i < tiles.length; i++) {
+      const spr = tiles[i];
+      const tex = spr.baseTexture;
 
-  __classPrivateFieldSet(this, _Touch_state, TouchState.press, "f");
-
-  (_f = (_e = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onPress) === null || _f === void 0 ? void 0 : _f.call(_e);
-}, _Touch_onDownOut = function _Touch_onDownOut() {
-  var _a, _b;
-
-  if (__classPrivateFieldGet(this, _Touch_state, "f") !== TouchState.unknown) {// console.warn("ポインタが画面外なのに押下状態になっています");
-  }
-
-  (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onUnknown) === null || _b === void 0 ? void 0 : _b.call(_a);
-
-  __classPrivateFieldSet(this, _Touch_state, TouchState.unknown, "f");
-}, _Touch_onUpOver = function _Touch_onUpOver() {
-  var _a, _b, _c, _d, _e, _f;
-
-  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.normal) {
-    (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onFocus) === null || _b === void 0 ? void 0 : _b.call(_a);
-  }
-
-  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.press) {
-    (_d = (_c = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onRelease) === null || _d === void 0 ? void 0 : _d.call(_c);
-  }
-
-  (_f = (_e = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onOver) === null || _f === void 0 ? void 0 : _f.call(_e);
-
-  __classPrivateFieldSet(this, _Touch_state, TouchState.over, "f");
-}, _Touch_onUpOut = function _Touch_onUpOut() {
-  var _a, _b, _c, _d, _e, _f;
-
-  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.press) {
-    (_b = (_a = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onRelease) === null || _b === void 0 ? void 0 : _b.call(_a);
-
-    __classPrivateFieldSet(this, _Touch_state, TouchState.over, "f");
-  }
-
-  if (__classPrivateFieldGet(this, _Touch_state, "f") === TouchState.over) {
-    (_d = (_c = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onBlur) === null || _d === void 0 ? void 0 : _d.call(_c);
-  }
-
-  __classPrivateFieldSet(this, _Touch_state, TouchState.normal, "f");
-
-  (_f = (_e = __classPrivateFieldGet(this, _Touch_callbacks, "f")).onNormal) === null || _f === void 0 ? void 0 : _f.call(_e);
-}, _Touch_onDown = function _Touch_onDown(e) {
-  if (__classPrivateFieldGet(this, _Touch_isDown, "f") === false) {
-    __classPrivateFieldSet(this, _Touch_isDown, true, "f");
-
-    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
-  }
-}, _Touch_onUp = function _Touch_onUp(e) {
-  if (__classPrivateFieldGet(this, _Touch_isDown, "f") === true) {
-    __classPrivateFieldSet(this, _Touch_isDown, false, "f");
-
-    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
-  }
-}, _Touch_onOver = function _Touch_onOver(e) {
-  if (__classPrivateFieldGet(this, _Touch_isOver, "f") === false) {
-    __classPrivateFieldSet(this, _Touch_isOver, true, "f");
-
-    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
-  }
-}, _Touch_onOut = function _Touch_onOut(e) {
-  if (__classPrivateFieldGet(this, _Touch_isOver, "f") === true) {
-    __classPrivateFieldSet(this, _Touch_isOver, false, "f");
-
-    __classPrivateFieldGet(this, _Touch_instances, "m", _Touch_event).call(this);
-  }
-};
-},{}],"components/ui/atoms/TouchableSprite.ts":[function(require,module,exports) {
-"use strict";
-
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
+      if (glTexture.dirtyId >= this.tiles[i].dirtyId) {
+        continue;
       }
-    };
-  }
 
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
+      const res = tex.resource;
 
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
-var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
-  if (kind === "m") throw new TypeError("Private method is not writable");
-  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
-};
-
-var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
-  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-
-var _TouchableSprite_touch;
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.TouchableSprite = void 0;
-
-var PIXI = __importStar(require("pixi.js"));
-
-var Touch_1 = require("../../objects/Touch");
-
-var TouchableSprite = /*#__PURE__*/function (_PIXI$Sprite) {
-  _inherits(TouchableSprite, _PIXI$Sprite);
-
-  var _super = _createSuper(TouchableSprite);
-
-  function TouchableSprite(texture) {
-    var _this;
-
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        x = _ref.x,
-        y = _ref.y;
-
-    _classCallCheck(this, TouchableSprite);
-
-    _this = _super.call(this, texture);
-
-    _TouchableSprite_touch.set(_assertThisInitialized(_this), void 0);
-
-    _this.x = x !== null && x !== void 0 ? x : 0;
-    _this.y = y !== null && y !== void 0 ? y : 0;
-    _this.interactive = true;
-    _this.buttonMode = true;
-
-    __classPrivateFieldSet(_assertThisInitialized(_this), _TouchableSprite_touch, new Touch_1.Touch(), "f");
-
-    var _classPrivateFieldGe = __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").createInput(),
-        onDown = _classPrivateFieldGe.onDown,
-        onUp = _classPrivateFieldGe.onUp,
-        onOver = _classPrivateFieldGe.onOver,
-        onOut = _classPrivateFieldGe.onOut;
-
-    _this.on("pointerdown", onDown).on("pointerup", onUp).on("pointerupoutside", onUp).on("pointerover", onOver).on("pointerout", onOut) // マウス限定
-    .on("mousedown", onDown).on("mouseup", onUp).on("mouseupoutside", onUp).on("mouseover", onOver).on("mouseout", onOut) // タッチ限定
-    .on("touchstart", onDown).on("touchend", onUp).on("touchendoutside", onUp);
-
-    __classPrivateFieldGet(_assertThisInitialized(_this), _TouchableSprite_touch, "f").connectOutput({
-      onClick: _this.onClick.bind(_assertThisInitialized(_this)),
-      onRelease: _this.onRelease.bind(_assertThisInitialized(_this)),
-      onFocus: _this.onFocus.bind(_assertThisInitialized(_this)),
-      onBlur: _this.onBlur.bind(_assertThisInitialized(_this)),
-      onNormal: _this.onNormal.bind(_assertThisInitialized(_this)),
-      onOver: _this.onOver.bind(_assertThisInitialized(_this)),
-      onPress: _this.onPress.bind(_assertThisInitialized(_this)),
-      onUnknown: _this.onUnknown.bind(_assertThisInitialized(_this))
-    });
-
-    return _this;
-  }
-
-  _createClass(TouchableSprite, [{
-    key: "onBlur",
-    value: function onBlur() {// 継承先のために残す
-    }
-  }, {
-    key: "onRelease",
-    value: function onRelease() {// 継承先のために残す
-    }
-  }, {
-    key: "onFocus",
-    value: function onFocus() {// 継承先のために残す
-    }
-  }, {
-    key: "onClick",
-    value: function onClick() {// 継承先のために残す
-    }
-  }, {
-    key: "onNormal",
-    value: function onNormal() {// 継承先のために残す
-    }
-  }, {
-    key: "onOver",
-    value: function onOver() {// 継承先のために残す
-    }
-  }, {
-    key: "onPress",
-    value: function onPress() {// 継承先のために残す
-    }
-  }, {
-    key: "onUnknown",
-    value: function onUnknown() {// 継承先のために残す
-    }
-  }]);
-
-  return TouchableSprite;
-}(PIXI.Sprite);
-
-exports.TouchableSprite = TouchableSprite;
-_TouchableSprite_touch = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../objects/Touch":"components/objects/Touch.ts"}],"components/ui/atoms/Button.ts":[function(require,module,exports) {
-"use strict";
-
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = void 0;
-
-var BrightnessFilter_1 = require("../../../filters/BrightnessFilter");
-
-var TouchableSprite_1 = require("./TouchableSprite");
-
-var Button = /*#__PURE__*/function (_TouchableSprite_1$To) {
-  _inherits(Button, _TouchableSprite_1$To);
-
-  var _super = _createSuper(Button);
-
-  function Button(texture) {
-    var _this;
-
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        x = _ref.x,
-        y = _ref.y;
-
-    _classCallCheck(this, Button);
-
-    _this = _super.call(this, texture, {
-      x: x,
-      y: y
-    });
-    _this.isDown = false;
-    _this.isOver = false;
-
-    _this.anchor.set(0.5);
-
-    _this.brightnessFilter = new BrightnessFilter_1.BrightnessFilter();
-    _this.filters = [_this.brightnessFilter];
-    return _this;
-  }
-
-  _createClass(Button, [{
-    key: "onNormal",
-    value: function onNormal() {
-      this.brightnessFilter.setBrightness(0);
-    }
-  }, {
-    key: "onOver",
-    value: function onOver() {
-      this.brightnessFilter.setBrightness(0.25);
-    }
-  }, {
-    key: "onPress",
-    value: function onPress() {
-      this.brightnessFilter.setBrightness(-0.25);
-    }
-  }]);
-
-  return Button;
-}(TouchableSprite_1.TouchableSprite);
-
-exports.Button = Button;
-},{"../../../filters/BrightnessFilter":"filters/BrightnessFilter.ts","./TouchableSprite":"components/ui/atoms/TouchableSprite.ts"}],"components/ui/molecules/LabeledButton.ts":[function(require,module,exports) {
-"use strict";
-
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
+      if (!tex.valid || !res || !res.source) {
+        continue;
       }
-    };
+
+      if (doClear && (tex.width < this.tileDimen || tex.height < this.tileDimen)) {
+        gl.texSubImage2D(texture.target, 0, spr.x, spr.y, this.tileDimen, this.tileDimen, texture.format, texture.type, this._clearBuffer);
+      }
+
+      gl.texSubImage2D(texture.target, 0, spr.x, spr.y, texture.format, texture.type, res.source);
+    }
+
+    return true;
   }
 
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
+}
+/**
+ * This will generate fragment shader code that samples the correct texture into the "color" variable.
+ *
+ * @internal
+ * @ignore
+ * @param maxTextures - The texture array length in the shader's uniforms.
+ */
 
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
 
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+exports.TextileResource = TextileResource;
+
+function generateSampleSrc(maxTextures) {
+  let src = '';
+  src += '\n';
+  src += '\n';
+  src += 'if(vTextureId <= -1.0) {';
+  src += '\n\tcolor = shadowColor;';
+  src += '\n}';
+
+  for (let i = 0; i < maxTextures; i++) {
+    src += '\nelse ';
+
+    if (i < maxTextures - 1) {
+      src += `if(textureId == ${i}.0)`;
+    }
+
+    src += '\n{';
+    src += `\n\tcolor = texture2D(uSamplers[${i}], textureCoord * uSamplerSize[${i}]);`;
+    src += '\n}';
   }
 
-  __setModuleDefault(result, mod);
+  src += '\n';
+  src += '\n';
+  return src;
+}
+/**
+ * @internal
+ * @ignore
+ * @param shader
+ * @param maxTextures
+ */
 
-  return result;
-};
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LabeledButton = void 0;
+function fillSamplers(shader, maxTextures) {
+  const sampleValues = [];
 
-var PIXI = __importStar(require("pixi.js"));
+  for (let i = 0; i < maxTextures; i++) {
+    sampleValues[i] = i;
+  }
 
-var Button_1 = require("../atoms/Button");
+  shader.uniforms.uSamplers = sampleValues;
+  const samplerSize = [];
 
-var LabeledButton = /*#__PURE__*/function (_Button_1$Button) {
-  _inherits(LabeledButton, _Button_1$Button);
+  for (let i = 0; i < maxTextures; i++) {
+    // These are overwritten by TileRenderer when textures actually bound.
+    samplerSize.push(1.0 / 2048);
+    samplerSize.push(1.0 / 2048);
+  }
 
-  var _super = _createSuper(LabeledButton);
+  shader.uniforms.uSamplerSize = samplerSize;
+}
+/**
+ * @internal
+ * @ignore
+ * @param maxTextures
+ * @param fragmentSrc
+ * @returns
+ */
 
-  function LabeledButton(texture, text) {
-    var _this;
 
-    var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
-        x = _ref.x,
-        y = _ref.y,
-        textStyle = _ref.textStyle;
+function generateFragmentSrc(maxTextures, fragmentSrc) {
+  return fragmentSrc.replace(/%count%/gi, `${maxTextures}`).replace(/%forloop%/gi, generateSampleSrc(maxTextures));
+} // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 
-    _classCallCheck(this, LabeledButton);
 
-    _this = _super.call(this, texture, {
-      x: x,
-      y: y
+const tilemapVertexTemplateSrc = `#version 100
+precision highp float;
+attribute vec2 aVertexPosition;
+attribute vec2 aTextureCoord;
+attribute vec4 aFrame;
+attribute vec2 aAnim;
+attribute float aAnimDivisor;
+attribute float aTextureId;
+attribute float aAlpha;
+
+uniform mat3 projTransMatrix;
+uniform vec2 animationFrame;
+
+varying vec2 vTextureCoord;
+varying float vTextureId;
+varying vec4 vFrame;
+varying float vAlpha;
+
+void main(void)
+{
+   gl_Position = vec4((projTransMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+   vec2 animCount = floor((aAnim + 0.5) / 2048.0);
+   vec2 animFrameOffset = aAnim - animCount * 2048.0;
+   vec2 currentFrame = floor(animationFrame / aAnimDivisor);
+   vec2 animOffset = animFrameOffset * floor(mod(currentFrame + 0.5, animCount));
+
+   vTextureCoord = aTextureCoord + animOffset;
+   vFrame = aFrame + vec4(animOffset, animOffset);
+   vTextureId = aTextureId;
+   vAlpha = aAlpha;
+}
+`;
+const tilemapFragmentTemplateSrc = `#version 100
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+varying vec2 vTextureCoord;
+varying vec4 vFrame;
+varying float vTextureId;
+varying float vAlpha;
+uniform vec4 shadowColor;
+uniform sampler2D uSamplers[%count%];
+uniform vec2 uSamplerSize[%count%];
+
+void main(void)
+{
+   vec2 textureCoord = clamp(vTextureCoord, vFrame.xy, vFrame.zw);
+   float textureId = floor(vTextureId + 0.5);
+
+   vec4 color;
+   %forloop%
+   gl_FragColor = color * vAlpha;
+}
+`; // For some reason ESLint goes mad with indendation in this file ^&^
+
+/* eslint-disable no-mixed-spaces-and-tabs, indent */
+
+class TilemapShader extends _core.Shader {
+  __init() {
+    this.maxTextures = 0;
+  }
+
+  constructor(maxTextures) {
+    super(new _core.Program(tilemapVertexTemplateSrc, generateFragmentSrc(maxTextures, tilemapFragmentTemplateSrc)), {
+      animationFrame: new Float32Array(2),
+      uSamplers: [],
+      uSamplerSize: [],
+      projTransMatrix: new _math.Matrix()
     });
-    _this.text = new PIXI.Text(text, textStyle);
 
-    _this.text.anchor.set(0.5);
+    TilemapShader.prototype.__init.call(this);
 
-    _this.addChild(_this.text);
-
-    return _this;
+    this.maxTextures = maxTextures;
+    fillSamplers(this, this.maxTextures);
   }
 
-  return _createClass(LabeledButton);
-}(Button_1.Button);
+}
 
-exports.LabeledButton = LabeledButton;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../atoms/Button":"components/ui/atoms/Button.ts"}],"game/TestScene.ts":[function(require,module,exports) {
+exports.TilemapShader = TilemapShader;
+
+class TilemapGeometry extends _core.Geometry {
+  __init2() {
+    this.vertSize = 13;
+  }
+
+  __init3() {
+    this.vertPerQuad = 4;
+  }
+
+  __init4() {
+    this.stride = this.vertSize * 4;
+  }
+
+  __init5() {
+    this.lastTimeAccess = 0;
+  }
+
+  constructor() {
+    super();
+
+    TilemapGeometry.prototype.__init2.call(this);
+
+    TilemapGeometry.prototype.__init3.call(this);
+
+    TilemapGeometry.prototype.__init4.call(this);
+
+    TilemapGeometry.prototype.__init5.call(this);
+
+    const buf = this.buf = new _core.Buffer(new Float32Array(2), true, false);
+    this.addAttribute('aVertexPosition', buf, 0, false, 0, this.stride, 0).addAttribute('aTextureCoord', buf, 0, false, 0, this.stride, 2 * 4).addAttribute('aFrame', buf, 0, false, 0, this.stride, 4 * 4).addAttribute('aAnim', buf, 0, false, 0, this.stride, 8 * 4).addAttribute('aTextureId', buf, 0, false, 0, this.stride, 10 * 4).addAttribute('aAnimDivisor', buf, 0, false, 0, this.stride, 11 * 4).addAttribute('aAlpha', buf, 0, false, 0, this.stride, 12 * 4);
+  }
+
+} // For some reason ESLint goes mad with indendation in this file ^&^
+
+/* eslint-disable no-mixed-spaces-and-tabs, indent */
+
+/**
+ * Rendering helper pipeline for tilemaps. This plugin is registered automatically.
+ */
+
+
+exports.TilemapGeometry = TilemapGeometry;
+
+class TileRenderer extends _core.ObjectRenderer {
+  /** The managing renderer */
+
+  /** The tile animation frame */
+  __init() {
+    this.tileAnim = [0, 0];
+  }
+
+  __init2() {
+    this.ibLen = 0;
+  } // index buffer length
+
+  /** The index buffer for the tilemaps to share. */
+
+
+  __init3() {
+    this.indexBuffer = null;
+  }
+  /** The shader used to render tilemaps. */
+
+  /**
+   * {@link TextileResource} instances used to upload textures batched in tiled groups. This is
+   * used only if {@link settings.TEXTURES_PER_TILEMAP} is greater than 1.
+   */
+
+
+  __init4() {
+    this.textiles = [];
+  }
+  /** @param renderer - The managing renderer */
+
+
+  constructor(renderer) {
+    super(renderer);
+
+    TileRenderer.prototype.__init.call(this);
+
+    TileRenderer.prototype.__init2.call(this);
+
+    TileRenderer.prototype.__init3.call(this);
+
+    TileRenderer.prototype.__init4.call(this);
+
+    this.shader = new TilemapShader(settings.TEXTURES_PER_TILEMAP);
+    this.indexBuffer = new _core.Buffer(undefined, true, true);
+    this.checkIndexBuffer(2000);
+    this.makeTextiles();
+  }
+  /**
+   * Binds the tile textures to the renderer, and updates the tilemap shader's `uSamplerSize` uniform.
+   *
+   * If {@link settings.TEXTILE_UNITS}
+   *
+   * @param renderer - The renderer to which the textures are to be bound.
+   * @param textures - The tile textures being bound.
+   */
+
+
+  bindTileTextures(renderer, textures) {
+    const len = textures.length;
+    const shader = this.shader;
+    const maxTextures = settings.TEXTURES_PER_TILEMAP;
+    const samplerSize = shader.uniforms.uSamplerSize;
+
+    if (len > settings.TEXTILE_UNITS * maxTextures) {
+      // TODO: Show error message instead of silently failing!
+      return;
+    }
+
+    if (settings.TEXTILE_UNITS <= 1) {
+      // Bind each texture directly & update samplerSize.
+      for (let i = 0; i < textures.length; i++) {
+        const texture = textures[i];
+
+        if (!texture || !texture.valid) {
+          return;
+        }
+
+        renderer.texture.bind(textures[i], i);
+        samplerSize[i * 2] = 1.0 / textures[i].realWidth;
+        samplerSize[i * 2 + 1] = 1.0 / textures[i].realHeight;
+      }
+    } else {
+      // Ensure we have enough textiles, in case settings.TEXTILE_UNITS was modified.
+      this.makeTextiles();
+      const usedTextiles = Math.ceil(len / settings.TEXTILE_UNITS); // First ensure each textile has all tiles point to the right textures.
+
+      for (let i = 0; i < len; i++) {
+        const texture = textures[i];
+
+        if (texture && texture.valid) {
+          const resourceIndex = Math.floor(i / settings.TEXTILE_UNITS);
+          const tileIndex = i % settings.TEXTILE_UNITS;
+          this.textiles[resourceIndex].tile(tileIndex, texture);
+        }
+      } // Then bind the textiles + update samplerSize.
+
+
+      for (let i = 0; i < usedTextiles; i++) {
+        renderer.texture.bind(this.textiles[i].baseTexture, i);
+        samplerSize[i * 2] = 1.0 / this.textiles[i].width;
+        samplerSize[i * 2 + 1] = 1.0 / this.textiles[i].baseTexture.height;
+      }
+    }
+
+    shader.uniforms.uSamplerSize = samplerSize;
+  }
+
+  start() {// sorry, nothing
+  }
+  /**
+   * @internal
+   * @ignore
+   */
+
+
+  createVb() {
+    const geom = new TilemapGeometry();
+    geom.addIndex(this.indexBuffer);
+    geom.lastTimeAccess = Date.now();
+    return geom;
+  }
+  /** @return The {@link TilemapShader} shader that this rendering pipeline is using. */
+
+
+  getShader() {
+    return this.shader;
+  }
+
+  destroy() {
+    super.destroy(); // this.rectShader.destroy();
+
+    this.shader = null;
+  }
+
+  checkIndexBuffer(size, _vb = null) {
+    const totalIndices = size * 6;
+
+    if (totalIndices <= this.ibLen) {
+      return;
+    }
+
+    this.ibLen = totalIndices;
+    this.indexBuffer.update((0, _utils.createIndicesForQuads)(size, settings.use32bitIndex ? new Uint32Array(size * 6) : undefined)); // 	TODO: create new index buffer instead?
+    // if (vb) {
+    // 	const curIndex = vb.getIndex();
+    // 	if (curIndex !== this.indexBuffer && (curIndex.data as any).length < totalIndices) {
+    // 		this.swapIndex(vb, this.indexBuffer);
+    // 	}
+    // }
+  }
+  /** Makes textile resources and initializes {@link TileRenderer.textiles}. */
+
+
+  makeTextiles() {
+    if (settings.TEXTILE_UNITS <= 1) {
+      return;
+    }
+
+    for (let i = 0; i < settings.TEXTILE_UNITS; i++) {
+      if (this.textiles[i]) continue;
+      const resource = new TextileResource();
+      const baseTex = new _core.BaseTexture(resource);
+      baseTex.scaleMode = settings.TEXTILE_SCALE_MODE;
+      baseTex.wrapMode = _constants.WRAP_MODES.CLAMP;
+      this.textiles[i] = resource;
+    }
+  }
+
+} // eslint-disable-next-line camelcase
+
+
+exports.TileRenderer = TileRenderer;
+const pixi_tilemap = {
+  CanvasTileRenderer,
+  CompositeRectTileLayer: CompositeTilemap,
+  CompositeTilemap,
+  Constant,
+  TextileResource,
+  MultiTextureResource: TextileResource,
+  RectTileLayer: Tilemap,
+  Tilemap,
+  TilemapShader,
+  TilemapGeometry,
+  RectTileShader: TilemapShader,
+  RectTileGeom: TilemapGeometry,
+  TileRenderer
+};
+exports.pixi_tilemap = pixi_tilemap;
+
+_core.Renderer.registerPlugin('tilemap', TileRenderer);
+},{"@pixi/display":"../node_modules/@pixi/display/dist/esm/display.js","@pixi/core":"../node_modules/@pixi/core/dist/esm/core.js","@pixi/constants":"../node_modules/@pixi/constants/dist/esm/constants.js","@pixi/math":"../node_modules/@pixi/math/dist/esm/math.js","@pixi/utils":"../node_modules/@pixi/utils/dist/esm/utils.js"}],"game/TileScene.ts":[function(require,module,exports) {
+var define;
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -52267,6 +53004,46 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
 
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
   function adopt(value) {
@@ -52309,19 +53086,19 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TestScene = void 0;
+exports.TileScene = void 0;
 
-var Cloud_png_1 = __importDefault(require("easyrpg-rtp/Picture/Cloud.png"));
+var World_png_1 = __importDefault(require("easyrpg-rtp/chipset/World.png"));
+
+var PIXI = __importStar(require("pixi.js"));
 
 var Asset_1 = require("../components/objects/Asset");
 
-var Flow_1 = require("../components/objects/Flow");
-
 var Scene_1 = require("../components/objects/Scene");
 
-var LabeledButton_1 = require("../components/ui/molecules/LabeledButton");
+var Tilemap = __importStar(require("@pixi/tilemap"));
 
-exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
+exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
 
   var _super = _createSuper(_class);
@@ -52332,18 +53109,34 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
     _classCallCheck(this, _class);
 
     _this = _super.call(this);
-    _this.enemy = new LabeledButton_1.LabeledButton(new Asset_1.Asset(Cloud_png_1.default).toTexture(), "敵", {
-      x: 100,
-      y: 100
+    var grass = new Asset_1.Asset(World_png_1.default).toTexture();
+    grass.frame = new PIXI.Rectangle(0, 128, 16, 16);
+    _this.tilemap = _this.spawn(new Tilemap.CompositeTilemap());
+
+    _this.tilemap.clear();
+
+    _this.tilemap.tile(grass, 0, 0);
+
+    console.log(grass, _this.tilemap);
+    var pointerPressed = false;
+
+    _this.interactivePanel.on("pointerdown", function (e) {
+      pointerPressed = true;
     });
-    _this.player1 = _this.spawn(new LabeledButton_1.LabeledButton(new Asset_1.Asset(Cloud_png_1.default).toTexture(), "方向キー", {
-      x: 300,
-      y: 100
-    }));
-    _this.player2 = _this.spawn(new LabeledButton_1.LabeledButton(new Asset_1.Asset(Cloud_png_1.default).toTexture(), "WASD", {
-      x: 300,
-      y: 300
-    }));
+
+    _this.interactivePanel.on("pointerup", function (e) {
+      pointerPressed = false;
+    });
+
+    _this.interactivePanel.on("pointermove", function (e) {
+      if (pointerPressed) {
+        var _e$data$global = e.data.global,
+            x = _e$data$global.x,
+            y = _e$data$global.y;
+
+        _this.tilemap.tile(grass, Math.floor(x / 16) * 16, Math.floor(y / 16) * 16);
+      }
+    });
 
     _this.ready();
 
@@ -52353,218 +53146,23 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
   _createClass(_class, [{
     key: "main",
     value: function main() {
-      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
-        var _this2 = this;
-
-        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
-            switch (_context7.prev = _context7.next) {
+            switch (_context.prev = _context.next) {
               case 0:
-                new Flow_1.Flow(this.player1, function ($) {
-                  return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-                    var _this3 = this;
-
-                    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-                      while (1) {
-                        switch (_context2.prev = _context2.next) {
-                          case 0:
-                            _context2.next = 2;
-                            return Flow_1.Flow.loop(function (end) {
-                              return __awaiter(_this3, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-                                return _regeneratorRuntime().wrap(function _callee$(_context) {
-                                  while (1) {
-                                    switch (_context.prev = _context.next) {
-                                      case 0:
-                                        _context.next = 2;
-                                        return Flow_1.Flow.use.moveLikeRPG($, 0.25, 48);
-
-                                      case 2:
-                                        if (!$app.getKey("R").isTriggered) {
-                                          _context.next = 5;
-                                          break;
-                                        }
-
-                                        console.log("AAAA!");
-                                        return _context.abrupt("return", end);
-
-                                      case 5:
-                                      case "end":
-                                        return _context.stop();
-                                    }
-                                  }
-                                }, _callee);
-                              }));
-                            });
-
-                          case 2:
-                            console.log("ループ終了");
-
-                          case 3:
-                          case "end":
-                            return _context2.stop();
-                        }
-                      }
-                    }, _callee2);
-                  }));
-                });
-                new Flow_1.Flow(this.player2, function ($) {
-                  return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
-                    var _this4 = this;
-
-                    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-                      while (1) {
-                        switch (_context4.prev = _context4.next) {
-                          case 0:
-                            _context4.next = 2;
-                            return Flow_1.Flow.loop(function (end) {
-                              return __awaiter(_this4, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-                                return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-                                  while (1) {
-                                    switch (_context3.prev = _context3.next) {
-                                      case 0:
-                                        _context3.next = 2;
-                                        return Flow_1.Flow.use.moveLikeRPG($, 1, 48, {
-                                          keys: {
-                                            up: ["W", "NUMPAD8"],
-                                            down: ["S", "NUMPAD2"],
-                                            left: ["A", "NUMPAD4"],
-                                            right: ["D", "NUMPAD6"]
-                                          },
-                                          ease: "outBounce"
-                                        });
-
-                                      case 2:
-                                        if (!$app.getKey("T").isTriggered) {
-                                          _context3.next = 5;
-                                          break;
-                                        }
-
-                                        console.log("BBBB!");
-                                        return _context3.abrupt("return", end);
-
-                                      case 5:
-                                      case "end":
-                                        return _context3.stop();
-                                    }
-                                  }
-                                }, _callee3);
-                              }));
-                            });
-
-                          case 2:
-                            console.log("ループ終了");
-
-                          case 3:
-                          case "end":
-                            return _context4.stop();
-                        }
-                      }
-                    }, _callee4);
-                  }));
-                });
-                new Flow_1.Flow(this.enemy, function ($) {
-                  return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
-                    var _this5 = this;
-
-                    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-                      while (1) {
-                        switch (_context6.prev = _context6.next) {
-                          case 0:
-                            _context6.next = 2;
-                            return Flow_1.Flow.time(1);
-
-                          case 2:
-                            this.spawn($);
-                            _context6.next = 5;
-                            return Flow_1.Flow.loop(function () {
-                              return __awaiter(_this5, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-                                var origin;
-                                return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-                                  while (1) {
-                                    switch (_context5.prev = _context5.next) {
-                                      case 0:
-                                        _context5.next = 2;
-                                        return Flow_1.Flow.tween({
-                                          ease: "outElastic",
-                                          time: 1,
-                                          from: $.angle,
-                                          to: $.angle + 45
-                                        }, function (x) {
-                                          $.angle = x;
-                                        });
-
-                                      case 2:
-                                        origin = {
-                                          x: $.x,
-                                          y: $.y
-                                        };
-                                        _context5.next = 5;
-                                        return Flow_1.Flow.tween2D({
-                                          ease: {
-                                            x: "inOutExpo",
-                                            y: "inOutBounce"
-                                          },
-                                          time: 1,
-                                          from: $,
-                                          to: {
-                                            x: 100 + Math.random() * 700,
-                                            y: 100 + Math.random() * 500
-                                          }
-                                        }, function (_ref) {
-                                          var x = _ref.x,
-                                              y = _ref.y;
-                                          $.x = x;
-                                          $.y = y;
-                                        });
-
-                                      case 5:
-                                        _context5.next = 7;
-                                        return Flow_1.Flow.tween2D({
-                                          ease: "inOutCirc",
-                                          time: 3,
-                                          from: $,
-                                          to: origin
-                                        }, function (_ref2) {
-                                          var x = _ref2.x,
-                                              y = _ref2.y;
-                                          $.x = x;
-                                          $.y = y;
-                                        });
-
-                                      case 7:
-                                      case "end":
-                                        return _context5.stop();
-                                    }
-                                  }
-                                }, _callee5);
-                              }));
-                            });
-
-                          case 5:
-                            console.error("ここには到達しない");
-
-                          case 6:
-                          case "end":
-                            return _context6.stop();
-                        }
-                      }
-                    }, _callee6, this);
-                  }));
-                });
-
-              case 3:
               case "end":
-                return _context7.stop();
+                return _context.stop();
             }
           }
-        }, _callee7, this);
+        }, _callee);
       }));
     }
   }]);
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Flow":"components/objects/Flow.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/ui/molecules/LabeledButton":"components/ui/molecules/LabeledButton.ts"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","@pixi/tilemap":"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52573,16 +53171,16 @@ Object.defineProperty(exports, "__esModule", {
 
 var app_1 = require("./app");
 
-var TestScene_1 = require("./game/TestScene"); // ゲーム開始
+var TileScene_1 = require("./game/TileScene"); // ゲーム開始
 
 
-new app_1.App(TestScene_1.TestScene, {
+new app_1.App(TileScene_1.TileScene, {
   title: "H2A_GameEngineDemo",
-  width: 816,
-  height: 624,
+  width: 320,
+  height: 240,
   backgroundColor: 0xaaaaaa
 });
-},{"./app":"app.ts","./game/TestScene":"game/TestScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./app":"app.ts","./game/TileScene":"game/TileScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -52610,7 +53208,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "4079" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "13848" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
