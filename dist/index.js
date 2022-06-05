@@ -53417,7 +53417,79 @@ Flow.use = {
     }));
   }
 };
-},{"../../utils/math":"utils/math.ts"}],"game/TileScene.ts":[function(require,module,exports) {
+},{"../../utils/math":"utils/math.ts"}],"game/tiles.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tileset = exports.TileAnimPattern = void 0;
+
+var helper_1 = require("../utils/helper");
+
+var TileAnimPattern;
+
+(function (TileAnimPattern) {
+  TileAnimPattern["NONE"] = "";
+  TileAnimPattern["EASY_RPG_SEA"] = "EASY_RPG_SEA";
+})(TileAnimPattern = exports.TileAnimPattern || (exports.TileAnimPattern = {}));
+
+exports.tileset = [{
+  id: (0, helper_1.uuid)(),
+  name: "sea",
+  frame: [0, 8, 2, 2],
+  animPattern: TileAnimPattern.EASY_RPG_SEA,
+  autoTilePatterns: [{
+    frame: [0, 2, 1, 2],
+    pos: [0, 0],
+    matrix: [[null, null, null], [false, true, null], [null, null, null]]
+  }, {
+    frame: [1, 2, 1, 2],
+    pos: [1, 0],
+    matrix: [[null, null, null], [null, true, false], [null, null, null]]
+  }, {
+    frame: [0, 4, 2, 1],
+    pos: [0, 0],
+    matrix: [[null, false, null], [null, true, null], [null, null, null]]
+  }, {
+    frame: [0, 5, 2, 1],
+    pos: [0, 1],
+    matrix: [[null, null, null], [null, true, null], [null, false, null]]
+  }, {
+    frame: [0, 0],
+    pos: [0, 0],
+    matrix: [[false, false, null], [false, true, null], [null, null, null]]
+  }, {
+    frame: [1, 0],
+    pos: [1, 0],
+    matrix: [[null, false, false], [null, true, false], [null, null, null]]
+  }, {
+    frame: [0, 1],
+    pos: [0, 1],
+    matrix: [[null, null, null], [false, true, null], [false, false, null]]
+  }, {
+    frame: [1, 1],
+    pos: [1, 1],
+    matrix: [[null, null, null], [null, true, false], [null, false, false]]
+  }, {
+    frame: [0, 6],
+    pos: [0, 0],
+    matrix: [[false, true, null], [true, true, null], [null, null, null]]
+  }, {
+    frame: [1, 6],
+    pos: [1, 0],
+    matrix: [[null, true, false], [null, true, true], [null, null, null]]
+  }, {
+    frame: [0, 7],
+    pos: [0, 1],
+    matrix: [[null, null, null], [true, true, null], [false, true, null]]
+  }, {
+    frame: [1, 7],
+    pos: [1, 1],
+    matrix: [[null, null, null], [null, true, true], [null, true, false]]
+  }]
+}];
+},{"../utils/helper":"utils/helper.ts"}],"game/TileScene.ts":[function(require,module,exports) {
 var define;
 "use strict";
 
@@ -53552,6 +53624,8 @@ var Tilemap = __importStar(require("@pixi/tilemap"));
 
 var Flow_1 = require("../components/objects/Flow");
 
+var tiles_1 = require("./tiles");
+
 exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
 
@@ -53564,7 +53638,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
     _this = _super.call(this);
     _this.map = _toConsumableArray(new Array(100)).map(function () {
-      return new Uint8Array(100);
+      return new Array(100);
     });
     var sets = new Asset_1.Asset(World_png_1.default).toTexture();
     sets.frame = new PIXI.Rectangle(0, 128, 16, 16);
@@ -53575,20 +53649,20 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
     console.log(sets, _this.tilemap);
     var pointerPressed = false;
 
-    var tile = function tile(x, y, n) {
+    var tile = function tile(x, y, tileId) {
       var _a, _b;
 
-      return ((_b = (_a = _this.map) === null || _a === void 0 ? void 0 : _a[x]) === null || _b === void 0 ? void 0 : _b[y]) === n;
+      return ((_b = (_a = _this.map) === null || _a === void 0 ? void 0 : _a[x]) === null || _b === void 0 ? void 0 : _b[y]) === tileId;
     };
 
-    var matile = function matile(targetX, targetY, value, matrix) {
+    var matile = function matile(targetX, targetY, tileId, matrix) {
       var r = true;
 
       for (var x = 0; x < matrix.length; x++) {
         for (var y = 0; y < matrix[x].length; y++) {
           if (r !== false) {
             var m = matrix[y][x];
-            var h = tile(targetX + (x - 1), targetY + (y - 1), value);
+            var h = tile(targetX + (x - 1), targetY + (y - 1), tileId);
 
             if (m === true) {
               r = h;
@@ -53624,7 +53698,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
       if (pointerPressed) {
         _this.tilemap.clear();
 
-        var SEA = 0x1;
+        var SEA = tiles_1.tileset[0].id;
         var _e$data$global = e.data.global,
             px = _e$data$global.x,
             py = _e$data$global.y;
@@ -53635,117 +53709,44 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
         _this.map.forEach(function (xa, x) {
           xa.forEach(function (ya, y) {
-            if (ya === SEA) {
-              // 通常海
-              sets.frame = rect(16, 0, 5);
+            tiles_1.tileset.forEach(function (_ref2) {
+              var id = _ref2.id,
+                  frame = _ref2.frame,
+                  animPattern = _ref2.animPattern,
+                  autoTilePatterns = _ref2.autoTilePatterns;
 
-              _this.tilemap.tile(sets, x * 16, y * 16);
+              if (ya === id) {
+                sets.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
 
-              _this.tilemap.tileAnimX(16, 2);
+                _this.tilemap.tile(sets, x * 16, y * 16);
 
-              _this.tilemap.tileAnimX(16, 3); // オートタイル
+                if (animPattern === tiles_1.TileAnimPattern.EASY_RPG_SEA) {
+                  _this.tilemap.tileAnimX(16, 2);
 
+                  _this.tilemap.tileAnimX(16, 3);
+                }
 
-              if (matile(x, y, SEA, [[null, null, null], [false, true, null], [null, null, null]])) {
-                var _this$tilemap;
+                autoTilePatterns.forEach(function (_ref3) {
+                  var frame = _ref3.frame,
+                      pos = _ref3.pos,
+                      matrix = _ref3.matrix;
 
-                sets.frame = rect(8, 0, 2, 1, 2);
+                  if (matile(x, y, id, matrix)) {
+                    var _this$tilemap;
 
-                (_this$tilemap = _this.tilemap).tile.apply(_this$tilemap, [sets].concat(_toConsumableArray(deco(x, y, 0, 0))));
+                    sets.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
+
+                    (_this$tilemap = _this.tilemap).tile.apply(_this$tilemap, [sets].concat(_toConsumableArray(deco.apply(void 0, [x, y].concat(_toConsumableArray(pos))))));
+                  }
+                });
+
+                if (animPattern === tiles_1.TileAnimPattern.EASY_RPG_SEA) {
+                  _this.tilemap.tileAnimX(16, 2);
+
+                  _this.tilemap.tileAnimX(16, 3);
+                }
               }
-
-              if (matile(x, y, SEA, [[null, null, null], [null, true, false], [null, null, null]])) {
-                var _this$tilemap2;
-
-                sets.frame = rect(8, 1, 2, 1, 2);
-
-                (_this$tilemap2 = _this.tilemap).tile.apply(_this$tilemap2, [sets].concat(_toConsumableArray(deco(x, y, 1, 0))));
-              }
-
-              if (matile(x, y, SEA, [[null, false, null], [null, true, null], [null, null, null]])) {
-                var _this$tilemap3;
-
-                sets.frame = rect(8, 0, 4, 2, 1);
-
-                (_this$tilemap3 = _this.tilemap).tile.apply(_this$tilemap3, [sets].concat(_toConsumableArray(deco(x, y, 0, 0))));
-              }
-
-              if (matile(x, y, SEA, [[null, null, null], [null, true, null], [null, false, null]])) {
-                var _this$tilemap4;
-
-                sets.frame = rect(8, 0, 5, 2, 1);
-
-                (_this$tilemap4 = _this.tilemap).tile.apply(_this$tilemap4, [sets].concat(_toConsumableArray(deco(x, y, 0, 1))));
-              }
-
-              if (matile(x, y, SEA, [[false, false, null], [false, true, null], [null, null, null]])) {
-                var _this$tilemap5;
-
-                sets.frame = rect(8, 0, 0);
-
-                (_this$tilemap5 = _this.tilemap).tile.apply(_this$tilemap5, [sets].concat(_toConsumableArray(deco(x, y, 0, 0))));
-              }
-
-              if (matile(x, y, SEA, [[null, false, false], [null, true, false], [null, null, null]])) {
-                var _this$tilemap6;
-
-                sets.frame = rect(8, 1, 0);
-
-                (_this$tilemap6 = _this.tilemap).tile.apply(_this$tilemap6, [sets].concat(_toConsumableArray(deco(x, y, 1, 0))));
-              }
-
-              if (matile(x, y, SEA, [[null, null, null], [false, true, null], [false, false, null]])) {
-                var _this$tilemap7;
-
-                sets.frame = rect(8, 0, 1);
-
-                (_this$tilemap7 = _this.tilemap).tile.apply(_this$tilemap7, [sets].concat(_toConsumableArray(deco(x, y, 0, 1))));
-              }
-
-              if (matile(x, y, SEA, [[null, null, null], [null, true, false], [null, false, false]])) {
-                var _this$tilemap8;
-
-                sets.frame = rect(8, 1, 1);
-
-                (_this$tilemap8 = _this.tilemap).tile.apply(_this$tilemap8, [sets].concat(_toConsumableArray(deco(x, y, 1, 1))));
-              }
-
-              if (matile(x, y, SEA, [[false, true, null], [true, true, null], [null, null, null]])) {
-                var _this$tilemap9;
-
-                sets.frame = rect(8, 0, 6);
-
-                (_this$tilemap9 = _this.tilemap).tile.apply(_this$tilemap9, [sets].concat(_toConsumableArray(deco(x, y, 0, 0))));
-              }
-
-              if (matile(x, y, SEA, [[null, true, false], [null, true, true], [null, null, null]])) {
-                var _this$tilemap10;
-
-                sets.frame = rect(8, 1, 6);
-
-                (_this$tilemap10 = _this.tilemap).tile.apply(_this$tilemap10, [sets].concat(_toConsumableArray(deco(x, y, 1, 0))));
-              }
-
-              if (matile(x, y, SEA, [[null, null, null], [true, true, null], [false, true, null]])) {
-                var _this$tilemap11;
-
-                sets.frame = rect(8, 0, 7);
-
-                (_this$tilemap11 = _this.tilemap).tile.apply(_this$tilemap11, [sets].concat(_toConsumableArray(deco(x, y, 0, 1))));
-              }
-
-              if (matile(x, y, SEA, [[null, null, null], [null, true, true], [null, true, false]])) {
-                var _this$tilemap12;
-
-                sets.frame = rect(8, 1, 7);
-
-                (_this$tilemap12 = _this.tilemap).tile.apply(_this$tilemap12, [sets].concat(_toConsumableArray(deco(x, y, 1, 1))));
-              }
-
-              _this.tilemap.tileAnimX(16, 2);
-
-              _this.tilemap.tileAnimX(16, 3);
-            }
+            });
           });
         });
       }
@@ -53800,7 +53801,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","@pixi/tilemap":"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js","../components/objects/Flow":"components/objects/Flow.ts"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","@pixi/tilemap":"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
