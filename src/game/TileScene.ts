@@ -4,7 +4,7 @@ import { Asset } from "../components/objects/Asset";
 import { createScene, Scene } from "../components/objects/Scene";
 import * as Tilemap from "@pixi/tilemap";
 import { Flow } from "../components/objects/Flow";
-import { AutoTileMatrix, TileAnimPattern, tileset } from "./tiles";
+import { AutoTileMatrix, TileAnimType, tileset } from "./tiles";
 
 export const TileScene = createScene(
   [World],
@@ -72,28 +72,26 @@ export const TileScene = createScene(
           this.map[tx][ty] = SEA;
           this.map.forEach((xa, x) => {
             xa.forEach((ya, y) => {
-              tileset.forEach(
-                ({ id, frame, animPattern, autoTilePatterns }) => {
-                  if (ya === id) {
-                    sets.frame = rect(8, ...frame);
-                    this.tilemap.tile(sets, x * 16, y * 16);
-                    if (animPattern === TileAnimPattern.EASY_RPG_SEA) {
-                      this.tilemap.tileAnimX(16, 2);
-                      this.tilemap.tileAnimX(16, 3);
+              tileset.forEach(({ id, frame, animType, autoTileRules }) => {
+                if (ya === id) {
+                  sets.frame = rect(8, ...frame);
+                  this.tilemap.tile(sets, x * 16, y * 16);
+                  if (animType === TileAnimType.EASY_RPG_SEA) {
+                    this.tilemap.tileAnimX(16, 2);
+                    this.tilemap.tileAnimX(16, 3);
+                  }
+                  autoTileRules.forEach(({ frame, pos, matrix }) => {
+                    if (matile(x, y, id, matrix)) {
+                      sets.frame = rect(8, ...frame);
+                      this.tilemap.tile(sets, ...deco(x, y, ...pos));
                     }
-                    autoTilePatterns.forEach(({ frame, pos, matrix }) => {
-                      if (matile(x, y, id, matrix)) {
-                        sets.frame = rect(8, ...frame);
-                        this.tilemap.tile(sets, ...deco(x, y, ...pos));
-                      }
-                    });
-                    if (animPattern === TileAnimPattern.EASY_RPG_SEA) {
-                      this.tilemap.tileAnimX(16, 2);
-                      this.tilemap.tileAnimX(16, 3);
-                    }
+                  });
+                  if (animType === TileAnimType.EASY_RPG_SEA) {
+                    this.tilemap.tileAnimX(16, 2);
+                    this.tilemap.tileAnimX(16, 3);
                   }
                 }
-              );
+              });
             });
           });
         }

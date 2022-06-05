@@ -6,7 +6,7 @@ export type AutoTileMatrix = [
   [null | boolean, null | boolean, null | boolean]
 ];
 
-export interface AutoTilePattern {
+export interface AutoTileRule {
   /** 半マスでのトリミング情報 */
   frame: [x: number, y: number, w?: number, h?: number];
   /** 半マスでの設置位置 */
@@ -14,7 +14,7 @@ export interface AutoTilePattern {
   matrix: AutoTileMatrix;
 }
 
-export enum TileAnimPattern {
+export enum TileAnimType {
   NONE = "",
   EASY_RPG_SEA = "EASY_RPG_SEA",
 }
@@ -24,8 +24,8 @@ export interface TileSetting {
   name: string;
   /** 半マスでのトリミング情報 */
   frame: [x: number, y: number, w?: number, h?: number];
-  animPattern: TileAnimPattern;
-  autoTilePatterns: AutoTilePattern[];
+  animType: TileAnimType;
+  autoTileRules: AutoTileRule[];
 }
 
 export const tileset: TileSetting[] = [
@@ -33,8 +33,8 @@ export const tileset: TileSetting[] = [
     id: uuid(),
     name: "sea",
     frame: [0, 8, 2, 2],
-    animPattern: TileAnimPattern.EASY_RPG_SEA,
-    autoTilePatterns: [
+    animType: TileAnimType.EASY_RPG_SEA,
+    autoTileRules: [
       {
         frame: [0, 2, 1, 2],
         pos: [0, 0],

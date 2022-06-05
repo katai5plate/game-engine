@@ -53423,23 +53423,23 @@ Flow.use = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.tileset = exports.TileAnimPattern = void 0;
+exports.tileset = exports.TileAnimType = void 0;
 
 var helper_1 = require("../utils/helper");
 
-var TileAnimPattern;
+var TileAnimType;
 
-(function (TileAnimPattern) {
-  TileAnimPattern["NONE"] = "";
-  TileAnimPattern["EASY_RPG_SEA"] = "EASY_RPG_SEA";
-})(TileAnimPattern = exports.TileAnimPattern || (exports.TileAnimPattern = {}));
+(function (TileAnimType) {
+  TileAnimType["NONE"] = "";
+  TileAnimType["EASY_RPG_SEA"] = "EASY_RPG_SEA";
+})(TileAnimType = exports.TileAnimType || (exports.TileAnimType = {}));
 
 exports.tileset = [{
   id: (0, helper_1.uuid)(),
   name: "sea",
   frame: [0, 8, 2, 2],
-  animPattern: TileAnimPattern.EASY_RPG_SEA,
-  autoTilePatterns: [{
+  animType: TileAnimType.EASY_RPG_SEA,
+  autoTileRules: [{
     frame: [0, 2, 1, 2],
     pos: [0, 0],
     matrix: [[null, null, null], [false, true, null], [null, null, null]]
@@ -53712,21 +53712,21 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
             tiles_1.tileset.forEach(function (_ref2) {
               var id = _ref2.id,
                   frame = _ref2.frame,
-                  animPattern = _ref2.animPattern,
-                  autoTilePatterns = _ref2.autoTilePatterns;
+                  animType = _ref2.animType,
+                  autoTileRules = _ref2.autoTileRules;
 
               if (ya === id) {
                 sets.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
 
                 _this.tilemap.tile(sets, x * 16, y * 16);
 
-                if (animPattern === tiles_1.TileAnimPattern.EASY_RPG_SEA) {
+                if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
                   _this.tilemap.tileAnimX(16, 2);
 
                   _this.tilemap.tileAnimX(16, 3);
                 }
 
-                autoTilePatterns.forEach(function (_ref3) {
+                autoTileRules.forEach(function (_ref3) {
                   var frame = _ref3.frame,
                       pos = _ref3.pos,
                       matrix = _ref3.matrix;
@@ -53740,7 +53740,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                   }
                 });
 
-                if (animPattern === tiles_1.TileAnimPattern.EASY_RPG_SEA) {
+                if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
                   _this.tilemap.tileAnimX(16, 2);
 
                   _this.tilemap.tileAnimX(16, 3);
