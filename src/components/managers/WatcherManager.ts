@@ -32,6 +32,9 @@ export type ProgressProps = UpdateProps & {
 
 export type ProgressPropsFromTime = ProgressProps & FromTime;
 
+/**
+ * Flow で多用する非同期処理関連
+ */
 export class WatchManager {
   /** ゲーム非同期監視リスト */
   #watchers: Set<Watcher> = new Set();

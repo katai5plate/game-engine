@@ -49253,6 +49253,10 @@ exports.DebugManager = void 0;
 var PIXI = __importStar(require("pixi.js"));
 
 var helper_1 = require("../../utils/helper");
+/**
+ * デバッグ関連
+ */
+
 
 var DebugManager = /*#__PURE__*/_createClass(function DebugManager() {
   _classCallCheck(this, DebugManager);
@@ -50065,6 +50069,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.KeyboardManager = void 0;
 
 var KeyCode = __importStar(require("keycode-js"));
+/**
+ * キーボード操作関連
+ */
+
 
 var KeyboardManager = /*#__PURE__*/function () {
   function KeyboardManager() {
@@ -50144,6 +50152,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ResizeManager = void 0;
+/**
+ * 画面のリサイズ関連
+ */
 
 var ResizeManager = /*#__PURE__*/function () {
   function ResizeManager() {
@@ -50528,6 +50539,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.SceneManager = void 0;
 
 var Scene_1 = require("../objects/Scene");
+/**
+ * シーンの読み込み関連
+ */
+
 
 var SceneManager = /*#__PURE__*/function () {
   function SceneManager() {
@@ -50597,6 +50612,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WatchManager = void 0;
+/**
+ * Flow で多用する非同期処理関連
+ */
 
 var WatchManager = /*#__PURE__*/function () {
   function WatchManager() {
@@ -51065,6 +51083,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.Asset = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
+/**
+ * 素材管理
+ */
+
 
 var Asset = /*#__PURE__*/function () {
   function Asset(preloadedAssset) {
@@ -51320,6 +51342,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.Flow = void 0;
 
 var math_1 = require("../../utils/math");
+/**
+ * アルゴリズム制御
+ */
+
 
 var Flow = /*#__PURE__*/function () {
   function Flow(target, fn) {
@@ -53524,6 +53550,10 @@ var TileAnimType;
   TileAnimType["NONE"] = "";
   TileAnimType["EASY_RPG_SEA"] = "EASY_RPG_SEA";
 })(TileAnimType = exports.TileAnimType || (exports.TileAnimType = {}));
+/**
+ * タイルマップ描画
+ */
+
 
 var Tilemap = /*#__PURE__*/function (_PIXITilemap$Composit) {
   _inherits(Tilemap, _PIXITilemap$Composit);
@@ -53542,8 +53572,6 @@ var Tilemap = /*#__PURE__*/function (_PIXITilemap$Composit) {
     _Tilemap_tilemapTexture.set(_assertThisInitialized(_this), void 0);
 
     _Tilemap_tileSettings.set(_assertThisInitialized(_this), void 0);
-
-    _this.paintTileId = 1;
 
     __classPrivateFieldSet(_assertThisInitialized(_this), _Tilemap_tileSettings, tilesettings, "f");
 

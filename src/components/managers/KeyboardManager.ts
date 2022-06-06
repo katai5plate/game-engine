@@ -12,6 +12,9 @@ export type KeyboardCodeValues = typeof KeyCode[Extract<
   `CODE_${string}`
 >];
 
+/**
+ * キーボード操作関連
+ */
 export class KeyboardManager {
   /** キーボードの状態
    * `{[code]: keepTime}` */

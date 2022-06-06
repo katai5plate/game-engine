@@ -1,6 +1,9 @@
 import * as PIXI from "pixi.js";
 import { toGlobalForDebug } from "../../utils/helper";
 
+/**
+ * デバッグ関連
+ */
 export class DebugManager {
   constructor() {
     const win = window as any;

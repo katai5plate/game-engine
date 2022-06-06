@@ -1,7 +1,3 @@
-import * as PIXI from "pixi.js";
-
-type ListenerFn = PIXI.utils.EventEmitter.ListenerFn;
-
 export enum TouchState {
   normal,
   over,
@@ -9,6 +5,9 @@ export enum TouchState {
   unknown,
 }
 
+/**
+ * ボタンなどタッチ可能なオブジェクトのための制御
+ */
 export class Touch {
   #isDown: boolean = false;
   #isOver: boolean = false;

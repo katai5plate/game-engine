@@ -1,3 +1,6 @@
+/**
+ * 画面のリサイズ関連
+ */
 export class ResizeManager {
   prevScrollWidth: number = NaN;
   prevScrollHeight: number = NaN;

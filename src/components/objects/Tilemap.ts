@@ -36,13 +36,15 @@ export interface Tileset {
   terrains: Terrain[];
 }
 
+/**
+ * タイルマップ描画
+ */
 export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
   #tilemapTexture: PIXI.Texture;
   #tileSettings: Tileset;
   mapWidth: number;
   mapHeight: number;
   map: Uint8ClampedArray;
-  paintTileId = 1;
 
   constructor(
     texture: PIXI.Texture,

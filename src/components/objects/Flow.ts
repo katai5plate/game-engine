@@ -9,6 +9,9 @@ import {
 type ResolveCondition = Parameters<typeof WatchManager.prototype.waitOn>[0];
 type ResolveTime = Parameters<typeof WatchManager.prototype.waitTime>[0];
 
+/**
+ * アルゴリズム制御
+ */
 export class Flow<T> {
   constructor(target: T, fn: ($: T) => Promise<void>) {
     fn(target);

@@ -2,6 +2,9 @@ import * as PIXI from "pixi.js";
 
 export type AssetType = "image" | "sound" | "midi" | "text";
 
+/**
+ * 素材管理
+ */
 export class Asset {
   #resource: PIXI.LoaderResource;
   constructor(preloadedAssset: string) {

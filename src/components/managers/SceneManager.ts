@@ -1,5 +1,8 @@
 import { Scene, SceneData } from "../objects/Scene";
 
+/**
+ * シーンの読み込み関連
+ */
 export class SceneManager {
   currentScene: Scene = new Scene();
   constructor() {}
