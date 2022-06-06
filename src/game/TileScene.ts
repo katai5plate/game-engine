@@ -23,9 +23,12 @@ export const TileScene = createScene(
         new Tilemap(new Asset(World).toTexture(), tileset, 20, 15)
       );
       this.label = this.spawn(
-        new PIXI.Text(" 0-5 でタイル変更, ドラッグでお絵描き", {
-          fontSize: 12,
-        })
+        new PIXI.Text(
+          " 0-7 でタイル変更\n ↑↓でレイヤー変更\n ドラッグでお絵描き\n 内容はログ出力",
+          {
+            fontSize: 12,
+          }
+        )
       );
       console.log(this);
 
@@ -66,30 +69,18 @@ export const TileScene = createScene(
       Flow.loop(async () => {
         if ($app.getKey("DOWN").isTriggered) {
           this.paintLayerId = 0;
-          console.log("LOWER");
+          console.log("下層レイヤー");
         }
         if ($app.getKey("UP").isTriggered) {
           this.paintLayerId = 1;
-          console.log("UPPER");
+          console.log("上層レイヤー");
         }
-        if ($app.getKey("0").isTriggered) {
-          this.paintTileId = 0;
-        }
-        if ($app.getKey("1").isTriggered) {
-          this.paintTileId = 1;
-        }
-        if ($app.getKey("2").isTriggered) {
-          this.paintTileId = 2;
-        }
-        if ($app.getKey("3").isTriggered) {
-          this.paintTileId = 3;
-        }
-        if ($app.getKey("4").isTriggered) {
-          this.paintTileId = 4;
-        }
-        if ($app.getKey("5").isTriggered) {
-          this.paintTileId = 5;
-        }
+        [...Array(8).keys()].forEach((i) => {
+          if ($app.getKey(`${i}` as any).isTriggered) {
+            this.paintTileId = i;
+            console.log(`タイル選択: ${tileset.terrains[i].name}`);
+          }
+        });
       });
     }
   }

@@ -273,5 +273,17 @@ export const tileset: Tileset = {
       frame: [3, 3, 2, 2],
       autoTileRules: easyRPGAutoTileRules.land,
     },
+    {
+      name: "kanban",
+      grid: 1,
+      origin: [416, 48],
+      frame: [0, 0, 16, 16],
+    },
+    {
+      name: "fuji",
+      grid: 1,
+      origin: [288, 192],
+      frame: [0, 0, 32, 32],
+    },
   ],
 };
