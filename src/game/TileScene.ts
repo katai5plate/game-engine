@@ -25,7 +25,7 @@ export const TileScene = createScene(
       this.mapHeight = 100;
       this.map = new Uint8ClampedArray(this.mapWidth * this.mapHeight);
       this.tilemap = this.spawn(new Tilemap.CompositeTilemap());
-      const text = new PIXI.Text(" 0-4 でタイル変更, ドラッグでお絵描き", {
+      const text = new PIXI.Text(" 0-5 でタイル変更, ドラッグでお絵描き", {
         fontSize: 12,
       });
       this.spawn(text);
@@ -41,8 +41,6 @@ export const TileScene = createScene(
       };
       const tileIndex = (i: number) =>
         new PIXI.Point(i % this.mapWidth, (i / this.mapWidth) | 0);
-      const tileIs = (x: number, y: number, tileId: number) =>
-        tile(x, y) === tileId;
       const matile = (
         targetX: number,
         targetY: number,
@@ -54,7 +52,8 @@ export const TileScene = createScene(
           for (let y = 0; y < matrix[x].length; y++) {
             if (r !== false) {
               const m = matrix[y][x];
-              const h = tileIs(targetX + (x - 1), targetY + (y - 1), tileId);
+              const t = tile(targetX + (x - 1), targetY + (y - 1));
+              const h = t === tileId;
               if (m === true) {
                 r = h;
               } else if (m === false) {
@@ -158,6 +157,9 @@ export const TileScene = createScene(
         }
         if ($app.getKey("4").isTriggered) {
           this.paintTileId = 4;
+        }
+        if ($app.getKey("5").isTriggered) {
+          this.paintTileId = 5;
         }
       });
     }

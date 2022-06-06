@@ -53544,6 +53544,13 @@ exports.tileset = [{
   animType: TileAnimType.EASY_RPG_SEA,
   autoTileRules: easyRPGAutoTileRules.sea
 }, {
+  name: "ocean",
+  grid: 8,
+  origin: [0, 8],
+  frame: [0, 6, 2, 2],
+  animType: TileAnimType.EASY_RPG_SEA,
+  autoTileRules: easyRPGAutoTileRules.sea
+}, {
   name: "plain",
   grid: 8,
   origin: [0, 16],
@@ -53718,7 +53725,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
     _this.mapHeight = 100;
     _this.map = new Uint8ClampedArray(_this.mapWidth * _this.mapHeight);
     _this.tilemap = _this.spawn(new Tilemap.CompositeTilemap());
-    var text = new PIXI.Text(" 0-4 でタイル変更, ドラッグでお絵描き", {
+    var text = new PIXI.Text(" 0-5 でタイル変更, ドラッグでお絵描き", {
       fontSize: 12
     });
 
@@ -53740,10 +53747,6 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
       return new PIXI.Point(i % _this.mapWidth, i / _this.mapWidth | 0);
     };
 
-    var tileIs = function tileIs(x, y, tileId) {
-      return tile(x, y) === tileId;
-    };
-
     var matile = function matile(targetX, targetY, tileId, matrix) {
       var r = true;
 
@@ -53751,7 +53754,8 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
         for (var y = 0; y < matrix[x].length; y++) {
           if (r !== false) {
             var m = matrix[y][x];
-            var h = tileIs(targetX + (x - 1), targetY + (y - 1), tileId);
+            var t = tile(targetX + (x - 1), targetY + (y - 1));
+            var h = t === tileId;
 
             if (m === true) {
               r = h;
@@ -53923,7 +53927,11 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                               this.paintTileId = 4;
                             }
 
-                          case 5:
+                            if ($app.getKey("5").isTriggered) {
+                              this.paintTileId = 5;
+                            }
+
+                          case 6:
                           case "end":
                             return _context2.stop();
                         }

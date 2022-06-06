@@ -269,6 +269,14 @@ export const tileset: TileSetting[] = [
     autoTileRules: easyRPGAutoTileRules.sea,
   },
   {
+    name: "ocean",
+    grid: 8,
+    origin: [0, 8],
+    frame: [0, 6, 2, 2],
+    animType: TileAnimType.EASY_RPG_SEA,
+    autoTileRules: easyRPGAutoTileRules.sea,
+  },
+  {
     name: "plain",
     grid: 8,
     origin: [0, 16],
