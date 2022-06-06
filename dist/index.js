@@ -53431,14 +53431,57 @@ var TileAnimType;
   TileAnimType["EASY_RPG_SEA"] = "EASY_RPG_SEA";
 })(TileAnimType = exports.TileAnimType || (exports.TileAnimType = {}));
 
-exports.tileset = [{
-  name: "background",
-  frame: [36, 16, 2, 2]
-}, {
-  name: "sea",
-  frame: [0, 8, 2, 2],
-  animType: TileAnimType.EASY_RPG_SEA,
-  autoTileRules: [{
+var easyRPGAutoTileRules = {
+  terrain: [{
+    frame: [0, 4, 1, 2],
+    pos: [0, 0],
+    matrix: [[null, null, null], [false, true, null], [null, null, null]]
+  }, {
+    frame: [5, 4, 1, 2],
+    pos: [1, 0],
+    matrix: [[null, null, null], [null, true, false], [null, null, null]]
+  }, {
+    frame: [2, 2, 2, 1],
+    pos: [0, 0],
+    matrix: [[null, false, null], [null, true, null], [null, null, null]]
+  }, {
+    frame: [2, 7, 2, 1],
+    pos: [0, 1],
+    matrix: [[null, null, null], [null, true, null], [null, false, null]]
+  }, {
+    frame: [0, 2],
+    pos: [0, 0],
+    matrix: [[false, false, null], [false, true, null], [null, null, null]]
+  }, {
+    frame: [5, 2],
+    pos: [1, 0],
+    matrix: [[null, false, false], [null, true, false], [null, null, null]]
+  }, {
+    frame: [0, 7],
+    pos: [0, 1],
+    matrix: [[null, null, null], [false, true, null], [false, false, null]]
+  }, {
+    frame: [5, 7],
+    pos: [1, 1],
+    matrix: [[null, null, null], [null, true, false], [null, false, false]]
+  }, {
+    frame: [4, 0],
+    pos: [0, 0],
+    matrix: [[false, true, null], [true, true, null], [null, null, null]]
+  }, {
+    frame: [5, 0],
+    pos: [1, 0],
+    matrix: [[null, true, false], [null, true, true], [null, null, null]]
+  }, {
+    frame: [4, 1],
+    pos: [0, 1],
+    matrix: [[null, null, null], [true, true, null], [false, true, null]]
+  }, {
+    frame: [5, 1],
+    pos: [1, 1],
+    matrix: [[null, null, null], [null, true, true], [null, true, false]]
+  }],
+  sea: [{
     frame: [0, 2, 1, 2],
     pos: [0, 0],
     matrix: [[null, null, null], [false, true, null], [null, null, null]]
@@ -53487,6 +53530,37 @@ exports.tileset = [{
     pos: [1, 1],
     matrix: [[null, null, null], [null, true, true], [null, true, false]]
   }]
+};
+exports.tileset = [{
+  name: "background",
+  grid: 16,
+  origin: [0, 0],
+  frame: [18, 8, 2, 2]
+}, {
+  name: "sea",
+  grid: 8,
+  origin: [0, 0],
+  frame: [0, 8, 2, 2],
+  animType: TileAnimType.EASY_RPG_SEA,
+  autoTileRules: easyRPGAutoTileRules.sea
+}, {
+  name: "plain",
+  grid: 8,
+  origin: [0, 16],
+  frame: [3, 3, 2, 2],
+  autoTileRules: easyRPGAutoTileRules.terrain
+}, {
+  name: "grass",
+  grid: 8,
+  origin: [6, 16],
+  frame: [3, 3, 2, 2],
+  autoTileRules: easyRPGAutoTileRules.terrain
+}, {
+  name: "mountain",
+  grid: 8,
+  origin: [6, 24],
+  frame: [3, 3, 2, 2],
+  autoTileRules: easyRPGAutoTileRules.terrain
 }];
 },{}],"game/TileScene.ts":[function(require,module,exports) {
 var define;
@@ -53639,17 +53713,23 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
     _classCallCheck(this, _class);
 
     _this = _super.call(this);
+    _this.paintTileId = 1;
     _this.mapWidth = 100;
     _this.mapHeight = 100;
     _this.map = new Uint8ClampedArray(_this.mapWidth * _this.mapHeight);
     _this.tilemap = _this.spawn(new Tilemap.CompositeTilemap());
+    var text = new PIXI.Text(" 0-4 でタイル変更, ドラッグでお絵描き", {
+      fontSize: 12
+    });
+
+    _this.spawn(text);
+
     var bmp = new Asset_1.Asset(World_png_1.default).toTexture();
-    var pointerPressed = false;
 
     var tile = function tile(x, y, value) {
       var i = _this.mapWidth * y + x;
 
-      if (value) {
+      if (value !== undefined) {
         _this.map[i] = value;
       }
 
@@ -53695,6 +53775,66 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
       return [tileX * 16 + decoX * 8, tileY * 16 + decoY * 8];
     };
 
+    var updateMap = function updateMap() {
+      _this.map.forEach(function (v, i) {
+        var _tileIndex = tileIndex(i),
+            x = _tileIndex.x,
+            y = _tileIndex.y;
+
+        tiles_1.tileset.forEach(function (_ref, id) {
+          var grid = _ref.grid,
+              origin = _ref.origin,
+              frame = _ref.frame,
+              animType = _ref.animType,
+              autoTileRules = _ref.autoTileRules;
+
+          if (v === id) {
+            var _ref2 = [frame[0] + origin[0], frame[1] + origin[1], frame[2], frame[3]],
+                fx = _ref2[0],
+                fy = _ref2[1],
+                fw = _ref2[2],
+                fh = _ref2[3];
+            bmp.frame = rect(grid, fx, fy, fw, fh);
+
+            _this.tilemap.tile(bmp, x * 16, y * 16);
+
+            if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
+              _this.tilemap.tileAnimX(16, 2);
+
+              _this.tilemap.tileAnimX(16, 3);
+            }
+
+            autoTileRules === null || autoTileRules === void 0 ? void 0 : autoTileRules.forEach(function (_ref3) {
+              var frame = _ref3.frame,
+                  pos = _ref3.pos,
+                  matrix = _ref3.matrix;
+
+              if (matile(x, y, id, matrix)) {
+                var _this$tilemap;
+
+                var _ref4 = [frame[0] + origin[0], frame[1] + origin[1], frame[2], frame[3]],
+                    _fx = _ref4[0],
+                    _fy = _ref4[1],
+                    _fw = _ref4[2],
+                    _fh = _ref4[3];
+                bmp.frame = rect(grid, _fx, _fy, _fw, _fh);
+
+                (_this$tilemap = _this.tilemap).tile.apply(_this$tilemap, [bmp].concat(_toConsumableArray(deco.apply(void 0, [x, y].concat(_toConsumableArray(pos))))));
+              }
+            });
+
+            if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
+              _this.tilemap.tileAnimX(16, 2);
+
+              _this.tilemap.tileAnimX(16, 3);
+            }
+          }
+        });
+      });
+    };
+
+    var pointerPressed = false;
+
     _this.interactivePanel.on("pointerdown", function (e) {
       pointerPressed = true;
     });
@@ -53705,62 +53845,21 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
     _this.interactivePanel.on("pointermove", function (e) {
       if (pointerPressed) {
-        _this.tilemap.clear();
+        _this.tilemap.clear(); // マウス座標の先にタイルを設定
 
-        var SEA = 1;
+
         var _e$data$global = e.data.global,
             px = _e$data$global.x,
             py = _e$data$global.y;
-        var _ref = [Math.floor(px / 16), Math.floor(py / 16)],
-            tx = _ref[0],
-            ty = _ref[1];
-        tile(tx, ty, SEA);
-
-        _this.map.forEach(function (v, i) {
-          var _tileIndex = tileIndex(i),
-              x = _tileIndex.x,
-              y = _tileIndex.y;
-
-          tiles_1.tileset.forEach(function (_ref2, id) {
-            var frame = _ref2.frame,
-                animType = _ref2.animType,
-                autoTileRules = _ref2.autoTileRules;
-
-            if (v === id) {
-              bmp.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
-
-              _this.tilemap.tile(bmp, x * 16, y * 16);
-
-              if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
-                _this.tilemap.tileAnimX(16, 2);
-
-                _this.tilemap.tileAnimX(16, 3);
-              }
-
-              autoTileRules === null || autoTileRules === void 0 ? void 0 : autoTileRules.forEach(function (_ref3) {
-                var frame = _ref3.frame,
-                    pos = _ref3.pos,
-                    matrix = _ref3.matrix;
-
-                if (matile(x, y, id, matrix)) {
-                  var _this$tilemap;
-
-                  bmp.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
-
-                  (_this$tilemap = _this.tilemap).tile.apply(_this$tilemap, [bmp].concat(_toConsumableArray(deco.apply(void 0, [x, y].concat(_toConsumableArray(pos))))));
-                }
-              });
-
-              if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
-                _this.tilemap.tileAnimX(16, 2);
-
-                _this.tilemap.tileAnimX(16, 3);
-              }
-            }
-          });
-        });
+        var _ref5 = [Math.floor(px / 16), Math.floor(py / 16)],
+            tx = _ref5[0],
+            ty = _ref5[1];
+        tile(tx, ty, _this.paintTileId);
+        updateMap();
       }
     });
+
+    updateMap();
 
     _this.ready();
 
@@ -53770,13 +53869,13 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
   _createClass(_class, [{
     key: "main",
     value: function main() {
-      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var _this2 = this;
 
         var sea;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 sea = 0;
                 Flow_1.Flow.loop(function () {
@@ -53788,7 +53887,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                             sea++;
                             $app.renderer.plugins.tilemap.tileAnim[0] = [0, 1, 2, 1][sea % 4];
                             _context.next = 4;
-                            return Flow_1.Flow.time(1);
+                            return Flow_1.Flow.time(0.25);
 
                           case 4:
                           case "end":
@@ -53798,13 +53897,47 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                     }, _callee);
                   }));
                 });
+                Flow_1.Flow.loop(function () {
+                  return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+                    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            if ($app.getKey("0").isTriggered) {
+                              this.paintTileId = 0;
+                            }
 
-              case 2:
+                            if ($app.getKey("1").isTriggered) {
+                              this.paintTileId = 1;
+                            }
+
+                            if ($app.getKey("2").isTriggered) {
+                              this.paintTileId = 2;
+                            }
+
+                            if ($app.getKey("3").isTriggered) {
+                              this.paintTileId = 3;
+                            }
+
+                            if ($app.getKey("4").isTriggered) {
+                              this.paintTileId = 4;
+                            }
+
+                          case 5:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, this);
+                  }));
+                });
+
+              case 3:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2);
+        }, _callee3);
       }));
     }
   }]);

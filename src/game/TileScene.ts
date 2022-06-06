@@ -17,6 +17,7 @@ export const TileScene = createScene(
     mapWidth: number;
     mapHeight: number;
     map: Uint8ClampedArray;
+    paintTileId = 1;
     constructor() {
       super();
 
@@ -24,14 +25,16 @@ export const TileScene = createScene(
       this.mapHeight = 100;
       this.map = new Uint8ClampedArray(this.mapWidth * this.mapHeight);
       this.tilemap = this.spawn(new Tilemap.CompositeTilemap());
+      const text = new PIXI.Text(" 0-4 でタイル変更, ドラッグでお絵描き", {
+        fontSize: 12,
+      });
+      this.spawn(text);
 
       const bmp = new Asset(World).toTexture();
 
-      let pointerPressed = false;
-
       const tile = (x: number, y: number, value?: number) => {
         const i = this.mapWidth * y + x;
-        if (value) {
+        if (value !== undefined) {
           this.map[i] = value;
         }
         return this.map[i];
@@ -71,24 +74,19 @@ export const TileScene = createScene(
         decoY: number
       ): [number, number] => [tileX * 16 + decoX * 8, tileY * 16 + decoY * 8];
 
-      this.interactivePanel.on("pointerdown", (e: PIXI.InteractionEvent) => {
-        pointerPressed = true;
-      });
-      this.interactivePanel.on("pointerup", (e: PIXI.InteractionEvent) => {
-        pointerPressed = false;
-      });
-      this.interactivePanel.on("pointermove", (e: PIXI.InteractionEvent) => {
-        if (pointerPressed) {
-          this.tilemap.clear();
-          const SEA = 1;
-          const { x: px, y: py } = e.data.global;
-          const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
-          tile(tx, ty, SEA);
-          this.map.forEach((v, i) => {
-            const { x, y } = tileIndex(i);
-            tileset.forEach(({ frame, animType, autoTileRules }, id) => {
+      const updateMap = () => {
+        this.map.forEach((v, i) => {
+          const { x, y } = tileIndex(i);
+          tileset.forEach(
+            ({ grid, origin, frame, animType, autoTileRules }, id) => {
               if (v === id) {
-                bmp.frame = rect(8, ...frame);
+                const [fx, fy, fw, fh] = [
+                  frame[0] + origin[0],
+                  frame[1] + origin[1],
+                  frame[2],
+                  frame[3],
+                ];
+                bmp.frame = rect(grid, fx, fy, fw, fh);
                 this.tilemap.tile(bmp, x * 16, y * 16);
                 if (animType === TileAnimType.EASY_RPG_SEA) {
                   this.tilemap.tileAnimX(16, 2);
@@ -96,7 +94,13 @@ export const TileScene = createScene(
                 }
                 autoTileRules?.forEach(({ frame, pos, matrix }) => {
                   if (matile(x, y, id, matrix)) {
-                    bmp.frame = rect(8, ...frame);
+                    const [fx, fy, fw, fh] = [
+                      frame[0] + origin[0],
+                      frame[1] + origin[1],
+                      frame[2],
+                      frame[3],
+                    ];
+                    bmp.frame = rect(grid, fx, fy, fw, fh);
                     this.tilemap.tile(bmp, ...deco(x, y, ...pos));
                   }
                 });
@@ -105,10 +109,30 @@ export const TileScene = createScene(
                   this.tilemap.tileAnimX(16, 3);
                 }
               }
-            });
-          });
+            }
+          );
+        });
+      };
+
+      let pointerPressed = false;
+      this.interactivePanel.on("pointerdown", (e: PIXI.InteractionEvent) => {
+        pointerPressed = true;
+      });
+      this.interactivePanel.on("pointerup", (e: PIXI.InteractionEvent) => {
+        pointerPressed = false;
+      });
+
+      this.interactivePanel.on("pointermove", (e: PIXI.InteractionEvent) => {
+        if (pointerPressed) {
+          this.tilemap.clear();
+          // マウス座標の先にタイルを設定
+          const { x: px, y: py } = e.data.global;
+          const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
+          tile(tx, ty, this.paintTileId);
+          updateMap();
         }
       });
+      updateMap();
 
       this.ready();
     }
@@ -117,7 +141,24 @@ export const TileScene = createScene(
       Flow.loop(async () => {
         sea++;
         $app.renderer.plugins.tilemap.tileAnim[0] = [0, 1, 2, 1][sea % 4];
-        await Flow.time(1);
+        await Flow.time(0.25);
+      });
+      Flow.loop(async () => {
+        if ($app.getKey("0").isTriggered) {
+          this.paintTileId = 0;
+        }
+        if ($app.getKey("1").isTriggered) {
+          this.paintTileId = 1;
+        }
+        if ($app.getKey("2").isTriggered) {
+          this.paintTileId = 2;
+        }
+        if ($app.getKey("3").isTriggered) {
+          this.paintTileId = 3;
+        }
+        if ($app.getKey("4").isTriggered) {
+          this.paintTileId = 4;
+        }
       });
     }
   }
