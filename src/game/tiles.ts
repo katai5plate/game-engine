@@ -20,17 +20,19 @@ export enum TileAnimType {
 }
 
 export interface TileSetting {
-  id: string;
   name: string;
   /** 半マスでのトリミング情報 */
   frame: [x: number, y: number, w?: number, h?: number];
-  animType: TileAnimType;
-  autoTileRules: AutoTileRule[];
+  animType?: TileAnimType;
+  autoTileRules?: AutoTileRule[];
 }
 
 export const tileset: TileSetting[] = [
   {
-    id: uuid(),
+    name: "background",
+    frame: [36, 16, 2, 2],
+  },
+  {
     name: "sea",
     frame: [0, 8, 2, 2],
     animType: TileAnimType.EASY_RPG_SEA,

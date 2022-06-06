@@ -6,30 +6,44 @@ import * as Tilemap from "@pixi/tilemap";
 import { Flow } from "../components/objects/Flow";
 import { AutoTileMatrix, TileAnimType, tileset } from "./tiles";
 
+// 仕様メモ
+// - セルの状態は 0 - 128 で表す
+// - セルの集合は Uint8ClampedArray(width * height) に格納
+
 export const TileScene = createScene(
   [World],
   class extends Scene {
     tilemap: Tilemap.CompositeRectTileLayer;
-    map: string[][] = [...new Array(100)].map(() => new Array(100));
+    mapWidth: number;
+    mapHeight: number;
+    map: Uint8ClampedArray;
     constructor() {
       super();
 
-      const sets = new Asset(World).toTexture();
-      sets.frame = new PIXI.Rectangle(0, 128, 16, 16);
-
+      this.mapWidth = 100;
+      this.mapHeight = 100;
+      this.map = new Uint8ClampedArray(this.mapWidth * this.mapHeight);
       this.tilemap = this.spawn(new Tilemap.CompositeTilemap());
-      this.tilemap.tile(sets, 0, 0);
 
-      console.log(sets, this.tilemap);
+      const bmp = new Asset(World).toTexture();
 
       let pointerPressed = false;
 
-      const tile = (x: number, y: number, tileId: string) =>
-        this.map?.[x]?.[y] === tileId;
+      const tile = (x: number, y: number, value?: number) => {
+        const i = this.mapWidth * y + x;
+        if (value) {
+          this.map[i] = value;
+        }
+        return this.map[i];
+      };
+      const tileIndex = (i: number) =>
+        new PIXI.Point(i % this.mapWidth, (i / this.mapWidth) | 0);
+      const tileIs = (x: number, y: number, tileId: number) =>
+        tile(x, y) === tileId;
       const matile = (
         targetX: number,
         targetY: number,
-        tileId: string,
+        tileId: number,
         matrix: AutoTileMatrix
       ) => {
         let r = true;
@@ -37,7 +51,7 @@ export const TileScene = createScene(
           for (let y = 0; y < matrix[x].length; y++) {
             if (r !== false) {
               const m = matrix[y][x];
-              const h = tile(targetX + (x - 1), targetY + (y - 1), tileId);
+              const h = tileIs(targetX + (x - 1), targetY + (y - 1), tileId);
               if (m === true) {
                 r = h;
               } else if (m === false) {
@@ -66,32 +80,31 @@ export const TileScene = createScene(
       this.interactivePanel.on("pointermove", (e: PIXI.InteractionEvent) => {
         if (pointerPressed) {
           this.tilemap.clear();
-          const SEA = tileset[0].id;
+          const SEA = 1;
           const { x: px, y: py } = e.data.global;
           const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
-          this.map[tx][ty] = SEA;
-          this.map.forEach((xa, x) => {
-            xa.forEach((ya, y) => {
-              tileset.forEach(({ id, frame, animType, autoTileRules }) => {
-                if (ya === id) {
-                  sets.frame = rect(8, ...frame);
-                  this.tilemap.tile(sets, x * 16, y * 16);
-                  if (animType === TileAnimType.EASY_RPG_SEA) {
-                    this.tilemap.tileAnimX(16, 2);
-                    this.tilemap.tileAnimX(16, 3);
-                  }
-                  autoTileRules.forEach(({ frame, pos, matrix }) => {
-                    if (matile(x, y, id, matrix)) {
-                      sets.frame = rect(8, ...frame);
-                      this.tilemap.tile(sets, ...deco(x, y, ...pos));
-                    }
-                  });
-                  if (animType === TileAnimType.EASY_RPG_SEA) {
-                    this.tilemap.tileAnimX(16, 2);
-                    this.tilemap.tileAnimX(16, 3);
-                  }
+          tile(tx, ty, SEA);
+          this.map.forEach((v, i) => {
+            const { x, y } = tileIndex(i);
+            tileset.forEach(({ frame, animType, autoTileRules }, id) => {
+              if (v === id) {
+                bmp.frame = rect(8, ...frame);
+                this.tilemap.tile(bmp, x * 16, y * 16);
+                if (animType === TileAnimType.EASY_RPG_SEA) {
+                  this.tilemap.tileAnimX(16, 2);
+                  this.tilemap.tileAnimX(16, 3);
                 }
-              });
+                autoTileRules?.forEach(({ frame, pos, matrix }) => {
+                  if (matile(x, y, id, matrix)) {
+                    bmp.frame = rect(8, ...frame);
+                    this.tilemap.tile(bmp, ...deco(x, y, ...pos));
+                  }
+                });
+                if (animType === TileAnimType.EASY_RPG_SEA) {
+                  this.tilemap.tileAnimX(16, 2);
+                  this.tilemap.tileAnimX(16, 3);
+                }
+              }
             });
           });
         }

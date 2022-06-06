@@ -53424,9 +53424,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.tileset = exports.TileAnimType = void 0;
-
-var helper_1 = require("../utils/helper");
-
 var TileAnimType;
 
 (function (TileAnimType) {
@@ -53435,7 +53432,9 @@ var TileAnimType;
 })(TileAnimType = exports.TileAnimType || (exports.TileAnimType = {}));
 
 exports.tileset = [{
-  id: (0, helper_1.uuid)(),
+  name: "background",
+  frame: [36, 16, 2, 2]
+}, {
   name: "sea",
   frame: [0, 8, 2, 2],
   animType: TileAnimType.EASY_RPG_SEA,
@@ -53489,7 +53488,7 @@ exports.tileset = [{
     matrix: [[null, null, null], [null, true, true], [null, true, false]]
   }]
 }];
-},{"../utils/helper":"utils/helper.ts"}],"game/TileScene.ts":[function(require,module,exports) {
+},{}],"game/TileScene.ts":[function(require,module,exports) {
 var define;
 "use strict";
 
@@ -53624,7 +53623,10 @@ var Tilemap = __importStar(require("@pixi/tilemap"));
 
 var Flow_1 = require("../components/objects/Flow");
 
-var tiles_1 = require("./tiles");
+var tiles_1 = require("./tiles"); // 仕様メモ
+// - セルの状態は 0 - 128 で表す
+// - セルの集合は Uint8ClampedArray(width * height) に格納
+
 
 exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
@@ -53637,22 +53639,29 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
     _classCallCheck(this, _class);
 
     _this = _super.call(this);
-    _this.map = _toConsumableArray(new Array(100)).map(function () {
-      return new Array(100);
-    });
-    var sets = new Asset_1.Asset(World_png_1.default).toTexture();
-    sets.frame = new PIXI.Rectangle(0, 128, 16, 16);
+    _this.mapWidth = 100;
+    _this.mapHeight = 100;
+    _this.map = new Uint8ClampedArray(_this.mapWidth * _this.mapHeight);
     _this.tilemap = _this.spawn(new Tilemap.CompositeTilemap());
-
-    _this.tilemap.tile(sets, 0, 0);
-
-    console.log(sets, _this.tilemap);
+    var bmp = new Asset_1.Asset(World_png_1.default).toTexture();
     var pointerPressed = false;
 
-    var tile = function tile(x, y, tileId) {
-      var _a, _b;
+    var tile = function tile(x, y, value) {
+      var i = _this.mapWidth * y + x;
 
-      return ((_b = (_a = _this.map) === null || _a === void 0 ? void 0 : _a[x]) === null || _b === void 0 ? void 0 : _b[y]) === tileId;
+      if (value) {
+        _this.map[i] = value;
+      }
+
+      return _this.map[i];
+    };
+
+    var tileIndex = function tileIndex(i) {
+      return new PIXI.Point(i % _this.mapWidth, i / _this.mapWidth | 0);
+    };
+
+    var tileIs = function tileIs(x, y, tileId) {
+      return tile(x, y) === tileId;
     };
 
     var matile = function matile(targetX, targetY, tileId, matrix) {
@@ -53662,7 +53671,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
         for (var y = 0; y < matrix[x].length; y++) {
           if (r !== false) {
             var m = matrix[y][x];
-            var h = tile(targetX + (x - 1), targetY + (y - 1), tileId);
+            var h = tileIs(targetX + (x - 1), targetY + (y - 1), tileId);
 
             if (m === true) {
               r = h;
@@ -53698,55 +53707,56 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
       if (pointerPressed) {
         _this.tilemap.clear();
 
-        var SEA = tiles_1.tileset[0].id;
+        var SEA = 1;
         var _e$data$global = e.data.global,
             px = _e$data$global.x,
             py = _e$data$global.y;
         var _ref = [Math.floor(px / 16), Math.floor(py / 16)],
             tx = _ref[0],
             ty = _ref[1];
-        _this.map[tx][ty] = SEA;
+        tile(tx, ty, SEA);
 
-        _this.map.forEach(function (xa, x) {
-          xa.forEach(function (ya, y) {
-            tiles_1.tileset.forEach(function (_ref2) {
-              var id = _ref2.id,
-                  frame = _ref2.frame,
-                  animType = _ref2.animType,
-                  autoTileRules = _ref2.autoTileRules;
+        _this.map.forEach(function (v, i) {
+          var _tileIndex = tileIndex(i),
+              x = _tileIndex.x,
+              y = _tileIndex.y;
 
-              if (ya === id) {
-                sets.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
+          tiles_1.tileset.forEach(function (_ref2, id) {
+            var frame = _ref2.frame,
+                animType = _ref2.animType,
+                autoTileRules = _ref2.autoTileRules;
 
-                _this.tilemap.tile(sets, x * 16, y * 16);
+            if (v === id) {
+              bmp.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
 
-                if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
-                  _this.tilemap.tileAnimX(16, 2);
+              _this.tilemap.tile(bmp, x * 16, y * 16);
 
-                  _this.tilemap.tileAnimX(16, 3);
-                }
+              if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
+                _this.tilemap.tileAnimX(16, 2);
 
-                autoTileRules.forEach(function (_ref3) {
-                  var frame = _ref3.frame,
-                      pos = _ref3.pos,
-                      matrix = _ref3.matrix;
-
-                  if (matile(x, y, id, matrix)) {
-                    var _this$tilemap;
-
-                    sets.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
-
-                    (_this$tilemap = _this.tilemap).tile.apply(_this$tilemap, [sets].concat(_toConsumableArray(deco.apply(void 0, [x, y].concat(_toConsumableArray(pos))))));
-                  }
-                });
-
-                if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
-                  _this.tilemap.tileAnimX(16, 2);
-
-                  _this.tilemap.tileAnimX(16, 3);
-                }
+                _this.tilemap.tileAnimX(16, 3);
               }
-            });
+
+              autoTileRules === null || autoTileRules === void 0 ? void 0 : autoTileRules.forEach(function (_ref3) {
+                var frame = _ref3.frame,
+                    pos = _ref3.pos,
+                    matrix = _ref3.matrix;
+
+                if (matile(x, y, id, matrix)) {
+                  var _this$tilemap;
+
+                  bmp.frame = rect.apply(void 0, [8].concat(_toConsumableArray(frame)));
+
+                  (_this$tilemap = _this.tilemap).tile.apply(_this$tilemap, [bmp].concat(_toConsumableArray(deco.apply(void 0, [x, y].concat(_toConsumableArray(pos))))));
+                }
+              });
+
+              if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
+                _this.tilemap.tileAnimX(16, 2);
+
+                _this.tilemap.tileAnimX(16, 3);
+              }
+            }
           });
         });
       }
