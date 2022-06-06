@@ -51131,7 +51131,447 @@ _Asset_resource = new WeakMap(), _Asset_instances = new WeakSet(), _Asset_extToA
   if (type === __classPrivateFieldGet(this, _Asset_instances, "m", _Asset_extToAssetType).call(this, ext)) return;
   throw new Error("素材フォーマットに対応していない機能は使用できません");
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"../node_modules/ts-easing/lib/index.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.easing = {
+    // No easing, no acceleration
+    linear: function (t) { return t; },
+    // Accelerates fast, then slows quickly towards end.
+    quadratic: function (t) { return t * (-(t * t) * t + 4 * t * t - 6 * t + 4); },
+    // Overshoots over 1 and then returns to 1 towards end.
+    cubic: function (t) { return t * (4 * t * t - 9 * t + 6); },
+    // Overshoots over 1 multiple times - wiggles around 1.
+    elastic: function (t) { return t * (33 * t * t * t * t - 106 * t * t * t + 126 * t * t - 67 * t + 15); },
+    // Accelerating from zero velocity
+    inQuad: function (t) { return t * t; },
+    // Decelerating to zero velocity
+    outQuad: function (t) { return t * (2 - t); },
+    // Acceleration until halfway, then deceleration
+    inOutQuad: function (t) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; },
+    // Accelerating from zero velocity
+    inCubic: function (t) { return t * t * t; },
+    // Decelerating to zero velocity
+    outCubic: function (t) { return (--t) * t * t + 1; },
+    // Acceleration until halfway, then deceleration
+    inOutCubic: function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1; },
+    // Accelerating from zero velocity
+    inQuart: function (t) { return t * t * t * t; },
+    // Decelerating to zero velocity
+    outQuart: function (t) { return 1 - (--t) * t * t * t; },
+    // Acceleration until halfway, then deceleration
+    inOutQuart: function (t) { return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t; },
+    // Accelerating from zero velocity
+    inQuint: function (t) { return t * t * t * t * t; },
+    // Decelerating to zero velocity
+    outQuint: function (t) { return 1 + (--t) * t * t * t * t; },
+    // Acceleration until halfway, then deceleration
+    inOutQuint: function (t) { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; },
+    // Accelerating from zero velocity
+    inSine: function (t) { return -Math.cos(t * (Math.PI / 2)) + 1; },
+    // Decelerating to zero velocity
+    outSine: function (t) { return Math.sin(t * (Math.PI / 2)); },
+    // Accelerating until halfway, then decelerating
+    inOutSine: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
+    // Exponential accelerating from zero velocity
+    inExpo: function (t) { return Math.pow(2, 10 * (t - 1)); },
+    // Exponential decelerating to zero velocity
+    outExpo: function (t) { return -Math.pow(2, -10 * t) + 1; },
+    // Exponential accelerating until halfway, then decelerating
+    inOutExpo: function (t) {
+        t /= .5;
+        if (t < 1)
+            return Math.pow(2, 10 * (t - 1)) / 2;
+        t--;
+        return (-Math.pow(2, -10 * t) + 2) / 2;
+    },
+    // Circular accelerating from zero velocity
+    inCirc: function (t) { return -Math.sqrt(1 - t * t) + 1; },
+    // Circular decelerating to zero velocity Moves VERY fast at the beginning and
+    // then quickly slows down in the middle. This tween can actually be used
+    // in continuous transitions where target value changes all the time,
+    // because of the very quick start, it hides the jitter between target value changes.
+    outCirc: function (t) { return Math.sqrt(1 - (t = t - 1) * t); },
+    // Circular acceleration until halfway, then deceleration
+    inOutCirc: function (t) {
+        t /= .5;
+        if (t < 1)
+            return -(Math.sqrt(1 - t * t) - 1) / 2;
+        t -= 2;
+        return (Math.sqrt(1 - t * t) + 1) / 2;
+    }
+};
+
+},{}],"utils/math.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.lerp = void 0;
+
+var ts_easing_1 = require("ts-easing");
+
+var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
+  inElastic: function inElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
+  },
+  outElastic: function outElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+  },
+  inOutElastic: function inOutElastic(x) {
+    var a = 2 * Math.PI / 4.5;
+    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
+  },
+  inBack: function inBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return b * x * x * x - a * x * x;
+  },
+  outBack: function outBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
+  },
+  inOutBack: function inOutBack(x) {
+    var a = 1.70158;
+    var b = a * 1.525;
+    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
+  },
+  inBounce: function inBounce(x) {
+    return 1 - easing.outBounce(1 - x);
+  },
+  outBounce: function outBounce(x) {
+    var a = 7.5625;
+    var b = 2.75;
+
+    if (x < 1 / b) {
+      return a * x * x;
+    } else if (x < 2 / b) {
+      return a * (x -= 1.5 / b) * x + 0.75;
+    } else if (x < 2.5 / b) {
+      return a * (x -= 2.25 / b) * x + 0.9375;
+    } else {
+      return a * (x -= 2.625 / b) * x + 0.984375;
+    }
+  },
+  inOutBounce: function inOutBounce(x) {
+    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
+  }
+});
+
+var lerp = function lerp(ease, a, b, x) {
+  var f = easing[ease];
+  var d = b - a;
+  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
+  var r = a + t * d;
+  return r;
+};
+
+exports.lerp = lerp;
+},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/Flow.ts":[function(require,module,exports) {
+"use strict";
+
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Flow = void 0;
+
+var math_1 = require("../../utils/math");
+
+var Flow = /*#__PURE__*/function () {
+  function Flow(target, fn) {
+    _classCallCheck(this, Flow);
+
+    fn(target);
+  }
+
+  _createClass(Flow, null, [{
+    key: "time",
+    value: function time(resolveTime, onProgress) {
+      return $app._watcher.waitTime(resolveTime, onProgress);
+    }
+  }, {
+    key: "tween",
+    value: function tween(_ref, fn) {
+      var ease = _ref.ease,
+          time = _ref.time,
+          from = _ref.from,
+          to = _ref.to;
+      return Flow.time(time, function (_ref2) {
+        var resolvePer = _ref2.resolvePer;
+        fn((0, math_1.lerp)(ease, from, to, resolvePer));
+      });
+    }
+  }, {
+    key: "tween2D",
+    value: function tween2D(_ref3, fn) {
+      var ease = _ref3.ease,
+          time = _ref3.time,
+          from = _ref3.from,
+          to = _ref3.to;
+      var easeX;
+      var easeY;
+
+      if (_typeof(ease) === "object") {
+        var _ref4 = [ease.x, ease.y];
+        easeX = _ref4[0];
+        easeY = _ref4[1];
+      } else {
+        easeX = ease;
+        easeY = ease;
+      }
+
+      return Flow.time(time, function (_ref5) {
+        var resolvePer = _ref5.resolvePer;
+        fn({
+          x: (0, math_1.lerp)(easeX, from.x, to.x, resolvePer),
+          y: (0, math_1.lerp)(easeY, from.y, to.y, resolvePer)
+        });
+      });
+    }
+  }, {
+    key: "parallel",
+    value: function parallel(promises) {
+      return Promise.all(promises);
+    }
+  }, {
+    key: "when",
+    value: function when(resolveCondition, onProgress) {
+      return $app._watcher.waitOn(resolveCondition, onProgress);
+    }
+  }, {
+    key: "loop",
+    value: function loop(fn) {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var _this = this;
+
+        var loopEnd;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                loopEnd = Symbol("LOOP_END");
+                _context2.next = 3;
+                return function () {
+                  return __awaiter(_this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+                    var prev;
+                    return _regeneratorRuntime().wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            if (!1) {
+                              _context.next = 13;
+                              break;
+                            }
+
+                            prev = $app.frameCount;
+                            _context.next = 4;
+                            return fn(loopEnd);
+
+                          case 4:
+                            _context.t0 = _context.sent;
+                            _context.t1 = loopEnd;
+
+                            if (!(_context.t0 === _context.t1)) {
+                              _context.next = 8;
+                              break;
+                            }
+
+                            return _context.abrupt("break", 13);
+
+                          case 8:
+                            if (!(prev === $app.frameCount)) {
+                              _context.next = 11;
+                              break;
+                            }
+
+                            _context.next = 11;
+                            return $app._watcher.waitNextFrame();
+
+                          case 11:
+                            _context.next = 0;
+                            break;
+
+                          case 13:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  }));
+                }();
+
+              case 3:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+    }
+  }]);
+
+  return Flow;
+}();
+
+exports.Flow = Flow;
+Flow.LOOPBACK = Symbol("LOOPBACK");
+Flow.use = {
+  moveLikeRPG: function moveLikeRPG(target, time, range) {
+    var _ref6 = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {},
+        keys = _ref6.keys,
+        ease = _ref6.ease;
+
+    return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var _keys, _ease, x, y, pressed;
+
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _keys = keys !== null && keys !== void 0 ? keys : {
+                up: ["UP"],
+                down: ["DOWN"],
+                left: ["LEFT"],
+                right: ["RIGHT"]
+              };
+              _ease = ease !== null && ease !== void 0 ? ease : "linear";
+              x = target.x, y = target.y;
+
+              pressed = function pressed(names) {
+                return names.find(function (k) {
+                  return $app.getKey(k).isPressed;
+                });
+              };
+
+              if (!pressed(_keys.left)) {
+                _context3.next = 9;
+                break;
+              }
+
+              _context3.next = 7;
+              return Flow.tween({
+                ease: _ease,
+                time: time,
+                from: x,
+                to: x - range
+              }, function (n) {
+                target.x = n;
+              });
+
+            case 7:
+              _context3.next = 22;
+              break;
+
+            case 9:
+              if (!pressed(_keys.right)) {
+                _context3.next = 14;
+                break;
+              }
+
+              _context3.next = 12;
+              return Flow.tween({
+                ease: _ease,
+                time: time,
+                from: x,
+                to: x + range
+              }, function (n) {
+                target.x = n;
+              });
+
+            case 12:
+              _context3.next = 22;
+              break;
+
+            case 14:
+              if (!pressed(_keys.up)) {
+                _context3.next = 19;
+                break;
+              }
+
+              _context3.next = 17;
+              return Flow.tween({
+                ease: _ease,
+                time: time,
+                from: y,
+                to: y - range
+              }, function (n) {
+                target.y = n;
+              });
+
+            case 17:
+              _context3.next = 22;
+              break;
+
+            case 19:
+              if (!pressed(_keys.down)) {
+                _context3.next = 22;
+                break;
+              }
+
+              _context3.next = 22;
+              return Flow.tween({
+                ease: _ease,
+                time: time,
+                from: y,
+                to: y + range
+              }, function (n) {
+                target.y = n;
+              });
+
+            case 22:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+  }
+};
+},{"../../utils/math":"utils/math.ts"}],"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js":[function(require,module,exports) {
 
 "use strict";
 
@@ -52977,150 +53417,22 @@ const pixi_tilemap = {
 exports.pixi_tilemap = pixi_tilemap;
 
 _core.Renderer.registerPlugin('tilemap', TileRenderer);
-},{"@pixi/display":"../node_modules/@pixi/display/dist/esm/display.js","@pixi/core":"../node_modules/@pixi/core/dist/esm/core.js","@pixi/constants":"../node_modules/@pixi/constants/dist/esm/constants.js","@pixi/math":"../node_modules/@pixi/math/dist/esm/math.js","@pixi/utils":"../node_modules/@pixi/utils/dist/esm/utils.js"}],"../node_modules/ts-easing/lib/index.js":[function(require,module,exports) {
+},{"@pixi/display":"../node_modules/@pixi/display/dist/esm/display.js","@pixi/core":"../node_modules/@pixi/core/dist/esm/core.js","@pixi/constants":"../node_modules/@pixi/constants/dist/esm/constants.js","@pixi/math":"../node_modules/@pixi/math/dist/esm/math.js","@pixi/utils":"../node_modules/@pixi/utils/dist/esm/utils.js"}],"components/objects/Tilemap.ts":[function(require,module,exports) {
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.easing = {
-    // No easing, no acceleration
-    linear: function (t) { return t; },
-    // Accelerates fast, then slows quickly towards end.
-    quadratic: function (t) { return t * (-(t * t) * t + 4 * t * t - 6 * t + 4); },
-    // Overshoots over 1 and then returns to 1 towards end.
-    cubic: function (t) { return t * (4 * t * t - 9 * t + 6); },
-    // Overshoots over 1 multiple times - wiggles around 1.
-    elastic: function (t) { return t * (33 * t * t * t * t - 106 * t * t * t + 126 * t * t - 67 * t + 15); },
-    // Accelerating from zero velocity
-    inQuad: function (t) { return t * t; },
-    // Decelerating to zero velocity
-    outQuad: function (t) { return t * (2 - t); },
-    // Acceleration until halfway, then deceleration
-    inOutQuad: function (t) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t; },
-    // Accelerating from zero velocity
-    inCubic: function (t) { return t * t * t; },
-    // Decelerating to zero velocity
-    outCubic: function (t) { return (--t) * t * t + 1; },
-    // Acceleration until halfway, then deceleration
-    inOutCubic: function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1; },
-    // Accelerating from zero velocity
-    inQuart: function (t) { return t * t * t * t; },
-    // Decelerating to zero velocity
-    outQuart: function (t) { return 1 - (--t) * t * t * t; },
-    // Acceleration until halfway, then deceleration
-    inOutQuart: function (t) { return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t; },
-    // Accelerating from zero velocity
-    inQuint: function (t) { return t * t * t * t * t; },
-    // Decelerating to zero velocity
-    outQuint: function (t) { return 1 + (--t) * t * t * t * t; },
-    // Acceleration until halfway, then deceleration
-    inOutQuint: function (t) { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; },
-    // Accelerating from zero velocity
-    inSine: function (t) { return -Math.cos(t * (Math.PI / 2)) + 1; },
-    // Decelerating to zero velocity
-    outSine: function (t) { return Math.sin(t * (Math.PI / 2)); },
-    // Accelerating until halfway, then decelerating
-    inOutSine: function (t) { return -(Math.cos(Math.PI * t) - 1) / 2; },
-    // Exponential accelerating from zero velocity
-    inExpo: function (t) { return Math.pow(2, 10 * (t - 1)); },
-    // Exponential decelerating to zero velocity
-    outExpo: function (t) { return -Math.pow(2, -10 * t) + 1; },
-    // Exponential accelerating until halfway, then decelerating
-    inOutExpo: function (t) {
-        t /= .5;
-        if (t < 1)
-            return Math.pow(2, 10 * (t - 1)) / 2;
-        t--;
-        return (-Math.pow(2, -10 * t) + 2) / 2;
-    },
-    // Circular accelerating from zero velocity
-    inCirc: function (t) { return -Math.sqrt(1 - t * t) + 1; },
-    // Circular decelerating to zero velocity Moves VERY fast at the beginning and
-    // then quickly slows down in the middle. This tween can actually be used
-    // in continuous transitions where target value changes all the time,
-    // because of the very quick start, it hides the jitter between target value changes.
-    outCirc: function (t) { return Math.sqrt(1 - (t = t - 1) * t); },
-    // Circular acceleration until halfway, then deceleration
-    inOutCirc: function (t) {
-        t /= .5;
-        if (t < 1)
-            return -(Math.sqrt(1 - t * t) - 1) / 2;
-        t -= 2;
-        return (Math.sqrt(1 - t * t) + 1) / 2;
-    }
-};
-
-},{}],"utils/math.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.lerp = void 0;
-
-var ts_easing_1 = require("ts-easing");
-
-var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
-  inElastic: function inElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
-  },
-  outElastic: function outElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
-  },
-  inOutElastic: function inOutElastic(x) {
-    var a = 2 * Math.PI / 4.5;
-    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
-  },
-  inBack: function inBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return b * x * x * x - a * x * x;
-  },
-  outBack: function outBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
-  },
-  inOutBack: function inOutBack(x) {
-    var a = 1.70158;
-    var b = a * 1.525;
-    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
-  },
-  inBounce: function inBounce(x) {
-    return 1 - easing.outBounce(1 - x);
-  },
-  outBounce: function outBounce(x) {
-    var a = 7.5625;
-    var b = 2.75;
-
-    if (x < 1 / b) {
-      return a * x * x;
-    } else if (x < 2 / b) {
-      return a * (x -= 1.5 / b) * x + 0.75;
-    } else if (x < 2.5 / b) {
-      return a * (x -= 2.25 / b) * x + 0.9375;
-    } else {
-      return a * (x -= 2.625 / b) * x + 0.984375;
-    }
-  },
-  inOutBounce: function inOutBounce(x) {
-    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
-  }
-});
-
-var lerp = function lerp(ease, a, b, x) {
-  var f = easing[ease];
-  var d = b - a;
-  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
-  var r = a + t * d;
-  return r;
-};
-
-exports.lerp = lerp;
-},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/Flow.ts":[function(require,module,exports) {
-"use strict";
-
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -53128,302 +53440,84 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
   }
 
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
 
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
   });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
 };
+
+var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
+  if (kind === "m") throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+};
+
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var _Tilemap_instances, _Tilemap_tilemapTexture, _Tilemap_tileSettings, _Tilemap_tileIndex, _Tilemap_applyAutoTileRule, _Tilemap_mulRect, _Tilemap_decorationPosition;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Flow = void 0;
+exports.Tilemap = exports.TileAnimType = void 0;
 
-var math_1 = require("../../utils/math");
+var PIXI = __importStar(require("pixi.js"));
 
-var Flow = /*#__PURE__*/function () {
-  function Flow(target, fn) {
-    _classCallCheck(this, Flow);
+var PIXITilemap = __importStar(require("@pixi/tilemap"));
 
-    fn(target);
-  }
-
-  _createClass(Flow, null, [{
-    key: "time",
-    value: function time(resolveTime, onProgress) {
-      return $app._watcher.waitTime(resolveTime, onProgress);
-    }
-  }, {
-    key: "tween",
-    value: function tween(_ref, fn) {
-      var ease = _ref.ease,
-          time = _ref.time,
-          from = _ref.from,
-          to = _ref.to;
-      return Flow.time(time, function (_ref2) {
-        var resolvePer = _ref2.resolvePer;
-        fn((0, math_1.lerp)(ease, from, to, resolvePer));
-      });
-    }
-  }, {
-    key: "tween2D",
-    value: function tween2D(_ref3, fn) {
-      var ease = _ref3.ease,
-          time = _ref3.time,
-          from = _ref3.from,
-          to = _ref3.to;
-      var easeX;
-      var easeY;
-
-      if (_typeof(ease) === "object") {
-        var _ref4 = [ease.x, ease.y];
-        easeX = _ref4[0];
-        easeY = _ref4[1];
-      } else {
-        easeX = ease;
-        easeY = ease;
-      }
-
-      return Flow.time(time, function (_ref5) {
-        var resolvePer = _ref5.resolvePer;
-        fn({
-          x: (0, math_1.lerp)(easeX, from.x, to.x, resolvePer),
-          y: (0, math_1.lerp)(easeY, from.y, to.y, resolvePer)
-        });
-      });
-    }
-  }, {
-    key: "parallel",
-    value: function parallel(promises) {
-      return Promise.all(promises);
-    }
-  }, {
-    key: "when",
-    value: function when(resolveCondition, onProgress) {
-      return $app._watcher.waitOn(resolveCondition, onProgress);
-    }
-  }, {
-    key: "loop",
-    value: function loop(fn) {
-      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var _this = this;
-
-        var loopEnd;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                loopEnd = Symbol("LOOP_END");
-                _context2.next = 3;
-                return function () {
-                  return __awaiter(_this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-                    var prev;
-                    return _regeneratorRuntime().wrap(function _callee$(_context) {
-                      while (1) {
-                        switch (_context.prev = _context.next) {
-                          case 0:
-                            if (!1) {
-                              _context.next = 13;
-                              break;
-                            }
-
-                            prev = $app.frameCount;
-                            _context.next = 4;
-                            return fn(loopEnd);
-
-                          case 4:
-                            _context.t0 = _context.sent;
-                            _context.t1 = loopEnd;
-
-                            if (!(_context.t0 === _context.t1)) {
-                              _context.next = 8;
-                              break;
-                            }
-
-                            return _context.abrupt("break", 13);
-
-                          case 8:
-                            if (!(prev === $app.frameCount)) {
-                              _context.next = 11;
-                              break;
-                            }
-
-                            _context.next = 11;
-                            return $app._watcher.waitNextFrame();
-
-                          case 11:
-                            _context.next = 0;
-                            break;
-
-                          case 13:
-                          case "end":
-                            return _context.stop();
-                        }
-                      }
-                    }, _callee);
-                  }));
-                }();
-
-              case 3:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-    }
-  }]);
-
-  return Flow;
-}();
-
-exports.Flow = Flow;
-Flow.LOOPBACK = Symbol("LOOPBACK");
-Flow.use = {
-  moveLikeRPG: function moveLikeRPG(target, time, range) {
-    var _ref6 = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {},
-        keys = _ref6.keys,
-        ease = _ref6.ease;
-
-    return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
-      var _keys, _ease, x, y, pressed;
-
-      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _keys = keys !== null && keys !== void 0 ? keys : {
-                up: ["UP"],
-                down: ["DOWN"],
-                left: ["LEFT"],
-                right: ["RIGHT"]
-              };
-              _ease = ease !== null && ease !== void 0 ? ease : "linear";
-              x = target.x, y = target.y;
-
-              pressed = function pressed(names) {
-                return names.find(function (k) {
-                  return $app.getKey(k).isPressed;
-                });
-              };
-
-              if (!pressed(_keys.left)) {
-                _context3.next = 9;
-                break;
-              }
-
-              _context3.next = 7;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: x,
-                to: x - range
-              }, function (n) {
-                target.x = n;
-              });
-
-            case 7:
-              _context3.next = 22;
-              break;
-
-            case 9:
-              if (!pressed(_keys.right)) {
-                _context3.next = 14;
-                break;
-              }
-
-              _context3.next = 12;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: x,
-                to: x + range
-              }, function (n) {
-                target.x = n;
-              });
-
-            case 12:
-              _context3.next = 22;
-              break;
-
-            case 14:
-              if (!pressed(_keys.up)) {
-                _context3.next = 19;
-                break;
-              }
-
-              _context3.next = 17;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: y,
-                to: y - range
-              }, function (n) {
-                target.y = n;
-              });
-
-            case 17:
-              _context3.next = 22;
-              break;
-
-            case 19:
-              if (!pressed(_keys.down)) {
-                _context3.next = 22;
-                break;
-              }
-
-              _context3.next = 22;
-              return Flow.tween({
-                ease: _ease,
-                time: time,
-                from: y,
-                to: y + range
-              }, function (n) {
-                target.y = n;
-              });
-
-            case 22:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3);
-    }));
-  }
-};
-},{"../../utils/math":"utils/math.ts"}],"game/tiles.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.tileset = exports.TileAnimType = void 0;
 var TileAnimType;
 
 (function (TileAnimType) {
@@ -53431,8 +53525,200 @@ var TileAnimType;
   TileAnimType["EASY_RPG_SEA"] = "EASY_RPG_SEA";
 })(TileAnimType = exports.TileAnimType || (exports.TileAnimType = {}));
 
+var Tilemap = /*#__PURE__*/function (_PIXITilemap$Composit) {
+  _inherits(Tilemap, _PIXITilemap$Composit);
+
+  var _super = _createSuper(Tilemap);
+
+  function Tilemap(texture, tilesettings, width, height) {
+    var _this;
+
+    _classCallCheck(this, Tilemap);
+
+    _this = _super.call(this);
+
+    _Tilemap_instances.add(_assertThisInitialized(_this));
+
+    _Tilemap_tilemapTexture.set(_assertThisInitialized(_this), void 0);
+
+    _Tilemap_tileSettings.set(_assertThisInitialized(_this), void 0);
+
+    _this.paintTileId = 1;
+
+    __classPrivateFieldSet(_assertThisInitialized(_this), _Tilemap_tileSettings, tilesettings, "f");
+
+    _this.mapWidth = width;
+    _this.mapHeight = height;
+
+    if (__classPrivateFieldGet(_assertThisInitialized(_this), _Tilemap_tileSettings, "f").transColor) {
+      __classPrivateFieldSet(_assertThisInitialized(_this), _Tilemap_tilemapTexture, _this.chromaTexture(texture, __classPrivateFieldGet(_assertThisInitialized(_this), _Tilemap_tileSettings, "f").transColor), "f");
+    } else {
+      __classPrivateFieldSet(_assertThisInitialized(_this), _Tilemap_tilemapTexture, texture, "f");
+    }
+
+    _this.map = new Uint8ClampedArray(_this.mapWidth * _this.mapHeight);
+
+    _this.updateMap();
+
+    return _this;
+  }
+  /** 表示を更新する */
+
+
+  _createClass(Tilemap, [{
+    key: "updateMap",
+    value: function updateMap() {
+      var _this2 = this;
+
+      this.clear();
+      this.map.forEach(function (v, i) {
+        var _classPrivateFieldGe = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_tileIndex).call(_this2, i),
+            x = _classPrivateFieldGe.x,
+            y = _classPrivateFieldGe.y;
+
+        __classPrivateFieldGet(_this2, _Tilemap_tileSettings, "f").terrains.forEach(function (_ref, id) {
+          var grid = _ref.grid,
+              origin = _ref.origin,
+              frame = _ref.frame,
+              animType = _ref.animType,
+              autoTileRules = _ref.autoTileRules;
+
+          if (v === id) {
+            var _ref2 = [frame[0] + origin[0], frame[1] + origin[1], frame[2], frame[3]],
+                fx = _ref2[0],
+                fy = _ref2[1],
+                fw = _ref2[2],
+                fh = _ref2[3];
+            __classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f").frame = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_mulRect).call(_this2, grid, fx, fy, fw, fh);
+
+            _this2.tile(__classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f"), x * 16, y * 16);
+
+            if (animType === TileAnimType.EASY_RPG_SEA) {
+              _this2.tileAnimX(16, 2);
+
+              _this2.tileAnimX(16, 3);
+            }
+
+            autoTileRules === null || autoTileRules === void 0 ? void 0 : autoTileRules.forEach(function (_ref3) {
+              var frame = _ref3.frame,
+                  pos = _ref3.pos,
+                  matrix = _ref3.matrix;
+
+              if (__classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_applyAutoTileRule).call(_this2, x, y, id, matrix)) {
+                var _classPrivateFieldGe2;
+
+                var _ref4 = [frame[0] + origin[0], frame[1] + origin[1], frame[2], frame[3]],
+                    _fx = _ref4[0],
+                    _fy = _ref4[1],
+                    _fw = _ref4[2],
+                    _fh = _ref4[3];
+                __classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f").frame = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_mulRect).call(_this2, grid, _fx, _fy, _fw, _fh);
+
+                _this2.tile.apply(_this2, [__classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f")].concat(_toConsumableArray((_classPrivateFieldGe2 = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_decorationPosition)).call.apply(_classPrivateFieldGe2, [_this2, x, y].concat(_toConsumableArray(pos))))));
+              }
+            });
+
+            if (animType === TileAnimType.EASY_RPG_SEA) {
+              _this2.tileAnimX(16, 2);
+
+              _this2.tileAnimX(16, 3);
+            }
+          }
+        });
+      });
+    }
+    /** テクスチャから特定の色を透明化 */
+
+  }, {
+    key: "chromaTexture",
+    value: function chromaTexture(texture, color) {
+      var img = texture.baseTexture.resource.source;
+      var canvas = document.createElement("CANVAS");
+      var ctx = canvas.getContext("2d");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      var image = ctx.getImageData(0, 0, img.width, img.height);
+
+      for (var i = 0; i < image.data.length; i += 4) {
+        if (image.data.slice(i, i + 3).join() === color.join()) image.data[i + 3] = 0;
+      }
+
+      ctx.putImageData(image, 0, 0);
+      return new PIXI.Texture(PIXI.BaseTexture.from(canvas));
+    }
+    /** 特定の座標のタイルIDを取得または設定 */
+
+  }, {
+    key: "setTile",
+    value: function setTile(x, y, value) {
+      var i = this.mapWidth * y + x;
+      this.map[i] = value;
+    }
+    /** 特定の座標のタイルIDを取得または設定 */
+
+  }, {
+    key: "getTile",
+    value: function getTile(x, y) {
+      var i = this.mapWidth * y + x;
+      return this.map[i];
+    }
+    /** タイルアニメーション番号を指定 */
+
+  }, {
+    key: "setTileAnim",
+    value: function setTileAnim(x, y) {
+      var t = $app.renderer.plugins.tilemap;
+      t.tileAnim[0] = x !== null && x !== void 0 ? x : t.tileAnim[0];
+      t.tileAnim[1] = y !== null && y !== void 0 ? y : t.tileAnim[1];
+    }
+  }]);
+
+  return Tilemap;
+}(PIXITilemap.CompositeRectTileLayer);
+
+exports.Tilemap = Tilemap;
+_Tilemap_tilemapTexture = new WeakMap(), _Tilemap_tileSettings = new WeakMap(), _Tilemap_instances = new WeakSet(), _Tilemap_tileIndex = function _Tilemap_tileIndex(i) {
+  return new PIXI.Point(i % this.mapWidth, i / this.mapWidth | 0);
+}, _Tilemap_applyAutoTileRule = function _Tilemap_applyAutoTileRule(targetX, targetY, tileId, matrix) {
+  var r = true;
+
+  for (var x = 0; x < matrix.length; x++) {
+    for (var y = 0; y < matrix[x].length; y++) {
+      if (r !== false) {
+        var m = matrix[y][x];
+        var t = this.getTile(targetX + (x - 1), targetY + (y - 1));
+        var h = t === tileId;
+
+        if (m === true) {
+          r = h;
+        } else if (m === false) {
+          r = !h;
+        }
+      }
+    }
+  }
+
+  return r;
+}, _Tilemap_mulRect = function _Tilemap_mulRect(m, x, y) {
+  var w = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+  var h = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+  return new PIXI.Rectangle(x * m, y * m, m * w, m * h);
+}, _Tilemap_decorationPosition = function _Tilemap_decorationPosition(tileX, tileY, decoX, decoY) {
+  return [tileX * 16 + decoX * 8, tileY * 16 + decoY * 8];
+};
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","@pixi/tilemap":"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js"}],"game/tiles.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tileset = void 0;
+
+var Tilemap_1 = require("../components/objects/Tilemap");
+
 var easyRPGAutoTileRules = {
-  terrain: [{
+  land: [{
     frame: [0, 4, 1, 2],
     pos: [0, 0],
     matrix: [[null, null, null], [false, true, null], [null, null, null]]
@@ -53531,63 +53817,54 @@ var easyRPGAutoTileRules = {
     matrix: [[null, null, null], [null, true, true], [null, true, false]]
   }]
 };
-exports.tileset = [{
-  name: "background",
-  grid: 16,
-  origin: [0, 0],
-  frame: [18, 8, 2, 2]
-}, {
-  name: "sea",
-  grid: 8,
-  origin: [0, 0],
-  frame: [0, 8, 2, 2],
-  animType: TileAnimType.EASY_RPG_SEA,
-  autoTileRules: easyRPGAutoTileRules.sea
-}, {
-  name: "ocean",
-  grid: 8,
-  origin: [0, 8],
-  frame: [0, 6, 2, 2],
-  animType: TileAnimType.EASY_RPG_SEA,
-  autoTileRules: easyRPGAutoTileRules.sea
-}, {
-  name: "plain",
-  grid: 8,
-  origin: [0, 16],
-  frame: [3, 3, 2, 2],
-  autoTileRules: easyRPGAutoTileRules.terrain
-}, {
-  name: "grass",
-  grid: 8,
-  origin: [6, 16],
-  frame: [3, 3, 2, 2],
-  autoTileRules: easyRPGAutoTileRules.terrain
-}, {
-  name: "mountain",
-  grid: 8,
-  origin: [6, 24],
-  frame: [3, 3, 2, 2],
-  autoTileRules: easyRPGAutoTileRules.terrain
-}];
-},{}],"game/TileScene.ts":[function(require,module,exports) {
+exports.tileset = {
+  transColor: [255, 103, 139],
+  terrains: [{
+    name: "background",
+    grid: 16,
+    origin: [0, 0],
+    frame: [18, 8, 1, 1]
+  }, {
+    name: "sea",
+    grid: 8,
+    origin: [0, 0],
+    frame: [0, 8, 2, 2],
+    animType: Tilemap_1.TileAnimType.EASY_RPG_SEA,
+    autoTileRules: easyRPGAutoTileRules.sea
+  }, {
+    name: "ocean",
+    grid: 8,
+    origin: [0, 8],
+    frame: [0, 6, 2, 2],
+    animType: Tilemap_1.TileAnimType.EASY_RPG_SEA,
+    autoTileRules: easyRPGAutoTileRules.sea
+  }, {
+    name: "plain",
+    grid: 8,
+    origin: [0, 16],
+    frame: [3, 3, 2, 2],
+    autoTileRules: easyRPGAutoTileRules.land
+  }, {
+    name: "grass",
+    grid: 8,
+    origin: [6, 16],
+    frame: [3, 3, 2, 2],
+    autoTileRules: easyRPGAutoTileRules.land
+  }, {
+    name: "mountain",
+    grid: 8,
+    origin: [6, 24],
+    frame: [3, 3, 2, 2],
+    autoTileRules: easyRPGAutoTileRules.land
+  }]
+};
+},{"../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"game/TileScene.ts":[function(require,module,exports) {
 var define;
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, catch: function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -53700,14 +53977,11 @@ var Asset_1 = require("../components/objects/Asset");
 
 var Scene_1 = require("../components/objects/Scene");
 
-var Tilemap = __importStar(require("@pixi/tilemap"));
-
 var Flow_1 = require("../components/objects/Flow");
 
-var tiles_1 = require("./tiles"); // 仕様メモ
-// - セルの状態は 0 - 128 で表す
-// - セルの集合は Uint8ClampedArray(width * height) に格納
+var tiles_1 = require("./tiles");
 
+var Tilemap_1 = require("../components/objects/Tilemap");
 
 exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
@@ -53721,122 +53995,13 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
     _this = _super.call(this);
     _this.paintTileId = 1;
-    _this.mapWidth = 100;
-    _this.mapHeight = 100;
-    _this.map = new Uint8ClampedArray(_this.mapWidth * _this.mapHeight);
-    _this.tilemap = _this.spawn(new Tilemap.CompositeTilemap());
-    var text = new PIXI.Text(" 0-5 でタイル変更, ドラッグでお絵描き", {
+    _this.paintLayerId = 0;
+    _this.lowerTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), tiles_1.tileset, 20, 15));
+    _this.upperTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), tiles_1.tileset, 20, 15));
+    _this.label = _this.spawn(new PIXI.Text(" 0-5 でタイル変更, ドラッグでお絵描き", {
       fontSize: 12
-    });
-
-    _this.spawn(text);
-
-    var bmp = new Asset_1.Asset(World_png_1.default).toTexture();
-
-    var tile = function tile(x, y, value) {
-      var i = _this.mapWidth * y + x;
-
-      if (value !== undefined) {
-        _this.map[i] = value;
-      }
-
-      return _this.map[i];
-    };
-
-    var tileIndex = function tileIndex(i) {
-      return new PIXI.Point(i % _this.mapWidth, i / _this.mapWidth | 0);
-    };
-
-    var matile = function matile(targetX, targetY, tileId, matrix) {
-      var r = true;
-
-      for (var x = 0; x < matrix.length; x++) {
-        for (var y = 0; y < matrix[x].length; y++) {
-          if (r !== false) {
-            var m = matrix[y][x];
-            var t = tile(targetX + (x - 1), targetY + (y - 1));
-            var h = t === tileId;
-
-            if (m === true) {
-              r = h;
-            } else if (m === false) {
-              r = !h;
-            }
-          }
-        }
-      }
-
-      return r;
-    };
-
-    var rect = function rect(m, x, y) {
-      var w = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
-      var h = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
-      return new PIXI.Rectangle(x * m, y * m, m * w, m * h);
-    };
-
-    var deco = function deco(tileX, tileY, decoX, decoY) {
-      return [tileX * 16 + decoX * 8, tileY * 16 + decoY * 8];
-    };
-
-    var updateMap = function updateMap() {
-      _this.map.forEach(function (v, i) {
-        var _tileIndex = tileIndex(i),
-            x = _tileIndex.x,
-            y = _tileIndex.y;
-
-        tiles_1.tileset.forEach(function (_ref, id) {
-          var grid = _ref.grid,
-              origin = _ref.origin,
-              frame = _ref.frame,
-              animType = _ref.animType,
-              autoTileRules = _ref.autoTileRules;
-
-          if (v === id) {
-            var _ref2 = [frame[0] + origin[0], frame[1] + origin[1], frame[2], frame[3]],
-                fx = _ref2[0],
-                fy = _ref2[1],
-                fw = _ref2[2],
-                fh = _ref2[3];
-            bmp.frame = rect(grid, fx, fy, fw, fh);
-
-            _this.tilemap.tile(bmp, x * 16, y * 16);
-
-            if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
-              _this.tilemap.tileAnimX(16, 2);
-
-              _this.tilemap.tileAnimX(16, 3);
-            }
-
-            autoTileRules === null || autoTileRules === void 0 ? void 0 : autoTileRules.forEach(function (_ref3) {
-              var frame = _ref3.frame,
-                  pos = _ref3.pos,
-                  matrix = _ref3.matrix;
-
-              if (matile(x, y, id, matrix)) {
-                var _this$tilemap;
-
-                var _ref4 = [frame[0] + origin[0], frame[1] + origin[1], frame[2], frame[3]],
-                    _fx = _ref4[0],
-                    _fy = _ref4[1],
-                    _fw = _ref4[2],
-                    _fh = _ref4[3];
-                bmp.frame = rect(grid, _fx, _fy, _fw, _fh);
-
-                (_this$tilemap = _this.tilemap).tile.apply(_this$tilemap, [bmp].concat(_toConsumableArray(deco.apply(void 0, [x, y].concat(_toConsumableArray(pos))))));
-              }
-            });
-
-            if (animType === tiles_1.TileAnimType.EASY_RPG_SEA) {
-              _this.tilemap.tileAnimX(16, 2);
-
-              _this.tilemap.tileAnimX(16, 3);
-            }
-          }
-        });
-      });
-    };
-
+    }));
+    console.log(_assertThisInitialized(_this));
     var pointerPressed = false;
 
     _this.interactivePanel.on("pointerdown", function (e) {
@@ -53849,21 +54014,29 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
     _this.interactivePanel.on("pointermove", function (e) {
       if (pointerPressed) {
-        _this.tilemap.clear(); // マウス座標の先にタイルを設定
-
-
+        // マウス座標の先にタイルを設定
         var _e$data$global = e.data.global,
             px = _e$data$global.x,
             py = _e$data$global.y;
-        var _ref5 = [Math.floor(px / 16), Math.floor(py / 16)],
-            tx = _ref5[0],
-            ty = _ref5[1];
-        tile(tx, ty, _this.paintTileId);
-        updateMap();
+        var _ref = [Math.floor(px / 16), Math.floor(py / 16)],
+            tx = _ref[0],
+            ty = _ref[1];
+
+        if (_this.paintLayerId === 0) {
+          _this.lowerTilemap.setTile(tx, ty, _this.paintTileId);
+
+          _this.lowerTilemap.updateMap();
+        } else {
+          _this.upperTilemap.setTile(tx, ty, _this.paintTileId);
+
+          _this.upperTilemap.updateMap();
+        }
       }
     });
 
-    updateMap();
+    _this.lowerTilemap.updateMap();
+
+    _this.upperTilemap.updateMap();
 
     _this.ready();
 
@@ -53889,7 +54062,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                         switch (_context.prev = _context.next) {
                           case 0:
                             sea++;
-                            $app.renderer.plugins.tilemap.tileAnim[0] = [0, 1, 2, 1][sea % 4];
+                            this.lowerTilemap.setTileAnim([0, 1, 2, 1][sea % 4]);
                             _context.next = 4;
                             return Flow_1.Flow.time(0.25);
 
@@ -53898,7 +54071,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                             return _context.stop();
                         }
                       }
-                    }, _callee);
+                    }, _callee, this);
                   }));
                 });
                 Flow_1.Flow.loop(function () {
@@ -53907,6 +54080,16 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
+                            if ($app.getKey("DOWN").isTriggered) {
+                              this.paintLayerId = 0;
+                              console.log("LOWER");
+                            }
+
+                            if ($app.getKey("UP").isTriggered) {
+                              this.paintLayerId = 1;
+                              console.log("UPPER");
+                            }
+
                             if ($app.getKey("0").isTriggered) {
                               this.paintTileId = 0;
                             }
@@ -53931,7 +54114,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                               this.paintTileId = 5;
                             }
 
-                          case 6:
+                          case 8:
                           case "end":
                             return _context2.stop();
                         }
@@ -53952,7 +54135,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","@pixi/tilemap":"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53998,7 +54181,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "13848" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1224" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

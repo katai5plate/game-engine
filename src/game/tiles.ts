@@ -1,37 +1,11 @@
-import { uuid } from "../utils/helper";
-
-export type AutoTileMatrix = [
-  [null | boolean, null | boolean, null | boolean],
-  [null | boolean, null | boolean, null | boolean],
-  [null | boolean, null | boolean, null | boolean]
-];
-
-export interface AutoTileRule {
-  /** 半マスでのトリミング情報 */
-  frame: [x: number, y: number, w?: number, h?: number];
-  /** 半マスでの設置位置 */
-  pos: [x: 0 | 1, y: 0 | 1];
-  matrix: AutoTileMatrix;
-}
-
-export enum TileAnimType {
-  NONE = "",
-  EASY_RPG_SEA = "EASY_RPG_SEA",
-}
-
-export interface TileSetting {
-  name: string;
-  grid: number;
-  /** grid での左上位置 */
-  origin: [x: number, y: number];
-  /** grid でのトリミング情報 */
-  frame: [x: number, y: number, w?: number, h?: number];
-  animType?: TileAnimType;
-  autoTileRules?: AutoTileRule[];
-}
+import {
+  AutoTileRule,
+  TileAnimType,
+  Tileset,
+} from "../components/objects/Tilemap";
 
 const easyRPGAutoTileRules = {
-  terrain: [
+  land: [
     {
       frame: [0, 4, 1, 2],
       pos: [0, 0],
@@ -253,48 +227,51 @@ const easyRPGAutoTileRules = {
   ] as AutoTileRule[],
 };
 
-export const tileset: TileSetting[] = [
-  {
-    name: "background",
-    grid: 16,
-    origin: [0, 0],
-    frame: [18, 8, 2, 2],
-  },
-  {
-    name: "sea",
-    grid: 8,
-    origin: [0, 0],
-    frame: [0, 8, 2, 2],
-    animType: TileAnimType.EASY_RPG_SEA,
-    autoTileRules: easyRPGAutoTileRules.sea,
-  },
-  {
-    name: "ocean",
-    grid: 8,
-    origin: [0, 8],
-    frame: [0, 6, 2, 2],
-    animType: TileAnimType.EASY_RPG_SEA,
-    autoTileRules: easyRPGAutoTileRules.sea,
-  },
-  {
-    name: "plain",
-    grid: 8,
-    origin: [0, 16],
-    frame: [3, 3, 2, 2],
-    autoTileRules: easyRPGAutoTileRules.terrain,
-  },
-  {
-    name: "grass",
-    grid: 8,
-    origin: [6, 16],
-    frame: [3, 3, 2, 2],
-    autoTileRules: easyRPGAutoTileRules.terrain,
-  },
-  {
-    name: "mountain",
-    grid: 8,
-    origin: [6, 24],
-    frame: [3, 3, 2, 2],
-    autoTileRules: easyRPGAutoTileRules.terrain,
-  },
-];
+export const tileset: Tileset = {
+  transColor: [255, 103, 139], // 0xff678b,
+  terrains: [
+    {
+      name: "background",
+      grid: 16,
+      origin: [0, 0],
+      frame: [18, 8, 1, 1],
+    },
+    {
+      name: "sea",
+      grid: 8,
+      origin: [0, 0],
+      frame: [0, 8, 2, 2],
+      animType: TileAnimType.EASY_RPG_SEA,
+      autoTileRules: easyRPGAutoTileRules.sea,
+    },
+    {
+      name: "ocean",
+      grid: 8,
+      origin: [0, 8],
+      frame: [0, 6, 2, 2],
+      animType: TileAnimType.EASY_RPG_SEA,
+      autoTileRules: easyRPGAutoTileRules.sea,
+    },
+    {
+      name: "plain",
+      grid: 8,
+      origin: [0, 16],
+      frame: [3, 3, 2, 2],
+      autoTileRules: easyRPGAutoTileRules.land,
+    },
+    {
+      name: "grass",
+      grid: 8,
+      origin: [6, 16],
+      frame: [3, 3, 2, 2],
+      autoTileRules: easyRPGAutoTileRules.land,
+    },
+    {
+      name: "mountain",
+      grid: 8,
+      origin: [6, 24],
+      frame: [3, 3, 2, 2],
+      autoTileRules: easyRPGAutoTileRules.land,
+    },
+  ],
+};
