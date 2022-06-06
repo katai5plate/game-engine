@@ -39,7 +39,6 @@ export const TileScene = createScene(
       this.interactivePanel.on("pointerup", (e: PIXI.InteractionEvent) => {
         pointerPressed = false;
       });
-
       this.interactivePanel.on("pointermove", (e: PIXI.InteractionEvent) => {
         if (pointerPressed) {
           // マウス座標の先にタイルを設定
