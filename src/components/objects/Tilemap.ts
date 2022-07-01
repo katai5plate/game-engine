@@ -42,6 +42,7 @@ export interface Tileset {
 export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
   #tilemapTexture: PIXI.Texture;
   #tileSettings: Tileset;
+  #tileAlpha: number = 1;
   mapWidth: number;
   mapHeight: number;
   map: Uint8ClampedArray;
@@ -85,7 +86,9 @@ export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
               frame[3],
             ];
             this.#tilemapTexture.frame = this.#mulRect(grid, fx, fy, fw, fh);
-            this.tile(this.#tilemapTexture, x * 16, y * 16);
+            this.tile(this.#tilemapTexture, x * 16, y * 16, {
+              alpha: this.#tileAlpha,
+            });
             if (animType === TileAnimType.EASY_RPG_SEA) {
               this.tileAnimX(16, 2);
               this.tileAnimX(16, 3);
@@ -107,7 +110,8 @@ export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
                 );
                 this.tile(
                   this.#tilemapTexture,
-                  ...this.#decorationPosition(x, y, ...pos)
+                  ...this.#decorationPosition(x, y, ...pos),
+                  { alpha: this.#tileAlpha }
                 );
               }
             });
@@ -196,5 +200,10 @@ export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
     const { tilemap: t } = $app.renderer.plugins;
     t.tileAnim[0] = x ?? t.tileAnim[0];
     t.tileAnim[1] = y ?? t.tileAnim[1];
+  }
+  /** 透明度を変更する */
+  setAlpha(alpha: number) {
+    this.#tileAlpha = alpha;
+    this.updateMap();
   }
 }

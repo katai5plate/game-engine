@@ -244,14 +244,14 @@ export const tileset: Tileset = {
       animType: TileAnimType.EASY_RPG_SEA,
       autoTileRules: easyRPGAutoTileRules.sea,
     },
-    {
-      name: "海（深）",
-      grid: 8,
-      origin: [0, 8],
-      frame: [0, 6, 2, 2],
-      animType: TileAnimType.EASY_RPG_SEA,
-      autoTileRules: easyRPGAutoTileRules.sea,
-    },
+    // {
+    //   name: "海（深）",
+    //   grid: 8,
+    //   origin: [0, 8],
+    //   frame: [0, 6, 2, 2],
+    //   animType: TileAnimType.EASY_RPG_SEA,
+    //   autoTileRules: easyRPGAutoTileRules.sea,
+    // },
     {
       name: "草原",
       grid: 8,

@@ -49115,7 +49115,511 @@ var _stringify = _interopRequireDefault(require("./stringify.js"));
 var _parse = _interopRequireDefault(require("./parse.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./v1.js":"../node_modules/uuid/dist/esm-browser/v1.js","./v3.js":"../node_modules/uuid/dist/esm-browser/v3.js","./v4.js":"../node_modules/uuid/dist/esm-browser/v4.js","./v5.js":"../node_modules/uuid/dist/esm-browser/v5.js","./nil.js":"../node_modules/uuid/dist/esm-browser/nil.js","./version.js":"../node_modules/uuid/dist/esm-browser/version.js","./validate.js":"../node_modules/uuid/dist/esm-browser/validate.js","./stringify.js":"../node_modules/uuid/dist/esm-browser/stringify.js","./parse.js":"../node_modules/uuid/dist/esm-browser/parse.js"}],"utils/helper.ts":[function(require,module,exports) {
+},{"./v1.js":"../node_modules/uuid/dist/esm-browser/v1.js","./v3.js":"../node_modules/uuid/dist/esm-browser/v3.js","./v4.js":"../node_modules/uuid/dist/esm-browser/v4.js","./v5.js":"../node_modules/uuid/dist/esm-browser/v5.js","./nil.js":"../node_modules/uuid/dist/esm-browser/nil.js","./version.js":"../node_modules/uuid/dist/esm-browser/version.js","./validate.js":"../node_modules/uuid/dist/esm-browser/validate.js","./stringify.js":"../node_modules/uuid/dist/esm-browser/stringify.js","./parse.js":"../node_modules/uuid/dist/esm-browser/parse.js"}],"../node_modules/lz-string/libs/lz-string.js":[function(require,module,exports) {
+var define;
+// Copyright (c) 2013 Pieroxy <pieroxy@pieroxy.net>
+// This work is free. You can redistribute it and/or modify it
+// under the terms of the WTFPL, Version 2
+// For more information see LICENSE.txt or http://www.wtfpl.net/
+//
+// For more information, the home page:
+// http://pieroxy.net/blog/pages/lz-string/testing.html
+//
+// LZ-based compression algorithm, version 1.4.4
+var LZString = (function() {
+
+// private property
+var f = String.fromCharCode;
+var keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+var keyStrUriSafe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
+var baseReverseDic = {};
+
+function getBaseValue(alphabet, character) {
+  if (!baseReverseDic[alphabet]) {
+    baseReverseDic[alphabet] = {};
+    for (var i=0 ; i<alphabet.length ; i++) {
+      baseReverseDic[alphabet][alphabet.charAt(i)] = i;
+    }
+  }
+  return baseReverseDic[alphabet][character];
+}
+
+var LZString = {
+  compressToBase64 : function (input) {
+    if (input == null) return "";
+    var res = LZString._compress(input, 6, function(a){return keyStrBase64.charAt(a);});
+    switch (res.length % 4) { // To produce valid Base64
+    default: // When could this happen ?
+    case 0 : return res;
+    case 1 : return res+"===";
+    case 2 : return res+"==";
+    case 3 : return res+"=";
+    }
+  },
+
+  decompressFromBase64 : function (input) {
+    if (input == null) return "";
+    if (input == "") return null;
+    return LZString._decompress(input.length, 32, function(index) { return getBaseValue(keyStrBase64, input.charAt(index)); });
+  },
+
+  compressToUTF16 : function (input) {
+    if (input == null) return "";
+    return LZString._compress(input, 15, function(a){return f(a+32);}) + " ";
+  },
+
+  decompressFromUTF16: function (compressed) {
+    if (compressed == null) return "";
+    if (compressed == "") return null;
+    return LZString._decompress(compressed.length, 16384, function(index) { return compressed.charCodeAt(index) - 32; });
+  },
+
+  //compress into uint8array (UCS-2 big endian format)
+  compressToUint8Array: function (uncompressed) {
+    var compressed = LZString.compress(uncompressed);
+    var buf=new Uint8Array(compressed.length*2); // 2 bytes per character
+
+    for (var i=0, TotalLen=compressed.length; i<TotalLen; i++) {
+      var current_value = compressed.charCodeAt(i);
+      buf[i*2] = current_value >>> 8;
+      buf[i*2+1] = current_value % 256;
+    }
+    return buf;
+  },
+
+  //decompress from uint8array (UCS-2 big endian format)
+  decompressFromUint8Array:function (compressed) {
+    if (compressed===null || compressed===undefined){
+        return LZString.decompress(compressed);
+    } else {
+        var buf=new Array(compressed.length/2); // 2 bytes per character
+        for (var i=0, TotalLen=buf.length; i<TotalLen; i++) {
+          buf[i]=compressed[i*2]*256+compressed[i*2+1];
+        }
+
+        var result = [];
+        buf.forEach(function (c) {
+          result.push(f(c));
+        });
+        return LZString.decompress(result.join(''));
+
+    }
+
+  },
+
+
+  //compress into a string that is already URI encoded
+  compressToEncodedURIComponent: function (input) {
+    if (input == null) return "";
+    return LZString._compress(input, 6, function(a){return keyStrUriSafe.charAt(a);});
+  },
+
+  //decompress from an output of compressToEncodedURIComponent
+  decompressFromEncodedURIComponent:function (input) {
+    if (input == null) return "";
+    if (input == "") return null;
+    input = input.replace(/ /g, "+");
+    return LZString._decompress(input.length, 32, function(index) { return getBaseValue(keyStrUriSafe, input.charAt(index)); });
+  },
+
+  compress: function (uncompressed) {
+    return LZString._compress(uncompressed, 16, function(a){return f(a);});
+  },
+  _compress: function (uncompressed, bitsPerChar, getCharFromInt) {
+    if (uncompressed == null) return "";
+    var i, value,
+        context_dictionary= {},
+        context_dictionaryToCreate= {},
+        context_c="",
+        context_wc="",
+        context_w="",
+        context_enlargeIn= 2, // Compensate for the first entry which should not count
+        context_dictSize= 3,
+        context_numBits= 2,
+        context_data=[],
+        context_data_val=0,
+        context_data_position=0,
+        ii;
+
+    for (ii = 0; ii < uncompressed.length; ii += 1) {
+      context_c = uncompressed.charAt(ii);
+      if (!Object.prototype.hasOwnProperty.call(context_dictionary,context_c)) {
+        context_dictionary[context_c] = context_dictSize++;
+        context_dictionaryToCreate[context_c] = true;
+      }
+
+      context_wc = context_w + context_c;
+      if (Object.prototype.hasOwnProperty.call(context_dictionary,context_wc)) {
+        context_w = context_wc;
+      } else {
+        if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate,context_w)) {
+          if (context_w.charCodeAt(0)<256) {
+            for (i=0 ; i<context_numBits ; i++) {
+              context_data_val = (context_data_val << 1);
+              if (context_data_position == bitsPerChar-1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+            }
+            value = context_w.charCodeAt(0);
+            for (i=0 ; i<8 ; i++) {
+              context_data_val = (context_data_val << 1) | (value&1);
+              if (context_data_position == bitsPerChar-1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+              value = value >> 1;
+            }
+          } else {
+            value = 1;
+            for (i=0 ; i<context_numBits ; i++) {
+              context_data_val = (context_data_val << 1) | value;
+              if (context_data_position ==bitsPerChar-1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+              value = 0;
+            }
+            value = context_w.charCodeAt(0);
+            for (i=0 ; i<16 ; i++) {
+              context_data_val = (context_data_val << 1) | (value&1);
+              if (context_data_position == bitsPerChar-1) {
+                context_data_position = 0;
+                context_data.push(getCharFromInt(context_data_val));
+                context_data_val = 0;
+              } else {
+                context_data_position++;
+              }
+              value = value >> 1;
+            }
+          }
+          context_enlargeIn--;
+          if (context_enlargeIn == 0) {
+            context_enlargeIn = Math.pow(2, context_numBits);
+            context_numBits++;
+          }
+          delete context_dictionaryToCreate[context_w];
+        } else {
+          value = context_dictionary[context_w];
+          for (i=0 ; i<context_numBits ; i++) {
+            context_data_val = (context_data_val << 1) | (value&1);
+            if (context_data_position == bitsPerChar-1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = value >> 1;
+          }
+
+
+        }
+        context_enlargeIn--;
+        if (context_enlargeIn == 0) {
+          context_enlargeIn = Math.pow(2, context_numBits);
+          context_numBits++;
+        }
+        // Add wc to the dictionary.
+        context_dictionary[context_wc] = context_dictSize++;
+        context_w = String(context_c);
+      }
+    }
+
+    // Output the code for w.
+    if (context_w !== "") {
+      if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate,context_w)) {
+        if (context_w.charCodeAt(0)<256) {
+          for (i=0 ; i<context_numBits ; i++) {
+            context_data_val = (context_data_val << 1);
+            if (context_data_position == bitsPerChar-1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+          }
+          value = context_w.charCodeAt(0);
+          for (i=0 ; i<8 ; i++) {
+            context_data_val = (context_data_val << 1) | (value&1);
+            if (context_data_position == bitsPerChar-1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = value >> 1;
+          }
+        } else {
+          value = 1;
+          for (i=0 ; i<context_numBits ; i++) {
+            context_data_val = (context_data_val << 1) | value;
+            if (context_data_position == bitsPerChar-1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = 0;
+          }
+          value = context_w.charCodeAt(0);
+          for (i=0 ; i<16 ; i++) {
+            context_data_val = (context_data_val << 1) | (value&1);
+            if (context_data_position == bitsPerChar-1) {
+              context_data_position = 0;
+              context_data.push(getCharFromInt(context_data_val));
+              context_data_val = 0;
+            } else {
+              context_data_position++;
+            }
+            value = value >> 1;
+          }
+        }
+        context_enlargeIn--;
+        if (context_enlargeIn == 0) {
+          context_enlargeIn = Math.pow(2, context_numBits);
+          context_numBits++;
+        }
+        delete context_dictionaryToCreate[context_w];
+      } else {
+        value = context_dictionary[context_w];
+        for (i=0 ; i<context_numBits ; i++) {
+          context_data_val = (context_data_val << 1) | (value&1);
+          if (context_data_position == bitsPerChar-1) {
+            context_data_position = 0;
+            context_data.push(getCharFromInt(context_data_val));
+            context_data_val = 0;
+          } else {
+            context_data_position++;
+          }
+          value = value >> 1;
+        }
+
+
+      }
+      context_enlargeIn--;
+      if (context_enlargeIn == 0) {
+        context_enlargeIn = Math.pow(2, context_numBits);
+        context_numBits++;
+      }
+    }
+
+    // Mark the end of the stream
+    value = 2;
+    for (i=0 ; i<context_numBits ; i++) {
+      context_data_val = (context_data_val << 1) | (value&1);
+      if (context_data_position == bitsPerChar-1) {
+        context_data_position = 0;
+        context_data.push(getCharFromInt(context_data_val));
+        context_data_val = 0;
+      } else {
+        context_data_position++;
+      }
+      value = value >> 1;
+    }
+
+    // Flush the last char
+    while (true) {
+      context_data_val = (context_data_val << 1);
+      if (context_data_position == bitsPerChar-1) {
+        context_data.push(getCharFromInt(context_data_val));
+        break;
+      }
+      else context_data_position++;
+    }
+    return context_data.join('');
+  },
+
+  decompress: function (compressed) {
+    if (compressed == null) return "";
+    if (compressed == "") return null;
+    return LZString._decompress(compressed.length, 32768, function(index) { return compressed.charCodeAt(index); });
+  },
+
+  _decompress: function (length, resetValue, getNextValue) {
+    var dictionary = [],
+        next,
+        enlargeIn = 4,
+        dictSize = 4,
+        numBits = 3,
+        entry = "",
+        result = [],
+        i,
+        w,
+        bits, resb, maxpower, power,
+        c,
+        data = {val:getNextValue(0), position:resetValue, index:1};
+
+    for (i = 0; i < 3; i += 1) {
+      dictionary[i] = i;
+    }
+
+    bits = 0;
+    maxpower = Math.pow(2,2);
+    power=1;
+    while (power!=maxpower) {
+      resb = data.val & data.position;
+      data.position >>= 1;
+      if (data.position == 0) {
+        data.position = resetValue;
+        data.val = getNextValue(data.index++);
+      }
+      bits |= (resb>0 ? 1 : 0) * power;
+      power <<= 1;
+    }
+
+    switch (next = bits) {
+      case 0:
+          bits = 0;
+          maxpower = Math.pow(2,8);
+          power=1;
+          while (power!=maxpower) {
+            resb = data.val & data.position;
+            data.position >>= 1;
+            if (data.position == 0) {
+              data.position = resetValue;
+              data.val = getNextValue(data.index++);
+            }
+            bits |= (resb>0 ? 1 : 0) * power;
+            power <<= 1;
+          }
+        c = f(bits);
+        break;
+      case 1:
+          bits = 0;
+          maxpower = Math.pow(2,16);
+          power=1;
+          while (power!=maxpower) {
+            resb = data.val & data.position;
+            data.position >>= 1;
+            if (data.position == 0) {
+              data.position = resetValue;
+              data.val = getNextValue(data.index++);
+            }
+            bits |= (resb>0 ? 1 : 0) * power;
+            power <<= 1;
+          }
+        c = f(bits);
+        break;
+      case 2:
+        return "";
+    }
+    dictionary[3] = c;
+    w = c;
+    result.push(c);
+    while (true) {
+      if (data.index > length) {
+        return "";
+      }
+
+      bits = 0;
+      maxpower = Math.pow(2,numBits);
+      power=1;
+      while (power!=maxpower) {
+        resb = data.val & data.position;
+        data.position >>= 1;
+        if (data.position == 0) {
+          data.position = resetValue;
+          data.val = getNextValue(data.index++);
+        }
+        bits |= (resb>0 ? 1 : 0) * power;
+        power <<= 1;
+      }
+
+      switch (c = bits) {
+        case 0:
+          bits = 0;
+          maxpower = Math.pow(2,8);
+          power=1;
+          while (power!=maxpower) {
+            resb = data.val & data.position;
+            data.position >>= 1;
+            if (data.position == 0) {
+              data.position = resetValue;
+              data.val = getNextValue(data.index++);
+            }
+            bits |= (resb>0 ? 1 : 0) * power;
+            power <<= 1;
+          }
+
+          dictionary[dictSize++] = f(bits);
+          c = dictSize-1;
+          enlargeIn--;
+          break;
+        case 1:
+          bits = 0;
+          maxpower = Math.pow(2,16);
+          power=1;
+          while (power!=maxpower) {
+            resb = data.val & data.position;
+            data.position >>= 1;
+            if (data.position == 0) {
+              data.position = resetValue;
+              data.val = getNextValue(data.index++);
+            }
+            bits |= (resb>0 ? 1 : 0) * power;
+            power <<= 1;
+          }
+          dictionary[dictSize++] = f(bits);
+          c = dictSize-1;
+          enlargeIn--;
+          break;
+        case 2:
+          return result.join('');
+      }
+
+      if (enlargeIn == 0) {
+        enlargeIn = Math.pow(2, numBits);
+        numBits++;
+      }
+
+      if (dictionary[c]) {
+        entry = dictionary[c];
+      } else {
+        if (c === dictSize) {
+          entry = w + w.charAt(0);
+        } else {
+          return null;
+        }
+      }
+      result.push(entry);
+
+      // Add w+entry[0] to the dictionary.
+      dictionary[dictSize++] = w + entry.charAt(0);
+      enlargeIn--;
+
+      w = entry;
+
+      if (enlargeIn == 0) {
+        enlargeIn = Math.pow(2, numBits);
+        numBits++;
+      }
+
+    }
+  }
+};
+  return LZString;
+})();
+
+if (typeof define === 'function' && define.amd) {
+  define(function () { return LZString; });
+} else if( typeof module !== 'undefined' && module != null ) {
+  module.exports = LZString
+}
+
+},{}],"utils/helper.ts":[function(require,module,exports) {
 "use strict";
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -49170,12 +49674,20 @@ var __importStar = this && this.__importStar || function (mod) {
   return result;
 };
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.uuid = exports.toGlobalForDebug = void 0;
+exports.unzip = exports.zip = exports.uuid = exports.toGlobalForDebug = void 0;
 
 var uuids = __importStar(require("uuid"));
+
+var lz_string_1 = __importDefault(require("lz-string"));
 /** 指定した変数をデバッグ用にグローバル参照可能にする */
 
 
@@ -49196,7 +49708,19 @@ var uuid = function uuid() {
 };
 
 exports.uuid = uuid;
-},{"uuid":"../node_modules/uuid/dist/esm-browser/index.js"}],"components/managers/DebugManager.ts":[function(require,module,exports) {
+
+var zip = function zip(text) {
+  return lz_string_1.default.compressToUTF16(text);
+};
+
+exports.zip = zip;
+
+var unzip = function unzip(text) {
+  return lz_string_1.default.decompressFromUTF16(text);
+};
+
+exports.unzip = unzip;
+},{"uuid":"../node_modules/uuid/dist/esm-browser/index.js","lz-string":"../node_modules/lz-string/libs/lz-string.js"}],"components/managers/DebugManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -50100,14 +50624,14 @@ var KeyboardManager = /*#__PURE__*/function () {
       });
     }
   }, {
-    key: "isPressed",
-    value: function isPressed(code) {
-      return !!__classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
-    }
-  }, {
     key: "isTriggered",
     value: function isTriggered(code) {
       return __classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").get(KeyCode["CODE_".concat(code)]) === 1;
+    }
+  }, {
+    key: "isPressed",
+    value: function isPressed(code) {
+      return !!__classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").get(KeyCode["CODE_".concat(code)]);
     }
   }, {
     key: "isNotPressed",
@@ -50131,7 +50655,217 @@ _KeyboardManager_keyboardState = new WeakMap(), _KeyboardManager_instances = new
 }, _KeyboardManager_onKeyboardClear = function _KeyboardManager_onKeyboardClear() {
   __classPrivateFieldGet(this, _KeyboardManager_keyboardState, "f").clear();
 };
-},{"keycode-js":"../node_modules/keycode-js/dist/keycode.esm.js"}],"components/managers/ResizeManager.ts":[function(require,module,exports) {
+},{"keycode-js":"../node_modules/keycode-js/dist/keycode.esm.js"}],"components/managers/MouseManager.ts":[function(require,module,exports) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
+  if (kind === "m") throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+};
+
+var _MouseManager_instances, _MouseManager_mouseState, _MouseManager_currentInteractivePanel, _MouseManager_position, _MouseManager_cleanState, _MouseManager_onMouseDown, _MouseManager_onMouseUp, _MouseManager_onMouseClick, _MouseManager_onMouseRightClick, _MouseManager_onMouseWheel;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MouseManager = void 0;
+
+var PIXI = __importStar(require("pixi.js"));
+/**
+ * マウス操作関連
+ */
+
+
+var MouseManager = /*#__PURE__*/function () {
+  function MouseManager() {
+    _classCallCheck(this, MouseManager);
+
+    _MouseManager_instances.add(this);
+
+    _MouseManager_mouseState.set(this, new Map());
+
+    _MouseManager_currentInteractivePanel.set(this, void 0);
+
+    _MouseManager_position.set(this, new PIXI.Point(0, 0));
+
+    document.addEventListener("mousedown", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseDown).bind(this));
+    document.addEventListener("mouseup", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseUp).bind(this));
+    document.addEventListener("mouseleave", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseUp).bind(this));
+    document.addEventListener("mouseout", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseUp).bind(this));
+    document.addEventListener("click", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseClick).bind(this));
+    document.addEventListener("contextmenu", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseRightClick).bind(this));
+    document.addEventListener("wheel", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseWheel).bind(this));
+  }
+
+  _createClass(MouseManager, [{
+    key: "_update",
+    value: function _update() {
+      var _this = this;
+
+      __classPrivateFieldGet(this, _MouseManager_mouseState, "f").forEach(function (v, k) {
+        __classPrivateFieldGet(_this, _MouseManager_mouseState, "f").set(k, v + 1);
+      });
+
+      __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_cleanState).call(this);
+    }
+  }, {
+    key: "_setInteractivePanel",
+    value: function _setInteractivePanel(panel) {
+      var _this2 = this;
+
+      __classPrivateFieldSet(this, _MouseManager_currentInteractivePanel, panel, "f");
+
+      __classPrivateFieldGet(this, _MouseManager_currentInteractivePanel, "f").on("pointermove", function (e) {
+        __classPrivateFieldSet(_this2, _MouseManager_position, e.data.global, "f");
+      });
+    }
+  }, {
+    key: "isWheelDown",
+    value: function isWheelDown() {
+      return __classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("WHEEL_DOWN") === 1;
+    }
+  }, {
+    key: "isWheelUp",
+    value: function isWheelUp() {
+      return __classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("WHEEL_UP") === 1;
+    }
+  }, {
+    key: "isClicked",
+    value: function isClicked() {
+      var button = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "LEFT";
+      return __classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("".concat(button, "_DOWN")) === 1;
+    }
+  }, {
+    key: "isPressed",
+    value: function isPressed() {
+      var button = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "LEFT";
+      return !!__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("".concat(button, "_DOWN"));
+    }
+  }, {
+    key: "isNotPressed",
+    value: function isNotPressed() {
+      var button = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "LEFT";
+      return !__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("".concat(button, "_DOWN"));
+    }
+  }, {
+    key: "getPosition",
+    value: function getPosition() {
+      return __classPrivateFieldGet(this, _MouseManager_position, "f");
+    }
+  }]);
+
+  return MouseManager;
+}();
+
+exports.MouseManager = MouseManager;
+_MouseManager_mouseState = new WeakMap(), _MouseManager_currentInteractivePanel = new WeakMap(), _MouseManager_position = new WeakMap(), _MouseManager_instances = new WeakSet(), _MouseManager_cleanState = function _MouseManager_cleanState() {
+  if (Number(__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("WHEEL_DOWN")) > 1) {
+    __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("WHEEL_DOWN");
+  }
+
+  if (Number(__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("WHEEL_UP")) > 1) {
+    __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("WHEEL_UP");
+  }
+}, _MouseManager_onMouseDown = function _MouseManager_onMouseDown(e) {
+  if (e.button === 0) {
+    if (__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("LEFT_DOWN") === undefined) {
+      __classPrivateFieldGet(this, _MouseManager_mouseState, "f").set("LEFT_DOWN", 0);
+    }
+  } else if (e.button === 1) {
+    if (__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("CENTER_DOWN") === undefined) {
+      __classPrivateFieldGet(this, _MouseManager_mouseState, "f").set("CENTER_DOWN", 0);
+    }
+  } else if (e.button === 2) {
+    if (__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("RIGHT_DOWN") === undefined) {
+      __classPrivateFieldGet(this, _MouseManager_mouseState, "f").set("RIGHT_DOWN", 0);
+    }
+  }
+}, _MouseManager_onMouseUp = function _MouseManager_onMouseUp(e) {
+  if (e.button === 0) {
+    __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("LEFT_DOWN");
+  } else if (e.button === 1) {
+    __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("CENTER_DOWN");
+  } else if (e.button === 2) {
+    __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("RIGHT_DOWN");
+  }
+
+  __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("CLICK");
+
+  __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("DOUBLE_CLICK");
+
+  __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("RIGHT_CLICK");
+}, _MouseManager_onMouseClick = function _MouseManager_onMouseClick() {
+  if (__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("CLICK") === undefined) {
+    __classPrivateFieldGet(this, _MouseManager_mouseState, "f").set("CLICK", 0);
+  }
+}, _MouseManager_onMouseRightClick = function _MouseManager_onMouseRightClick(e) {
+  e.preventDefault();
+}, _MouseManager_onMouseWheel = function _MouseManager_onMouseWheel(e) {
+  if (e.deltaY > 0) {
+    if (__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("WHEEL_DOWN") === undefined) {
+      __classPrivateFieldGet(this, _MouseManager_mouseState, "f").set("WHEEL_DOWN", 0);
+    }
+  } else {
+    if (__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("WHEEL_UP") === undefined) {
+      __classPrivateFieldGet(this, _MouseManager_mouseState, "f").set("WHEEL_UP", 0);
+    }
+  }
+};
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/managers/ResizeManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -50400,6 +51134,8 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
     _this.interactivePanel.width = $app.width;
     _this.interactivePanel.height = $app.height;
     _this.interactivePanel.interactive = true;
+
+    $app._mouse._setInteractivePanel(_this.interactivePanel);
 
     _this.spawn(_this.interactivePanel);
 
@@ -50912,6 +51648,8 @@ var DebugManager_1 = require("./components/managers/DebugManager");
 
 var KeyboardManager_1 = require("./components/managers/KeyboardManager");
 
+var MouseManager_1 = require("./components/managers/MouseManager");
+
 var ResizeManager_1 = require("./components/managers/ResizeManager");
 
 var SceneManager_1 = require("./components/managers/SceneManager");
@@ -50947,6 +51685,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     document.title = title;
     document.body.appendChild(_this.view);
     _this._key = new KeyboardManager_1.KeyboardManager();
+    _this._mouse = new MouseManager_1.MouseManager();
     _this._watcher = new WatcherManager_1.WatchManager();
     /* this.#resizer = */
 
@@ -50968,6 +51707,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
       _this._key._update();
 
+      _this._mouse._update();
+
       _this._watcher._update(deltaTime);
     }); // ドット絵ぼやけ対策
 
@@ -50985,6 +51726,11 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
         isTriggered: this._key.isTriggered(code),
         isNotPressed: this._key.isNotPressed(code)
       };
+    }
+  }, {
+    key: "getMouse",
+    value: function getMouse() {
+      return this._mouse;
     }
   }, {
     key: "sceneTo",
@@ -51011,7 +51757,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 exports.App = App;
 _App_scener = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
 module.exports="World.bd98eeb1.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
@@ -53533,7 +54279,7 @@ var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (re
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var _Tilemap_instances, _Tilemap_tilemapTexture, _Tilemap_tileSettings, _Tilemap_tileIndex, _Tilemap_applyAutoTileRule, _Tilemap_mulRect, _Tilemap_decorationPosition;
+var _Tilemap_instances, _Tilemap_tilemapTexture, _Tilemap_tileSettings, _Tilemap_tileAlpha, _Tilemap_tileIndex, _Tilemap_applyAutoTileRule, _Tilemap_mulRect, _Tilemap_decorationPosition;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -53572,6 +54318,8 @@ var Tilemap = /*#__PURE__*/function (_PIXITilemap$Composit) {
     _Tilemap_tilemapTexture.set(_assertThisInitialized(_this), void 0);
 
     _Tilemap_tileSettings.set(_assertThisInitialized(_this), void 0);
+
+    _Tilemap_tileAlpha.set(_assertThisInitialized(_this), 1);
 
     __classPrivateFieldSet(_assertThisInitialized(_this), _Tilemap_tileSettings, tilesettings, "f");
 
@@ -53619,7 +54367,9 @@ var Tilemap = /*#__PURE__*/function (_PIXITilemap$Composit) {
                 fh = _ref2[3];
             __classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f").frame = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_mulRect).call(_this2, grid, fx, fy, fw, fh);
 
-            _this2.tile(__classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f"), x * 16, y * 16);
+            _this2.tile(__classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f"), x * 16, y * 16, {
+              alpha: __classPrivateFieldGet(_this2, _Tilemap_tileAlpha, "f")
+            });
 
             if (animType === TileAnimType.EASY_RPG_SEA) {
               _this2.tileAnimX(16, 2);
@@ -53642,7 +54392,9 @@ var Tilemap = /*#__PURE__*/function (_PIXITilemap$Composit) {
                     _fh = _ref4[3];
                 __classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f").frame = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_mulRect).call(_this2, grid, _fx, _fy, _fw, _fh);
 
-                _this2.tile.apply(_this2, [__classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f")].concat(_toConsumableArray((_classPrivateFieldGe2 = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_decorationPosition)).call.apply(_classPrivateFieldGe2, [_this2, x, y].concat(_toConsumableArray(pos))))));
+                _this2.tile.apply(_this2, [__classPrivateFieldGet(_this2, _Tilemap_tilemapTexture, "f")].concat(_toConsumableArray((_classPrivateFieldGe2 = __classPrivateFieldGet(_this2, _Tilemap_instances, "m", _Tilemap_decorationPosition)).call.apply(_classPrivateFieldGe2, [_this2, x, y].concat(_toConsumableArray(pos)))), [{
+                  alpha: __classPrivateFieldGet(_this2, _Tilemap_tileAlpha, "f")
+                }]));
               }
             });
 
@@ -53700,13 +54452,22 @@ var Tilemap = /*#__PURE__*/function (_PIXITilemap$Composit) {
       t.tileAnim[0] = x !== null && x !== void 0 ? x : t.tileAnim[0];
       t.tileAnim[1] = y !== null && y !== void 0 ? y : t.tileAnim[1];
     }
+    /** 透明度を変更する */
+
+  }, {
+    key: "setAlpha",
+    value: function setAlpha(alpha) {
+      __classPrivateFieldSet(this, _Tilemap_tileAlpha, alpha, "f");
+
+      this.updateMap();
+    }
   }]);
 
   return Tilemap;
 }(PIXITilemap.CompositeRectTileLayer);
 
 exports.Tilemap = Tilemap;
-_Tilemap_tilemapTexture = new WeakMap(), _Tilemap_tileSettings = new WeakMap(), _Tilemap_instances = new WeakSet(), _Tilemap_tileIndex = function _Tilemap_tileIndex(i) {
+_Tilemap_tilemapTexture = new WeakMap(), _Tilemap_tileSettings = new WeakMap(), _Tilemap_tileAlpha = new WeakMap(), _Tilemap_instances = new WeakSet(), _Tilemap_tileIndex = function _Tilemap_tileIndex(i) {
   return new PIXI.Point(i % this.mapWidth, i / this.mapWidth | 0);
 }, _Tilemap_applyAutoTileRule = function _Tilemap_applyAutoTileRule(targetX, targetY, tileId, matrix) {
   var r = true;
@@ -53859,14 +54620,15 @@ exports.tileset = {
     frame: [0, 8, 2, 2],
     animType: Tilemap_1.TileAnimType.EASY_RPG_SEA,
     autoTileRules: easyRPGAutoTileRules.sea
-  }, {
-    name: "海（深）",
-    grid: 8,
-    origin: [0, 8],
-    frame: [0, 6, 2, 2],
-    animType: Tilemap_1.TileAnimType.EASY_RPG_SEA,
-    autoTileRules: easyRPGAutoTileRules.sea
-  }, {
+  }, // {
+  //   name: "海（深）",
+  //   grid: 8,
+  //   origin: [0, 8],
+  //   frame: [0, 6, 2, 2],
+  //   animType: TileAnimType.EASY_RPG_SEA,
+  //   autoTileRules: easyRPGAutoTileRules.sea,
+  // },
+  {
     name: "草原",
     grid: 8,
     origin: [0, 16],
@@ -53896,11 +54658,18 @@ exports.tileset = {
     frame: [0, 0, 32, 32]
   }]
 };
-},{"../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"game/TileScene.ts":[function(require,module,exports) {
-var define;
+},{"../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"game/MapEditorScene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -54017,7 +54786,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TileScene = void 0;
+exports.MapEditorScene = void 0;
 
 var World_png_1 = __importDefault(require("easyrpg-rtp/chipset/World.png"));
 
@@ -54033,7 +54802,9 @@ var tiles_1 = require("./tiles");
 
 var Tilemap_1 = require("../components/objects/Tilemap");
 
-exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
+var helper_1 = require("../utils/helper");
+
+exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
 
   var _super = _createSuper(_class);
@@ -54048,41 +54819,10 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
     _this.paintLayerId = 0;
     _this.lowerTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), tiles_1.tileset, 20, 15));
     _this.upperTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), tiles_1.tileset, 20, 15));
-    _this.label = _this.spawn(new PIXI.Text(" 0-7 でタイル変更\n ↑↓でレイヤー変更\n ドラッグでお絵描き\n 内容はログ出力", {
+    _this.label = _this.spawn(new PIXI.Text("マウスホイールでタイル変更\n 右クリックでレイヤー変更\n ドラッグでお絵描き\n Enterで出力, Spaceで読込\n UIがないのでログを見ながら操作する", {
       fontSize: 12
     }));
     console.log(_assertThisInitialized(_this));
-    var pointerPressed = false;
-
-    _this.interactivePanel.on("pointerdown", function (e) {
-      pointerPressed = true;
-    });
-
-    _this.interactivePanel.on("pointerup", function (e) {
-      pointerPressed = false;
-    });
-
-    _this.interactivePanel.on("pointermove", function (e) {
-      if (pointerPressed) {
-        // マウス座標の先にタイルを設定
-        var _e$data$global = e.data.global,
-            px = _e$data$global.x,
-            py = _e$data$global.y;
-        var _ref = [Math.floor(px / 16), Math.floor(py / 16)],
-            tx = _ref[0],
-            ty = _ref[1];
-
-        if (_this.paintLayerId === 0) {
-          _this.lowerTilemap.setTile(tx, ty, _this.paintTileId);
-
-          _this.lowerTilemap.updateMap();
-        } else {
-          _this.upperTilemap.setTile(tx, ty, _this.paintTileId);
-
-          _this.upperTilemap.updateMap();
-        }
-      }
-    });
 
     _this.lowerTilemap.updateMap();
 
@@ -54126,30 +54866,68 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
                 });
                 Flow_1.Flow.loop(function () {
                   return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-                    var _this3 = this;
+                    var _$app$getMouse$getPos, px, py, _ref, tx, ty, input, _JSON$parse, _JSON$parse2, lower, upper;
 
                     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
-                            if ($app.getKey("DOWN").isTriggered) {
-                              this.paintLayerId = 0;
-                              console.log("下層レイヤー");
+                            if ($app.getMouse().isClicked("RIGHT")) {
+                              this.paintLayerId = this.paintLayerId === 0 ? 1 : 0;
+                              this.lowerTilemap.setAlpha(this.paintLayerId === 1 ? 0.5 : 1);
+                              this.upperTilemap.setAlpha(this.paintLayerId === 0 ? 0.5 : 1);
+                              console.log(this.paintLayerId === 0 ? "下層" : "上層", "レイヤー");
                             }
 
-                            if ($app.getKey("UP").isTriggered) {
-                              this.paintLayerId = 1;
-                              console.log("上層レイヤー");
+                            if ($app.getMouse().isClicked("CENTER")) {
+                              this.paintTileId = 0;
+                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[0].name));
                             }
 
-                            _toConsumableArray(Array(8).keys()).forEach(function (i) {
-                              if ($app.getKey("".concat(i)).isTriggered) {
-                                _this3.paintTileId = i;
-                                console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[i].name));
+                            if ($app.getMouse().isWheelUp()) {
+                              this.paintTileId = this.paintTileId === tiles_1.tileset.terrains.length - 1 ? 0 : this.paintTileId + 1;
+                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
+                            }
+
+                            if ($app.getMouse().isWheelDown()) {
+                              this.paintTileId = this.paintTileId === 0 ? tiles_1.tileset.terrains.length - 1 : this.paintTileId - 1;
+                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
+                            }
+
+                            if ($app.getMouse().isPressed("LEFT")) {
+                              // マウス座標の先にタイルを設定
+                              _$app$getMouse$getPos = $app.getMouse().getPosition(), px = _$app$getMouse$getPos.x, py = _$app$getMouse$getPos.y;
+                              _ref = [Math.floor(px / 16), Math.floor(py / 16)], tx = _ref[0], ty = _ref[1];
+
+                              if (this.paintLayerId === 0) {
+                                this.lowerTilemap.setTile(tx, ty, this.paintTileId);
+                                this.lowerTilemap.updateMap();
+                              } else {
+                                this.upperTilemap.setTile(tx, ty, this.paintTileId);
+                                this.upperTilemap.updateMap();
                               }
-                            });
+                            }
 
-                          case 3:
+                            if ($app.getKey("ENTER").isTriggered) {
+                              console.log("マップデータ出力", {
+                                data: (0, helper_1.zip)(JSON.stringify([_toConsumableArray(this.lowerTilemap.map), _toConsumableArray(this.upperTilemap.map)]))
+                              });
+                            }
+
+                            if ($app.getKey("SPACE").isTriggered) {
+                              try {
+                                input = prompt("マップデータ入力");
+                                _JSON$parse = JSON.parse((0, helper_1.unzip)(JSON.parse(input).data)), _JSON$parse2 = _slicedToArray(_JSON$parse, 2), lower = _JSON$parse2[0], upper = _JSON$parse2[1];
+                                this.lowerTilemap.map = new Uint8ClampedArray(lower);
+                                this.upperTilemap.map = new Uint8ClampedArray(upper);
+                                this.lowerTilemap.updateMap();
+                                this.upperTilemap.updateMap();
+                              } catch (error) {
+                                console.warn(error);
+                              }
+                            }
+
+                          case 7:
                           case "end":
                             return _context2.stop();
                         }
@@ -54170,7 +54948,7 @@ exports.TileScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts","../utils/helper":"utils/helper.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54179,16 +54957,16 @@ Object.defineProperty(exports, "__esModule", {
 
 var app_1 = require("./app");
 
-var TileScene_1 = require("./game/TileScene"); // ゲーム開始
+var MapEditorScene_1 = require("./game/MapEditorScene"); // ゲーム開始
 
 
-new app_1.App(TileScene_1.TileScene, {
+new app_1.App(MapEditorScene_1.MapEditorScene, {
   title: "H2A_GameEngineDemo",
   width: 320,
   height: 240,
   backgroundColor: 0xaaaaaa
 });
-},{"./app":"app.ts","./game/TileScene":"game/TileScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./app":"app.ts","./game/MapEditorScene":"game/MapEditorScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -54216,7 +54994,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1270" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "22599" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

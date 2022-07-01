@@ -4,6 +4,7 @@ import {
   KeyboardCodeNames,
   KeyboardManager,
 } from "./components/managers/KeyboardManager";
+import { MouseManager } from "./components/managers/MouseManager";
 import { ResizeManager } from "./components/managers/ResizeManager";
 import { SceneManager } from "./components/managers/SceneManager";
 import { WatchManager } from "./components/managers/WatcherManager";
@@ -20,6 +21,7 @@ export class App extends PIXI.Application {
   height: number;
 
   _key: KeyboardManager;
+  _mouse: MouseManager;
   _watcher: WatchManager;
   // #resizer: ResizeManager;
   #scener: SceneManager;
@@ -44,6 +46,7 @@ export class App extends PIXI.Application {
     document.body.appendChild(this.view);
 
     this._key = new KeyboardManager();
+    this._mouse = new MouseManager();
     this._watcher = new WatchManager();
     /* this.#resizer = */ new ResizeManager();
     this.#scener = new SceneManager();
@@ -58,6 +61,7 @@ export class App extends PIXI.Application {
       this.frameCount++;
 
       this._key._update();
+      this._mouse._update();
       this._watcher._update(deltaTime);
     });
 
@@ -71,6 +75,9 @@ export class App extends PIXI.Application {
       isTriggered: this._key.isTriggered(code),
       isNotPressed: this._key.isNotPressed(code),
     };
+  }
+  getMouse() {
+    return this._mouse;
   }
   async sceneTo(sceneData: SceneData<any>) {
     this.#scener._gotoScene(sceneData);

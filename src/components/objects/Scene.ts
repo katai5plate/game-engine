@@ -43,6 +43,7 @@ export class Scene extends PIXI.Container {
     this.interactivePanel.width = $app.width;
     this.interactivePanel.height = $app.height;
     this.interactivePanel.interactive = true;
+    $app._mouse._setInteractivePanel(this.interactivePanel);
     this.spawn(this.interactivePanel);
   }
   /** main() を実行 */

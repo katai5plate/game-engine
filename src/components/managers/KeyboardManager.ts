@@ -42,11 +42,11 @@ export class KeyboardManager {
   #onKeyboardClear() {
     this.#keyboardState.clear();
   }
-  isPressed(code: KeyboardCodeNames) {
-    return !!this.#keyboardState.get(KeyCode[`CODE_${code}`]);
-  }
   isTriggered(code: KeyboardCodeNames) {
     return this.#keyboardState.get(KeyCode[`CODE_${code}`]) === 1;
+  }
+  isPressed(code: KeyboardCodeNames) {
+    return !!this.#keyboardState.get(KeyCode[`CODE_${code}`]);
   }
   isNotPressed(code: KeyboardCodeNames) {
     return !this.#keyboardState.get(KeyCode[`CODE_${code}`]);
