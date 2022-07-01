@@ -22,7 +22,8 @@
     <title></title>
   </head>
   <body>
-    <script>
+    <script type="text/javascript" src="libs/zzfxm.js"></script>
+    <script defer>
       window.$isTest = !!location.search.slice(1).match(/&?test/);
       /** script の順次実行 */
       const loadScripts = (src, cond) =>

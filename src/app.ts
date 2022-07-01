@@ -7,6 +7,7 @@ import {
 import { MouseManager } from "./components/managers/MouseManager";
 import { ResizeManager } from "./components/managers/ResizeManager";
 import { SceneManager } from "./components/managers/SceneManager";
+import { SynthManager } from "./components/managers/SynthManager";
 import { WatchManager } from "./components/managers/WatcherManager";
 import { SceneData } from "./components/objects/Scene";
 import { TouchableSprite } from "./components/ui/atoms/TouchableSprite";
@@ -26,6 +27,7 @@ export class App extends PIXI.Application {
   // #resizer: ResizeManager;
   #scener: SceneManager;
   // #debugger?: DebugManager;
+  _synth: SynthManager;
 
   constructor(
     initialScene: SceneData<any>,
@@ -50,6 +52,7 @@ export class App extends PIXI.Application {
     this._watcher = new WatchManager();
     /* this.#resizer = */ new ResizeManager();
     this.#scener = new SceneManager();
+    this._synth = new SynthManager();
     if (!!window?.$isTest) {
       /* this.#debugger = */ new DebugManager();
     }
@@ -74,6 +77,11 @@ export class App extends PIXI.Application {
   }
   getMouse() {
     return this._mouse;
+  }
+  useSynth(bgmVolume?: number, seVolume?: number) {
+    bgmVolume && this._synth.setBgmVolume(bgmVolume);
+    seVolume && this._synth.setSeVolume(seVolume);
+    return this._synth;
   }
   async sceneTo(sceneData: SceneData<any>) {
     this.#scener._gotoScene(sceneData);

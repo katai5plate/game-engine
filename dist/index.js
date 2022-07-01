@@ -51327,7 +51327,142 @@ var SceneManager = /*#__PURE__*/function () {
 }();
 
 exports.SceneManager = SceneManager;
-},{"../objects/Scene":"components/objects/Scene.ts"}],"components/managers/WatcherManager.ts":[function(require,module,exports) {
+},{"../objects/Scene":"components/objects/Scene.ts"}],"components/managers/SynthManager.ts":[function(require,module,exports) {
+"use strict";
+
+function _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var _SynthManager_instances, _SynthManager_getContext, _SynthManager_updateGain;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SynthManager = void 0;
+/**
+ * ZzFX系
+ */
+
+var SynthManager = /*#__PURE__*/function () {
+  function SynthManager() {
+    _classCallCheck(this, SynthManager);
+
+    _SynthManager_instances.add(this);
+
+    this.bgmVolume = 0;
+    this.seVolume = 0;
+    this.seGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
+    this.seGainNode.connect(__classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).destination);
+    this.bgmGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
+    this.bgmGainNode.connect(__classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).destination);
+    this.setBgmVolume(0.5);
+    this.setSeVolume(1);
+  }
+
+  _createClass(SynthManager, [{
+    key: "setBgmVolume",
+    value: function setBgmVolume(volume) {
+      this.bgmVolume = volume;
+
+      __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_updateGain).call(this);
+    }
+  }, {
+    key: "setSeVolume",
+    value: function setSeVolume(volume) {
+      this.seVolume = volume;
+
+      __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_updateGain).call(this);
+    }
+  }, {
+    key: "playBgm",
+    value: function playBgm(bgmData, isLoop) {
+      var _window, _window2;
+
+      if (this.bgmBuffer) {
+        this.stopBgm();
+      }
+
+      this.bgmBuffer = (_window = window).zzfxM.apply(_window, _toConsumableArray(bgmData));
+      this.bgmNode = (_window2 = window).zzfxP.apply(_window2, _toConsumableArray(this.bgmBuffer));
+      this.bgmNode.loop = !!isLoop;
+      this.bgmGainNode && this.bgmNode.connect(this.bgmGainNode);
+    }
+  }, {
+    key: "playSe",
+    value: function playSe(seData) {
+      var _window3;
+
+      var volume = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.seVolume || window.zzfxV;
+      if (seData === null) return;
+
+      var _seData = _toArray(seData),
+          _seData$ = _seData[0],
+          dataVolume = _seData$ === void 0 ? 1 : _seData$,
+          rest = _seData.slice(1);
+
+      this.setSeVolume(dataVolume * volume / dataVolume);
+      this.seBuffer = (_window3 = window).zzfxG.apply(_window3, [this.seVolume].concat(_toConsumableArray(rest)));
+      this.seNode = window.zzfxP(this.seBuffer);
+      this.seGainNode && this.seNode.connect(this.seGainNode);
+    }
+  }, {
+    key: "stopBgm",
+    value: function stopBgm() {
+      var _a;
+
+      (_a = this.bgmNode) === null || _a === void 0 ? void 0 : _a.stop();
+      this.bgmBuffer = undefined;
+    }
+  }, {
+    key: "stopSe",
+    value: function stopSe() {
+      var _a;
+
+      (_a = this.seNode) === null || _a === void 0 ? void 0 : _a.stop();
+      this.seBuffer = undefined;
+    }
+  }]);
+
+  return SynthManager;
+}();
+
+exports.SynthManager = SynthManager;
+_SynthManager_instances = new WeakSet(), _SynthManager_getContext = function _SynthManager_getContext() {
+  return window.zzfxX;
+}, _SynthManager_updateGain = function _SynthManager_updateGain() {
+  if (!(this.bgmGainNode && this.seGainNode)) return; // 元の音量値が 0 のため、-1 が消音値
+
+  this.bgmGainNode.gain.value = -1 + this.bgmVolume * 2;
+  this.seGainNode.gain.value = -1 + this.seVolume * 2;
+};
+},{}],"components/managers/WatcherManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -51654,6 +51789,8 @@ var ResizeManager_1 = require("./components/managers/ResizeManager");
 
 var SceneManager_1 = require("./components/managers/SceneManager");
 
+var SynthManager_1 = require("./components/managers/SynthManager");
+
 var WatcherManager_1 = require("./components/managers/WatcherManager");
 
 var App = /*#__PURE__*/function (_PIXI$Application) {
@@ -51661,7 +51798,6 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
   var _super = _createSuper(App);
 
-  // #debugger?: DebugManager;
   function App(initialScene, options) {
     var _this;
 
@@ -51692,6 +51828,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     new ResizeManager_1.ResizeManager();
 
     __classPrivateFieldSet(_assertThisInitialized(_this), _App_scener, new SceneManager_1.SceneManager(), "f");
+
+    _this._synth = new SynthManager_1.SynthManager();
 
     if (!!(window === null || window === void 0 ? void 0 : window.$isTest)) {
       /* this.#debugger = */
@@ -51729,6 +51867,13 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
       return this._mouse;
     }
   }, {
+    key: "useSynth",
+    value: function useSynth(bgmVolume, seVolume) {
+      bgmVolume && this._synth.setBgmVolume(bgmVolume);
+      seVolume && this._synth.setSeVolume(seVolume);
+      return this._synth;
+    }
+  }, {
     key: "sceneTo",
     value: function sceneTo(sceneData) {
       return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -51753,7 +51898,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 exports.App = App;
 _App_scener = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
 module.exports="World.bd98eeb1.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
@@ -54654,7 +54799,21 @@ exports.tileset = {
     frame: [0, 0, 32, 32]
   }]
 };
-},{"../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"game/MapEditorScene.ts":[function(require,module,exports) {
+},{"../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"synth/sounds.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.pick = exports.dig = exports.bomb = exports.damage = exports.jump = exports.powerup = exports.coin = void 0;
+exports.coin = [,, 1440, 0.01, 0.03, 0.17,, 1.65,,, 659, 0.08,,,,,, 0.54, 0.03];
+exports.powerup = [1.15,, 522, 0.09, 0.12, 0.45, 2, 0.81, 4.8, 2.7,,, 0.18,,,,, 0.51, 0.13, 0.13];
+exports.jump = [1.63,, 2, 0.01, 0.09, 0.09, 1, 0.5, 12,,,,,,,,, 0.61];
+exports.damage = [1.99,, 485, 0.01, 0.13, 0, 1, 0,,,,, 0.07, 0.1, -6,, 0.38, 0.37];
+exports.bomb = [1.08,, 449, 0.01, 0.2, 0.56, 4, 0.03, 0.9, 0.2,,, 0.16, 1,, 0.5,, 0.5, 0.13, 0.14];
+exports.dig = [2,, 975, 0.01, 0.02, 0.01, 4, 0.56,,,,,, 0.9, 24,, 0.29, 0.3, 0.01, 0.67];
+exports.pick = [1.99,, 22, 0.02, 0.01, 0.02, 1, 0.04, 27,,,,, 0.2,,, 0.12,,, 0.39];
+},{}],"game/MapEditorScene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -54800,6 +54959,8 @@ var Tilemap_1 = require("../components/objects/Tilemap");
 
 var helper_1 = require("../utils/helper");
 
+var se = __importStar(require("../synth/sounds"));
+
 exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
 
@@ -54823,6 +54984,8 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
     _this.lowerTilemap.updateMap();
 
     _this.upperTilemap.updateMap();
+
+    $app.useSynth(0.5, 0.5);
 
     _this.ready();
 
@@ -54869,6 +55032,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                         switch (_context2.prev = _context2.next) {
                           case 0:
                             if ($app.getMouse().isClicked("RIGHT")) {
+                              $app.useSynth().playSe(se.coin);
                               this.paintLayerId = this.paintLayerId === 0 ? 1 : 0;
                               this.lowerTilemap.setAlpha(this.paintLayerId === 1 ? 0.5 : 1);
                               this.upperTilemap.setAlpha(this.paintLayerId === 0 ? 0.5 : 1);
@@ -54876,16 +55040,19 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                             }
 
                             if ($app.getMouse().isClicked("CENTER")) {
+                              $app.useSynth().playSe(se.jump);
                               this.paintTileId = 0;
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[0].name));
                             }
 
                             if ($app.getMouse().isWheelUp()) {
+                              $app.useSynth().playSe(se.pick);
                               this.paintTileId = this.paintTileId === tiles_1.tileset.terrains.length - 1 ? 0 : this.paintTileId + 1;
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
                             }
 
                             if ($app.getMouse().isWheelDown()) {
+                              $app.useSynth().playSe(se.pick);
                               this.paintTileId = this.paintTileId === 0 ? tiles_1.tileset.terrains.length - 1 : this.paintTileId - 1;
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
                             }
@@ -54896,15 +55063,24 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                               _ref = [Math.floor(px / 16), Math.floor(py / 16)], tx = _ref[0], ty = _ref[1];
 
                               if (this.paintLayerId === 0) {
+                                if (this.lowerTilemap.getTile(tx, ty) !== this.paintTileId) {
+                                  $app.useSynth().playSe(se.dig);
+                                }
+
                                 this.lowerTilemap.setTile(tx, ty, this.paintTileId);
                                 this.lowerTilemap.updateMap();
                               } else {
+                                if (this.upperTilemap.getTile(tx, ty) !== this.paintTileId) {
+                                  $app.useSynth().playSe(se.dig);
+                                }
+
                                 this.upperTilemap.setTile(tx, ty, this.paintTileId);
                                 this.upperTilemap.updateMap();
                               }
                             }
 
                             if ($app.getKey().isTriggered("ENTER")) {
+                              $app.useSynth().playSe(se.powerup);
                               console.log("マップデータ出力", {
                                 data: (0, helper_1.zip)(JSON.stringify([_toConsumableArray(this.lowerTilemap.map), _toConsumableArray(this.upperTilemap.map)]))
                               });
@@ -54918,6 +55094,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                                 this.upperTilemap.map = new Uint8ClampedArray(upper);
                                 this.lowerTilemap.updateMap();
                                 this.upperTilemap.updateMap();
+                                $app.useSynth().playSe(se.bomb);
                               } catch (error) {
                                 console.warn(error);
                               }
@@ -54944,7 +55121,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts","../utils/helper":"utils/helper.ts"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts","../utils/helper":"utils/helper.ts","../synth/sounds":"synth/sounds.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54990,7 +55167,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "22599" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1227" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
