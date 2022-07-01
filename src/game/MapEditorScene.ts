@@ -6,6 +6,7 @@ import { Flow } from "../components/objects/Flow";
 import { tileset } from "./tiles";
 import { Tilemap } from "../components/objects/Tilemap";
 import { zip, unzip } from "../utils/helper";
+import * as se from "../synth/sounds";
 
 export const MapEditorScene = createScene(
   [World],
@@ -36,6 +37,8 @@ export const MapEditorScene = createScene(
       this.lowerTilemap.updateMap();
       this.upperTilemap.updateMap();
 
+      $app.useSynth(0.5, 0.5);
+
       this.ready();
     }
     async main() {
@@ -47,16 +50,19 @@ export const MapEditorScene = createScene(
       });
       Flow.loop(async () => {
         if ($app.getMouse().isClicked("RIGHT")) {
+          $app.useSynth().playSe(se.coin);
           this.paintLayerId = this.paintLayerId === 0 ? 1 : 0;
           this.lowerTilemap.setAlpha(this.paintLayerId === 1 ? 0.5 : 1);
           this.upperTilemap.setAlpha(this.paintLayerId === 0 ? 0.5 : 1);
           console.log(this.paintLayerId === 0 ? "下層" : "上層", "レイヤー");
         }
         if ($app.getMouse().isClicked("CENTER")) {
+          $app.useSynth().playSe(se.jump);
           this.paintTileId = 0;
           console.log(`タイル選択: ${tileset.terrains[0].name}`);
         }
         if ($app.getMouse().isWheelUp()) {
+          $app.useSynth().playSe(se.pick);
           this.paintTileId =
             this.paintTileId === tileset.terrains.length - 1
               ? 0
@@ -64,6 +70,7 @@ export const MapEditorScene = createScene(
           console.log(`タイル選択: ${tileset.terrains[this.paintTileId].name}`);
         }
         if ($app.getMouse().isWheelDown()) {
+          $app.useSynth().playSe(se.pick);
           this.paintTileId =
             this.paintTileId === 0
               ? tileset.terrains.length - 1
@@ -75,14 +82,21 @@ export const MapEditorScene = createScene(
           const { x: px, y: py } = $app.getMouse().getPosition();
           const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
           if (this.paintLayerId === 0) {
+            if (this.lowerTilemap.getTile(tx, ty) !== this.paintTileId) {
+              $app.useSynth().playSe(se.dig);
+            }
             this.lowerTilemap.setTile(tx, ty, this.paintTileId);
             this.lowerTilemap.updateMap();
           } else {
+            if (this.upperTilemap.getTile(tx, ty) !== this.paintTileId) {
+              $app.useSynth().playSe(se.dig);
+            }
             this.upperTilemap.setTile(tx, ty, this.paintTileId);
             this.upperTilemap.updateMap();
           }
         }
         if ($app.getKey().isTriggered("ENTER")) {
+          $app.useSynth().playSe(se.powerup);
           console.log("マップデータ出力", {
             data: zip(
               JSON.stringify([
@@ -102,6 +116,7 @@ export const MapEditorScene = createScene(
             this.upperTilemap.map = new Uint8ClampedArray(upper);
             this.lowerTilemap.updateMap();
             this.upperTilemap.updateMap();
+            $app.useSynth().playSe(se.bomb);
           } catch (error) {
             console.warn(error);
           }
