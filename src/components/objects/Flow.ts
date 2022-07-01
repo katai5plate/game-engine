@@ -118,7 +118,7 @@ export class Flow<T> {
       const _ease = ease ?? "linear";
       const { x, y } = target;
       const pressed = (names: KeyboardCodeNames[]) =>
-        names.find((k) => $app.getKey(k).isPressed);
+        names.find((k) => $app.getKey().isPressed(k));
       if (pressed(_keys.left)) {
         await Flow.tween(
           {

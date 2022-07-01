@@ -69,12 +69,8 @@ export class App extends PIXI.Application {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     this.view.style.imageRendering = "pixelated";
   }
-  getKey(code: KeyboardCodeNames) {
-    return {
-      isPressed: this._key.isPressed(code),
-      isTriggered: this._key.isTriggered(code),
-      isNotPressed: this._key.isNotPressed(code),
-    };
+  getKey() {
+    return this._key;
   }
   getMouse() {
     return this._mouse;

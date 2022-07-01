@@ -82,7 +82,7 @@ export const MapEditorScene = createScene(
             this.upperTilemap.updateMap();
           }
         }
-        if ($app.getKey("ENTER").isTriggered) {
+        if ($app.getKey().isTriggered("ENTER")) {
           console.log("マップデータ出力", {
             data: zip(
               JSON.stringify([
@@ -92,7 +92,7 @@ export const MapEditorScene = createScene(
             ),
           });
         }
-        if ($app.getKey("SPACE").isTriggered) {
+        if ($app.getKey().isTriggered("SPACE")) {
           try {
             const input = prompt("マップデータ入力");
             const [lower, upper] = JSON.parse(

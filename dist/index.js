@@ -51720,12 +51720,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
   _createClass(App, [{
     key: "getKey",
-    value: function getKey(code) {
-      return {
-        isPressed: this._key.isPressed(code),
-        isTriggered: this._key.isTriggered(code),
-        isNotPressed: this._key.isNotPressed(code)
-      };
+    value: function getKey() {
+      return this._key;
     }
   }, {
     key: "getMouse",
@@ -52255,7 +52251,7 @@ Flow.use = {
 
               pressed = function pressed(names) {
                 return names.find(function (k) {
-                  return $app.getKey(k).isPressed;
+                  return $app.getKey().isPressed(k);
                 });
               };
 
@@ -54908,13 +54904,13 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                               }
                             }
 
-                            if ($app.getKey("ENTER").isTriggered) {
+                            if ($app.getKey().isTriggered("ENTER")) {
                               console.log("マップデータ出力", {
                                 data: (0, helper_1.zip)(JSON.stringify([_toConsumableArray(this.lowerTilemap.map), _toConsumableArray(this.upperTilemap.map)]))
                               });
                             }
 
-                            if ($app.getKey("SPACE").isTriggered) {
+                            if ($app.getKey().isTriggered("SPACE")) {
                               try {
                                 input = prompt("マップデータ入力");
                                 _JSON$parse = JSON.parse((0, helper_1.unzip)(JSON.parse(input).data)), _JSON$parse2 = _slicedToArray(_JSON$parse, 2), lower = _JSON$parse2[0], upper = _JSON$parse2[1];

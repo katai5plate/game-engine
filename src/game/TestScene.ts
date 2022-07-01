@@ -35,7 +35,7 @@ export const TestScene = createScene(
       new Flow(this.player1, async ($) => {
         await Flow.loop(async (end) => {
           await Flow.use.moveLikeRPG($, 0.25, 48);
-          if ($app.getKey("R").isTriggered) {
+          if ($app.getKey().isTriggered("R")) {
             console.log("AAAA!");
             return end;
           }
@@ -53,7 +53,7 @@ export const TestScene = createScene(
             },
             ease: "outBounce",
           });
-          if ($app.getKey("T").isTriggered) {
+          if ($app.getKey().isTriggered("T")) {
             console.log("BBBB!");
             return end;
           }
