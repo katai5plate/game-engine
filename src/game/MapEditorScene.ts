@@ -77,7 +77,7 @@ export const MapEditorScene = createScene(
               : this.paintTileId - 1;
           console.log(`タイル選択: ${tileset.terrains[this.paintTileId].name}`);
         }
-        if ($app.useTouch.isPressed()) {
+        if ($app.useMouse.isPressed() || $app.useTouch.isPressed()) {
           // マウス座標の先にタイルを設定
           [
             $app.useMouse.getPosition(),

@@ -15,7 +15,7 @@ type PointerValues =
  */
 export class TouchManager {
   #currentPanel?: PIXI.Sprite;
-  #touchTime?: number = 0;
+  #touchTime?: number;
 
   /** MouseManager転送用 */
   #singlePosition: PIXI.Point = new PIXI.Point(0, 0);
@@ -44,6 +44,7 @@ export class TouchManager {
   #onPointerDown(e: PIXI.InteractionEvent) {
     this.#updateTouchData(e);
     if (this.#touchTime === undefined) {
+      console.log("DOWN");
       this.#touchTime = 0;
     }
   }

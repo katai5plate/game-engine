@@ -50,7 +50,6 @@ export class SynthManager {
   bgmNode?: AudioBufferSourceNode;
   seNode?: AudioBufferSourceNode;
   constructor() {
-    console.log("12313132");
     this.seGainNode = this.#getContext().createGain();
     this.seGainNode.connect(this.#getContext().destination);
     this.bgmGainNode = this.#getContext().createGain();

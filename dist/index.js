@@ -49892,7 +49892,7 @@ var TouchManager = /*#__PURE__*/function () {
 
     _TouchManager_currentPanel.set(this, void 0);
 
-    _TouchManager_touchTime.set(this, 0);
+    _TouchManager_touchTime.set(this, void 0);
     /** MouseManager転送用 */
 
 
@@ -49970,6 +49970,8 @@ _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMa
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
   if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") === undefined) {
+    console.log("DOWN");
+
     __classPrivateFieldSet(this, _TouchManager_touchTime, 0, "f");
   }
 }, _TouchManager_onPointerUp = function _TouchManager_onPointerUp(e) {
@@ -51495,7 +51497,6 @@ var SynthManager = /*#__PURE__*/function () {
 
     this.bgmVolume = 0;
     this.seVolume = 0;
-    console.log("12313132");
     this.seGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
     this.seGainNode.connect(__classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).destination);
     this.bgmGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
@@ -55205,7 +55206,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
                             }
 
-                            if ($app.useTouch.isPressed()) {
+                            if ($app.useMouse.isPressed() || $app.useTouch.isPressed()) {
                               // マウス座標の先にタイルを設定
                               [$app.useMouse.getPosition()].concat(_toConsumableArray($app.useTouch.getPositions())).forEach(function (_ref) {
                                 var px = _ref.x,
