@@ -55192,7 +55192,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
 
                             if ($app.useTouch.isPressed()) {
                               // マウス座標の先にタイルを設定
-                              $app.useTouch.getPositions().forEach(function (_ref) {
+                              [$app.useMouse.getPosition()].concat(_toConsumableArray($app.useTouch.getPositions())).forEach(function (_ref) {
                                 var px = _ref.x,
                                     py = _ref.y;
                                 var _ref2 = [Math.floor(px / 16), Math.floor(py / 16)],

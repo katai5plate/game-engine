@@ -79,7 +79,10 @@ export const MapEditorScene = createScene(
         }
         if ($app.useTouch.isPressed()) {
           // マウス座標の先にタイルを設定
-          $app.useTouch.getPositions().forEach(({ x: px, y: py }) => {
+          [
+            $app.useMouse.getPosition(),
+            ...$app.useTouch.getPositions(),
+          ].forEach(({ x: px, y: py }) => {
             const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
             if (this.paintLayerId === 0) {
               if (this.lowerTilemap.getTile(tx, ty) !== this.paintTileId) {
