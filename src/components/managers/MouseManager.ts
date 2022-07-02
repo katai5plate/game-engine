@@ -1,9 +1,7 @@
-import * as PIXI from "pixi.js";
 type MouseValues =
   | "LEFT_DOWN"
   | "CENTER_DOWN"
   | "RIGHT_DOWN"
-  | `AUX_${number}_DOWN`
   | "CLICK"
   | "DOUBLE_CLICK"
   | "RIGHT_CLICK"
@@ -15,8 +13,6 @@ type MouseValues =
  */
 export class MouseManager {
   #mouseState: Map<MouseValues, number> = new Map();
-  #currentInteractivePanel?: PIXI.Sprite;
-  #position: PIXI.Point = new PIXI.Point(0, 0);
   constructor() {
     document.addEventListener("mousedown", this.#onMouseDown.bind(this));
     document.addEventListener("mouseup", this.#onMouseUp.bind(this));
@@ -34,15 +30,6 @@ export class MouseManager {
       this.#mouseState.set(k, v + 1);
     });
     this.#cleanState();
-  }
-  _setInteractivePanel(panel: PIXI.Sprite) {
-    this.#currentInteractivePanel = panel;
-    this.#currentInteractivePanel.on(
-      "pointermove",
-      (e: PIXI.InteractionEvent) => {
-        this.#position = e.data.global;
-      }
-    );
   }
   #cleanState() {
     if (Number(this.#mouseState.get("WHEEL_DOWN")) > 1) {
@@ -114,6 +101,6 @@ export class MouseManager {
     return !this.#mouseState.get(`${button}_DOWN`);
   }
   getPosition() {
-    return this.#position;
+    return $app._touch.getPosition();
   }
 }

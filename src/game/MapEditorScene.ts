@@ -77,23 +77,27 @@ export const MapEditorScene = createScene(
               : this.paintTileId - 1;
           console.log(`タイル選択: ${tileset.terrains[this.paintTileId].name}`);
         }
-        if ($app.getMouse().isPressed("LEFT")) {
+        if ($app.getTouch().isPressed()) {
           // マウス座標の先にタイルを設定
-          const { x: px, y: py } = $app.getMouse().getPosition();
-          const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
-          if (this.paintLayerId === 0) {
-            if (this.lowerTilemap.getTile(tx, ty) !== this.paintTileId) {
-              $app.useSynth().playSe(se.dig);
-            }
-            this.lowerTilemap.setTile(tx, ty, this.paintTileId);
-            this.lowerTilemap.updateMap();
-          } else {
-            if (this.upperTilemap.getTile(tx, ty) !== this.paintTileId) {
-              $app.useSynth().playSe(se.dig);
-            }
-            this.upperTilemap.setTile(tx, ty, this.paintTileId);
-            this.upperTilemap.updateMap();
-          }
+          $app
+            .getTouch()
+            .getPositions()
+            .forEach(({ x: px, y: py }) => {
+              const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
+              if (this.paintLayerId === 0) {
+                if (this.lowerTilemap.getTile(tx, ty) !== this.paintTileId) {
+                  $app.useSynth().playSe(se.dig);
+                }
+                this.lowerTilemap.setTile(tx, ty, this.paintTileId);
+                this.lowerTilemap.updateMap();
+              } else {
+                if (this.upperTilemap.getTile(tx, ty) !== this.paintTileId) {
+                  $app.useSynth().playSe(se.dig);
+                }
+                this.upperTilemap.setTile(tx, ty, this.paintTileId);
+                this.upperTilemap.updateMap();
+              }
+            });
         }
         if ($app.getKey().isTriggered("ENTER")) {
           $app.useSynth().playSe(se.powerup);

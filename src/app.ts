@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { DebugManager } from "./components/managers/DebugManager";
+import { TouchManager } from "./components/managers/TouchManager";
 import {
   KeyboardCodeNames,
   KeyboardManager,
@@ -23,6 +24,7 @@ export class App extends PIXI.Application {
 
   _key: KeyboardManager;
   _mouse: MouseManager;
+  _touch: TouchManager;
   _watcher: WatchManager;
   // #resizer: ResizeManager;
   #scener: SceneManager;
@@ -49,6 +51,7 @@ export class App extends PIXI.Application {
 
     this._key = new KeyboardManager();
     this._mouse = new MouseManager();
+    this._touch = new TouchManager();
     this._watcher = new WatchManager();
     /* this.#resizer = */ new ResizeManager();
     this.#scener = new SceneManager();
@@ -65,6 +68,7 @@ export class App extends PIXI.Application {
 
       this._key._update();
       this._mouse._update();
+      this._touch._update();
       this._watcher._update(deltaTime);
     });
 
@@ -77,6 +81,9 @@ export class App extends PIXI.Application {
   }
   getMouse() {
     return this._mouse;
+  }
+  getTouch() {
+    return this._touch;
   }
   useSynth(bgmVolume?: number, seVolume?: number) {
     bgmVolume && this._synth.setBgmVolume(bgmVolume);

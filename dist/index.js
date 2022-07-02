@@ -49797,7 +49797,193 @@ var DebugManager = /*#__PURE__*/_createClass(function DebugManager() {
 });
 
 exports.DebugManager = DebugManager;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../utils/helper":"utils/helper.ts"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../utils/helper":"utils/helper.ts"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
+"use strict";
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
+  if (kind === "m") throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+};
+
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var _TouchManager_instances, _TouchManager_currentPanel, _TouchManager_touchTime, _TouchManager_singlePosition, _TouchManager_multiPosition, _TouchManager_updateTouchData, _TouchManager_onPointerDown, _TouchManager_onPointerUp, _TouchManager_onPointerMove;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TouchManager = void 0;
+
+var PIXI = __importStar(require("pixi.js"));
+/**
+ * InteractivePanel関連
+ */
+
+
+var TouchManager = /*#__PURE__*/function () {
+  function TouchManager() {
+    _classCallCheck(this, TouchManager);
+
+    _TouchManager_instances.add(this);
+
+    _TouchManager_currentPanel.set(this, void 0);
+
+    _TouchManager_touchTime.set(this, 0);
+    /** MouseManager転送用 */
+
+
+    _TouchManager_singlePosition.set(this, new PIXI.Point(0, 0));
+
+    _TouchManager_multiPosition.set(this, []);
+  }
+
+  _createClass(TouchManager, [{
+    key: "_setInteractivePanel",
+    value: function _setInteractivePanel(panel) {
+      __classPrivateFieldSet(this, _TouchManager_currentPanel, panel, "f");
+
+      __classPrivateFieldGet(this, _TouchManager_currentPanel, "f").on("pointerdown", __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_onPointerDown).bind(this));
+
+      __classPrivateFieldGet(this, _TouchManager_currentPanel, "f").on("pointerup", __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_onPointerUp).bind(this));
+
+      __classPrivateFieldGet(this, _TouchManager_currentPanel, "f").on("pointerleave", __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_onPointerUp).bind(this));
+
+      __classPrivateFieldGet(this, _TouchManager_currentPanel, "f").on("pointerout", __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_onPointerUp).bind(this));
+
+      __classPrivateFieldGet(this, _TouchManager_currentPanel, "f").on("pointermove", __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_onPointerMove).bind(this));
+
+      __classPrivateFieldGet(this, _TouchManager_currentPanel, "f").on("pointerover", __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_onPointerMove).bind(this));
+    }
+  }, {
+    key: "_update",
+    value: function _update() {
+      var _a;
+
+      if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") !== undefined) {
+        __classPrivateFieldSet(this, _TouchManager_touchTime, (_a = __classPrivateFieldGet(this, _TouchManager_touchTime, "f"), _a++, _a), "f");
+      }
+    }
+  }, {
+    key: "isClicked",
+    value: function isClicked() {
+      return __classPrivateFieldGet(this, _TouchManager_touchTime, "f") === 1;
+    }
+  }, {
+    key: "isPressed",
+    value: function isPressed() {
+      return !!__classPrivateFieldGet(this, _TouchManager_touchTime, "f");
+    }
+  }, {
+    key: "isNotPressed",
+    value: function isNotPressed() {
+      return !__classPrivateFieldGet(this, _TouchManager_touchTime, "f");
+    }
+  }, {
+    key: "getPosition",
+    value: function getPosition() {
+      return __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f");
+    }
+  }, {
+    key: "getPositions",
+    value: function getPositions() {
+      return __classPrivateFieldGet($app._touch, _TouchManager_multiPosition, "f");
+    }
+  }]);
+
+  return TouchManager;
+}();
+
+exports.TouchManager = TouchManager;
+_TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMap(), _TouchManager_singlePosition = new WeakMap(), _TouchManager_multiPosition = new WeakMap(), _TouchManager_instances = new WeakSet(), _TouchManager_updateTouchData = function _TouchManager_updateTouchData(e) {
+  __classPrivateFieldSet(this, _TouchManager_singlePosition, e.data.global, "f");
+
+  __classPrivateFieldSet(this, _TouchManager_multiPosition, _toConsumableArray(e.data.originalEvent.changedTouches).map(function (_ref) {
+    var globalX = _ref.globalX,
+        globalY = _ref.globalY;
+    return new PIXI.Point(globalX, globalY);
+  }), "f");
+}, _TouchManager_onPointerDown = function _TouchManager_onPointerDown(e) {
+  console.log(111);
+
+  __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
+
+  if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") === undefined) {
+    __classPrivateFieldSet(this, _TouchManager_touchTime, 0, "f");
+  }
+}, _TouchManager_onPointerUp = function _TouchManager_onPointerUp(e) {
+  console.log(122, __classPrivateFieldGet(this, _TouchManager_touchTime, "f"));
+
+  __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
+
+  __classPrivateFieldSet(this, _TouchManager_touchTime, undefined, "f");
+}, _TouchManager_onPointerMove = function _TouchManager_onPointerMove(e) {
+  __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
+};
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -50664,71 +50850,21 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
-      }
-    };
-  }
-
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
 var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
   if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
   if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
-  if (kind === "m") throw new TypeError("Private method is not writable");
-  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
-};
-
-var _MouseManager_instances, _MouseManager_mouseState, _MouseManager_currentInteractivePanel, _MouseManager_position, _MouseManager_cleanState, _MouseManager_onMouseDown, _MouseManager_onMouseUp, _MouseManager_onMouseClick, _MouseManager_onMouseRightClick, _MouseManager_onMouseWheel;
+var _MouseManager_instances, _MouseManager_mouseState, _MouseManager_cleanState, _MouseManager_onMouseDown, _MouseManager_onMouseUp, _MouseManager_onMouseClick, _MouseManager_onMouseRightClick, _MouseManager_onMouseWheel;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.MouseManager = void 0;
-
-var PIXI = __importStar(require("pixi.js"));
 /**
  * マウス操作関連
  */
-
 
 var MouseManager = /*#__PURE__*/function () {
   function MouseManager() {
@@ -50737,10 +50873,6 @@ var MouseManager = /*#__PURE__*/function () {
     _MouseManager_instances.add(this);
 
     _MouseManager_mouseState.set(this, new Map());
-
-    _MouseManager_currentInteractivePanel.set(this, void 0);
-
-    _MouseManager_position.set(this, new PIXI.Point(0, 0));
 
     document.addEventListener("mousedown", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseDown).bind(this));
     document.addEventListener("mouseup", __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_onMouseUp).bind(this));
@@ -50761,17 +50893,6 @@ var MouseManager = /*#__PURE__*/function () {
       });
 
       __classPrivateFieldGet(this, _MouseManager_instances, "m", _MouseManager_cleanState).call(this);
-    }
-  }, {
-    key: "_setInteractivePanel",
-    value: function _setInteractivePanel(panel) {
-      var _this2 = this;
-
-      __classPrivateFieldSet(this, _MouseManager_currentInteractivePanel, panel, "f");
-
-      __classPrivateFieldGet(this, _MouseManager_currentInteractivePanel, "f").on("pointermove", function (e) {
-        __classPrivateFieldSet(_this2, _MouseManager_position, e.data.global, "f");
-      });
     }
   }, {
     key: "isWheelDown",
@@ -50804,7 +50925,7 @@ var MouseManager = /*#__PURE__*/function () {
   }, {
     key: "getPosition",
     value: function getPosition() {
-      return __classPrivateFieldGet(this, _MouseManager_position, "f");
+      return $app._touch.getPosition();
     }
   }]);
 
@@ -50812,7 +50933,7 @@ var MouseManager = /*#__PURE__*/function () {
 }();
 
 exports.MouseManager = MouseManager;
-_MouseManager_mouseState = new WeakMap(), _MouseManager_currentInteractivePanel = new WeakMap(), _MouseManager_position = new WeakMap(), _MouseManager_instances = new WeakSet(), _MouseManager_cleanState = function _MouseManager_cleanState() {
+_MouseManager_mouseState = new WeakMap(), _MouseManager_instances = new WeakSet(), _MouseManager_cleanState = function _MouseManager_cleanState() {
   if (Number(__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("WHEEL_DOWN")) > 1) {
     __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("WHEEL_DOWN");
   }
@@ -50865,7 +50986,7 @@ _MouseManager_mouseState = new WeakMap(), _MouseManager_currentInteractivePanel 
     }
   }
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/managers/ResizeManager.ts":[function(require,module,exports) {
+},{}],"components/managers/ResizeManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -51135,7 +51256,7 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
     _this.interactivePanel.height = $app.height;
     _this.interactivePanel.interactive = true;
 
-    $app._mouse._setInteractivePanel(_this.interactivePanel);
+    $app._touch._setInteractivePanel(_this.interactivePanel);
 
     _this.spawn(_this.interactivePanel);
 
@@ -51781,6 +51902,8 @@ var PIXI = __importStar(require("pixi.js"));
 
 var DebugManager_1 = require("./components/managers/DebugManager");
 
+var TouchManager_1 = require("./components/managers/TouchManager");
+
 var KeyboardManager_1 = require("./components/managers/KeyboardManager");
 
 var MouseManager_1 = require("./components/managers/MouseManager");
@@ -51822,6 +51945,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     document.body.appendChild(_this.view);
     _this._key = new KeyboardManager_1.KeyboardManager();
     _this._mouse = new MouseManager_1.MouseManager();
+    _this._touch = new TouchManager_1.TouchManager();
     _this._watcher = new WatcherManager_1.WatchManager();
     /* this.#resizer = */
 
@@ -51847,6 +51971,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
       _this._mouse._update();
 
+      _this._touch._update();
+
       _this._watcher._update(deltaTime);
     }); // ドット絵ぼやけ対策
 
@@ -51865,6 +51991,11 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
     key: "getMouse",
     value: function getMouse() {
       return this._mouse;
+    }
+  }, {
+    key: "getTouch",
+    value: function getTouch() {
+      return this._touch;
     }
   }, {
     key: "useSynth",
@@ -51898,7 +52029,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 exports.App = App;
 _App_scener = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/TouchManager":"components/managers/TouchManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
 module.exports="World.bd98eeb1.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
@@ -55025,7 +55156,9 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                 });
                 Flow_1.Flow.loop(function () {
                   return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-                    var _$app$getMouse$getPos, px, py, _ref, tx, ty, input, _JSON$parse, _JSON$parse2, lower, upper;
+                    var _this3 = this;
+
+                    var input, _JSON$parse, _JSON$parse2, lower, upper;
 
                     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
                       while (1) {
@@ -55057,26 +55190,33 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
                             }
 
-                            if ($app.getMouse().isPressed("LEFT")) {
+                            if ($app.getTouch().isPressed()) {
                               // マウス座標の先にタイルを設定
-                              _$app$getMouse$getPos = $app.getMouse().getPosition(), px = _$app$getMouse$getPos.x, py = _$app$getMouse$getPos.y;
-                              _ref = [Math.floor(px / 16), Math.floor(py / 16)], tx = _ref[0], ty = _ref[1];
+                              $app.getTouch().getPositions().forEach(function (_ref) {
+                                var px = _ref.x,
+                                    py = _ref.y;
+                                var _ref2 = [Math.floor(px / 16), Math.floor(py / 16)],
+                                    tx = _ref2[0],
+                                    ty = _ref2[1];
 
-                              if (this.paintLayerId === 0) {
-                                if (this.lowerTilemap.getTile(tx, ty) !== this.paintTileId) {
-                                  $app.useSynth().playSe(se.dig);
+                                if (_this3.paintLayerId === 0) {
+                                  if (_this3.lowerTilemap.getTile(tx, ty) !== _this3.paintTileId) {
+                                    $app.useSynth().playSe(se.dig);
+                                  }
+
+                                  _this3.lowerTilemap.setTile(tx, ty, _this3.paintTileId);
+
+                                  _this3.lowerTilemap.updateMap();
+                                } else {
+                                  if (_this3.upperTilemap.getTile(tx, ty) !== _this3.paintTileId) {
+                                    $app.useSynth().playSe(se.dig);
+                                  }
+
+                                  _this3.upperTilemap.setTile(tx, ty, _this3.paintTileId);
+
+                                  _this3.upperTilemap.updateMap();
                                 }
-
-                                this.lowerTilemap.setTile(tx, ty, this.paintTileId);
-                                this.lowerTilemap.updateMap();
-                              } else {
-                                if (this.upperTilemap.getTile(tx, ty) !== this.paintTileId) {
-                                  $app.useSynth().playSe(se.dig);
-                                }
-
-                                this.upperTilemap.setTile(tx, ty, this.paintTileId);
-                                this.upperTilemap.updateMap();
-                              }
+                              });
                             }
 
                             if ($app.getKey().isTriggered("ENTER")) {
