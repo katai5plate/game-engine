@@ -50,12 +50,22 @@ export class SynthManager {
   bgmNode?: AudioBufferSourceNode;
   seNode?: AudioBufferSourceNode;
   constructor() {
+    console.log("12313132");
     this.seGainNode = this.#getContext().createGain();
     this.seGainNode.connect(this.#getContext().destination);
     this.bgmGainNode = this.#getContext().createGain();
     this.bgmGainNode.connect(this.#getContext().destination);
     this.setBgmVolume(0.5);
     this.setSeVolume(1);
+    this.#initContext();
+  }
+  #initContext() {
+    const init = () => {
+      document.removeEventListener("touchstart", init);
+      const buf = this.#getContext().createBufferSource();
+      buf.start(), buf.stop();
+    };
+    document.addEventListener("touchstart", init);
   }
   #getContext() {
     return window.zzfxX;

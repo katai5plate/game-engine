@@ -51477,7 +51477,7 @@ var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (re
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var _SynthManager_instances, _SynthManager_getContext, _SynthManager_updateGain;
+var _SynthManager_instances, _SynthManager_initContext, _SynthManager_getContext, _SynthManager_updateGain;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -51495,12 +51495,15 @@ var SynthManager = /*#__PURE__*/function () {
 
     this.bgmVolume = 0;
     this.seVolume = 0;
+    console.log("12313132");
     this.seGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
     this.seGainNode.connect(__classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).destination);
     this.bgmGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
     this.bgmGainNode.connect(__classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).destination);
     this.setBgmVolume(0.5);
     this.setSeVolume(1);
+
+    __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_initContext).call(this);
   }
 
   _createClass(SynthManager, [{
@@ -51577,7 +51580,19 @@ var SynthManager = /*#__PURE__*/function () {
 }();
 
 exports.SynthManager = SynthManager;
-_SynthManager_instances = new WeakSet(), _SynthManager_getContext = function _SynthManager_getContext() {
+_SynthManager_instances = new WeakSet(), _SynthManager_initContext = function _SynthManager_initContext() {
+  var _this = this;
+
+  var init = function init() {
+    document.removeEventListener("touchstart", init);
+
+    var buf = __classPrivateFieldGet(_this, _SynthManager_instances, "m", _SynthManager_getContext).call(_this).createBufferSource();
+
+    buf.start(), buf.stop();
+  };
+
+  document.addEventListener("touchstart", init);
+}, _SynthManager_getContext = function _SynthManager_getContext() {
   return window.zzfxX;
 }, _SynthManager_updateGain = function _SynthManager_updateGain() {
   if (!(this.bgmGainNode && this.seGainNode)) return; // 元の音量値が 0 のため、-1 が消音値
