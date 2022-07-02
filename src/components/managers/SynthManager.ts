@@ -63,11 +63,19 @@ export class SynthManager {
   #initContext() {
     this.emptyBuffer = this.#getContext().createBufferSource();
     document.addEventListener("touchstart", () => {
-      if (this.emptyBuffer) {
-        this.emptyBuffer.start();
-        this.emptyBuffer.stop();
-      }
+      try {
+        if (this.emptyBuffer) {
+          this.emptyBuffer.start();
+          this.emptyBuffer.stop();
+        }
+      } catch (error) {}
     });
+    document.addEventListener(
+      typeof document.ontouchend !== "undefined" ? "touchend" : "mouseup",
+      () => {
+        this.#getContext().resume();
+      }
+    );
   }
   #getContext() {
     return window.zzfxX;

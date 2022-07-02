@@ -1,3 +1,4 @@
+import * as PIXI from "pixi.js";
 import { easing as tsEasing } from "ts-easing";
 
 const easing = {
@@ -75,4 +76,13 @@ export const lerp = (ease: EasingType, a: number, b: number, x: number) => {
   const t = f(0 > x ? 0 : 1 < x ? 1 : x);
   const r = a + t * d;
   return r;
+};
+
+export const inside = (rect: PIXI.Rectangle, point: PIXI.Point) => {
+  return (
+    rect.x <= point.x &&
+    point.x < rect.x + rect.width &&
+    rect.y <= point.y &&
+    point.y < rect.y + rect.height
+  );
 };

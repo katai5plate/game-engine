@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { inside } from "../../utils/math";
 
 /**
  * InteractivePanel関連
@@ -43,6 +44,9 @@ export class TouchManager {
   }
   #onPointerMove(e: PIXI.InteractionEvent) {
     this.#updateTouchData(e);
+    if (!inside($app.screen, e.data.global)) {
+      this.#touchTime = undefined;
+    }
   }
   isClicked() {
     return this.#touchTime === 1;
