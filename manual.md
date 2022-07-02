@@ -40,16 +40,20 @@ export const CustomScene = createScene(
   class extends Scene {
     // ここで使用するゲームオブジェクトや内部変数などを定義
     nanika: PIXI.Sprite;
+    isTweenPlaying: boolean;
 
     // ゲームオブジェクトや内部変数の初期設定
     constructor() {
       super();
       // nanika に Sozai1 から作ったスプライトを設定
-      this.nanika = new Asset(Sozai1).toSprite();
+      this.nanika = new Asset(Cloud).toSprite();
       // nanika を初期スポーンする
       this.spawn(this.nanika);
       // 次のように書くことで、設定と同時に初期スポーン可能
       // this.nanika = this.spawn(new Asset(Sozai1).toSprite());
+
+      // 「アニメーション中かどうか」を意味する変数を定義
+      this.isTweenPlaying = false;
 
       // main() を実行する
       this.ready();
@@ -60,15 +64,18 @@ export const CustomScene = createScene(
       // ループ処理を定義する
       // ここではキーボード操作を行う
       Flow.loop(async () => {
-        // 左キーが押された
-        if ($app.useKey.isPressed("LEFT")) {
-          // nanika の X 座標を 10 減算
-          this.nanika.x -= 10;
-        }
-        // 右キーが押された
-        if ($app.useKey.isPressed("RIGHT")) {
-          // nanika の X 座標を 10 加算
-          this.nanika.x += 10;
+        // isTweenPlaying が false のとき...
+        if (this.isTweenPlaying === false) {
+          // 左キーが押されたら...
+          if ($app.useKey.isPressed("LEFT")) {
+            // nanika の X 座標を 10 減算
+            this.nanika.x -= 10;
+          }
+          // 右キーが押されたら...
+          if ($app.useKey.isPressed("RIGHT")) {
+            // nanika の X 座標を 10 加算
+            this.nanika.x += 10;
+          }
         }
         // 内部で Flow.loop を使用することも可能だが、await を使用すること
         // await Flow.loop(async () => {})
@@ -77,6 +84,8 @@ export const CustomScene = createScene(
       // 複数定義すると並列実行される
       // ここではアニメーションを行う
       Flow.loop(async () => {
+        // アニメーションを始める前に isTweenPlaying を true にする
+        this.isTweenPlaying = true;
         // nanika の移動アニメーションを実行
         await Flow.tween(
           {
@@ -94,8 +103,12 @@ export const CustomScene = createScene(
             this.nanika.y = value;
           }
         );
+        // アニメーションが終わったので isTweenPlaying を false にする
+        this.isTweenPlaying = false;
         // 1 秒待つ
         await Flow.time(1);
+
+        this.isTweenPlaying = true;
         // tween2D を使用することで座標指定することも可能
         await Flow.tween2D(
           {
@@ -119,7 +132,7 @@ export const CustomScene = createScene(
             this.nanika.y = y;
           }
         );
-        // 1 秒待つ
+        this.isTweenPlaying = false;
         await Flow.time(1);
       });
     }
