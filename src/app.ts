@@ -12,7 +12,7 @@ import { SynthManager } from "./components/managers/SynthManager";
 import { WatchManager } from "./components/managers/WatcherManager";
 import { SceneData } from "./components/objects/Scene";
 import { TouchableSprite } from "./components/ui/atoms/TouchableSprite";
-import { toGlobalForDebug, uuid } from "./utils/helper";
+import { managerToUse, toGlobalForDebug, uuid } from "./utils/helper";
 import { CameraManager } from "./components/managers/CameraManager";
 
 export class App extends PIXI.Application {
@@ -79,6 +79,7 @@ export class App extends PIXI.Application {
       this._mouse._update();
       this._touch._update();
       this._watcher._update(deltaTime);
+      this._camera._update();
     });
 
     // ドット絵ぼやけ対策
@@ -86,16 +87,19 @@ export class App extends PIXI.Application {
     this.view.style.imageRendering = "pixelated";
   }
   get useKey() {
-    return this._key;
+    return managerToUse(this._key);
   }
   get useMouse() {
-    return this._mouse;
+    return managerToUse(this._mouse);
   }
   get useTouch() {
-    return this._touch;
+    return managerToUse(this._touch);
   }
   get useSynth() {
-    return this._synth;
+    return managerToUse(this._synth);
+  }
+  get useCamera() {
+    return managerToUse(this._camera);
   }
   async sceneTo(sceneData: SceneData<any>) {
     this.#scener._gotoScene(sceneData);

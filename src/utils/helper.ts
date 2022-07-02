@@ -12,3 +12,7 @@ export const uuid = () => uuids.v4();
 
 export const zip = (text: string) => lz.compressToUTF16(text);
 export const unzip = (text: string) => lz.decompressFromUTF16(text);
+
+/** "_" がついたプロパティをインテリセンスに表示しない */
+export const managerToUse = <T>(manager: T) =>
+  manager as Omit<typeof manager, `_${string}`>;

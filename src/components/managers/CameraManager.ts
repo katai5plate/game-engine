@@ -19,12 +19,12 @@ export class CameraManager {
     this.#culling = new cull.Simple();
     this.#culling.addList(this.#viewport.children);
     this.#culling.cull(this.#viewport.getVisibleBounds());
-    PIXI.Ticker.shared.add(() => {
-      if (this.#viewport.dirty) {
-        this.#culling.cull(this.#viewport.getVisibleBounds());
-        this.#viewport.dirty = false;
-      }
-    });
+  }
+  _update() {
+    if (this.#viewport.dirty) {
+      this.#culling.cull(this.#viewport.getVisibleBounds());
+      this.#viewport.dirty = false;
+    }
   }
   getCamera() {
     return this.#viewport;

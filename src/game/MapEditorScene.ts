@@ -84,7 +84,7 @@ export const MapEditorScene = createScene(
             ? [$app.useMouse.getScreenPosition()]
             : $app.useTouch.getScreenPositions();
           positions.forEach(({ x: px, y: py }) => {
-            const { x: cx, y: cy } = $app._camera.getPosition();
+            const { x: cx, y: cy } = $app.useCamera.getPosition();
             const [wx, wy] = [px - cx, py - cy];
             const [tx, ty] = [Math.floor(wx / 16), Math.floor(wy / 16)];
             if (this.paintLayerId === 0) {

@@ -49683,7 +49683,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.unzip = exports.zip = exports.uuid = exports.toGlobalForDebug = void 0;
+exports.managerToUse = exports.unzip = exports.zip = exports.uuid = exports.toGlobalForDebug = void 0;
 
 var uuids = __importStar(require("uuid"));
 
@@ -49720,6 +49720,13 @@ var unzip = function unzip(text) {
 };
 
 exports.unzip = unzip;
+/** "_" がついたプロパティをインテリセンスに表示しない */
+
+var managerToUse = function managerToUse(manager) {
+  return manager;
+};
+
+exports.managerToUse = managerToUse;
 },{"uuid":"../node_modules/uuid/dist/esm-browser/index.js","lz-string":"../node_modules/lz-string/libs/lz-string.js"}],"components/managers/DebugManager.ts":[function(require,module,exports) {
 "use strict";
 
@@ -57789,8 +57796,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CameraManager = void 0;
 
-var PIXI = __importStar(require("pixi.js"));
-
 var pixi_viewport_1 = require("pixi-viewport");
 
 var cull = __importStar(require("pixi-cull"));
@@ -57801,8 +57806,6 @@ var cull = __importStar(require("pixi-cull"));
 
 var CameraManager = /*#__PURE__*/function () {
   function CameraManager() {
-    var _this = this;
-
     _classCallCheck(this, CameraManager);
 
     _CameraManager_viewport.set(this, void 0);
@@ -57823,17 +57826,18 @@ var CameraManager = /*#__PURE__*/function () {
     __classPrivateFieldGet(this, _CameraManager_culling, "f").addList(__classPrivateFieldGet(this, _CameraManager_viewport, "f").children);
 
     __classPrivateFieldGet(this, _CameraManager_culling, "f").cull(__classPrivateFieldGet(this, _CameraManager_viewport, "f").getVisibleBounds());
-
-    PIXI.Ticker.shared.add(function () {
-      if (__classPrivateFieldGet(_this, _CameraManager_viewport, "f").dirty) {
-        __classPrivateFieldGet(_this, _CameraManager_culling, "f").cull(__classPrivateFieldGet(_this, _CameraManager_viewport, "f").getVisibleBounds());
-
-        __classPrivateFieldGet(_this, _CameraManager_viewport, "f").dirty = false;
-      }
-    });
   }
 
   _createClass(CameraManager, [{
+    key: "_update",
+    value: function _update() {
+      if (__classPrivateFieldGet(this, _CameraManager_viewport, "f").dirty) {
+        __classPrivateFieldGet(this, _CameraManager_culling, "f").cull(__classPrivateFieldGet(this, _CameraManager_viewport, "f").getVisibleBounds());
+
+        __classPrivateFieldGet(this, _CameraManager_viewport, "f").dirty = false;
+      }
+    }
+  }, {
     key: "getCamera",
     value: function getCamera() {
       return __classPrivateFieldGet(this, _CameraManager_viewport, "f");
@@ -57864,7 +57868,7 @@ var CameraManager = /*#__PURE__*/function () {
 
 exports.CameraManager = CameraManager;
 _CameraManager_viewport = new WeakMap(), _CameraManager_culling = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js"}],"app.ts":[function(require,module,exports) {
+},{"pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js"}],"app.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -58014,6 +58018,8 @@ var SynthManager_1 = require("./components/managers/SynthManager");
 
 var WatcherManager_1 = require("./components/managers/WatcherManager");
 
+var helper_1 = require("./utils/helper");
+
 var CameraManager_1 = require("./components/managers/CameraManager");
 
 var App = /*#__PURE__*/function (_PIXI$Application) {
@@ -58079,6 +58085,8 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
       _this._touch._update();
 
       _this._watcher._update(deltaTime);
+
+      _this._camera._update();
     }); // ドット絵ぼやけ対策
 
 
@@ -58090,22 +58098,27 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
   _createClass(App, [{
     key: "useKey",
     get: function get() {
-      return this._key;
+      return (0, helper_1.managerToUse)(this._key);
     }
   }, {
     key: "useMouse",
     get: function get() {
-      return this._mouse;
+      return (0, helper_1.managerToUse)(this._mouse);
     }
   }, {
     key: "useTouch",
     get: function get() {
-      return this._touch;
+      return (0, helper_1.managerToUse)(this._touch);
     }
   }, {
     key: "useSynth",
     get: function get() {
-      return this._synth;
+      return (0, helper_1.managerToUse)(this._synth);
+    }
+  }, {
+    key: "useCamera",
+    get: function get() {
+      return (0, helper_1.managerToUse)(this._camera);
     }
   }, {
     key: "sceneTo",
@@ -58144,7 +58157,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 exports.App = App;
 _App_scener = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/TouchManager":"components/managers/TouchManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./components/managers/CameraManager":"components/managers/CameraManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/TouchManager":"components/managers/TouchManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./utils/helper":"utils/helper.ts","./components/managers/CameraManager":"components/managers/CameraManager.ts"}],"../node_modules/easyrpg-rtp/chipset/World.png":[function(require,module,exports) {
 module.exports="World.bd98eeb1.png";
 },{}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
@@ -61176,9 +61189,9 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                                 var px = _ref.x,
                                     py = _ref.y;
 
-                                var _$app$_camera$getPosi = $app._camera.getPosition(),
-                                    cx = _$app$_camera$getPosi.x,
-                                    cy = _$app$_camera$getPosi.y;
+                                var _$app$useCamera$getPo = $app.useCamera.getPosition(),
+                                    cx = _$app$useCamera$getPo.x,
+                                    cy = _$app$useCamera$getPo.y;
 
                                 var wx = px - cx,
                                     wy = py - cy;
