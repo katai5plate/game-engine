@@ -1,4 +1,4 @@
-import { SynthBgmData } from "../../components/managers/SynthManager";
+import { SynthBgmData } from "../../../components/managers/SynthManager";
 
 export default <SynthBgmData>[
   [

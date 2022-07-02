@@ -1,5 +1,3 @@
-import battle from "../../synth/music/battle";
-
 export type SynthSeData = [
   q?: number,
   k?: number,

@@ -1,4 +1,4 @@
-import { SynthSeData } from "../components/managers/SynthManager";
+import { SynthSeData } from "../../../components/managers/SynthManager";
 
 export const coin: SynthSeData = [
   ,
