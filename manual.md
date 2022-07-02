@@ -17,7 +17,7 @@
 
 ### 初期設定
 
-1. [ここからゲームエンジンをダウンロードして解凍](https://github.com/katai5plate/game-engine/archive/refs/heads/main.zip)
+1. [ここからゲームエンジンをダウンロードして解凍](../../archive/refs/heads/main.zip)
 2. 解凍したフォルダをターミナルで開く
 3. `npm i` を実行
 
