@@ -49961,22 +49961,18 @@ exports.TouchManager = TouchManager;
 _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMap(), _TouchManager_singlePosition = new WeakMap(), _TouchManager_multiPosition = new WeakMap(), _TouchManager_instances = new WeakSet(), _TouchManager_updateTouchData = function _TouchManager_updateTouchData(e) {
   __classPrivateFieldSet(this, _TouchManager_singlePosition, e.data.global, "f");
 
-  __classPrivateFieldSet(this, _TouchManager_multiPosition, _toConsumableArray(e.data.originalEvent.changedTouches).map(function (_ref) {
+  __classPrivateFieldSet(this, _TouchManager_multiPosition, _toConsumableArray(e.data.originalEvent.changedTouches || []).map(function (_ref) {
     var globalX = _ref.globalX,
         globalY = _ref.globalY;
     return new PIXI.Point(globalX, globalY);
   }), "f");
 }, _TouchManager_onPointerDown = function _TouchManager_onPointerDown(e) {
-  console.log(111);
-
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
   if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") === undefined) {
     __classPrivateFieldSet(this, _TouchManager_touchTime, 0, "f");
   }
 }, _TouchManager_onPointerUp = function _TouchManager_onPointerUp(e) {
-  console.log(122, __classPrivateFieldGet(this, _TouchManager_touchTime, "f"));
-
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
   __classPrivateFieldSet(this, _TouchManager_touchTime, undefined, "f");

@@ -38,18 +38,16 @@ export class TouchManager {
   #updateTouchData(e: PIXI.InteractionEvent) {
     this.#singlePosition = e.data.global;
     this.#multiPosition = [
-      ...((e.data.originalEvent as TouchEvent).changedTouches as any),
+      ...(((e.data.originalEvent as TouchEvent).changedTouches as any) || []),
     ].map(({ globalX, globalY }) => new PIXI.Point(globalX, globalY));
   }
   #onPointerDown(e: PIXI.InteractionEvent) {
-    console.log(111);
     this.#updateTouchData(e);
     if (this.#touchTime === undefined) {
       this.#touchTime = 0;
     }
   }
   #onPointerUp(e: PIXI.InteractionEvent) {
-    console.log(122, this.#touchTime);
     this.#updateTouchData(e);
     this.#touchTime = undefined;
   }
