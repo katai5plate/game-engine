@@ -1,6 +1,6 @@
 import { App } from "./app";
-import { ButtonTestScene } from "./game/ButtonTestScene";
-import { MapEditorScene } from "./game/MapEditorScene";
+import { ButtonTestScene } from "./game/scenes/ButtonTestScene";
+import { MapEditorScene } from "./game/scenes/MapEditorScene";
 
 // ゲーム開始
 new App(MapEditorScene, {

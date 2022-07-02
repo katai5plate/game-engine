@@ -1,12 +1,12 @@
 import World from "easyrpg-rtp/chipset/World.png";
 import * as PIXI from "pixi.js";
-import { Asset } from "../components/objects/Asset";
-import { createScene, Scene } from "../components/objects/Scene";
-import { Flow } from "../components/objects/Flow";
-import { tileset } from "../presets/tilesets/easyrpg/basic";
-import { Tilemap } from "../components/objects/Tilemap";
-import { zip, unzip } from "../utils/helper";
-import * as se from "../presets/synth/se/factory";
+import { Asset } from "../../components/objects/Asset";
+import { createScene, Scene } from "../../components/objects/Scene";
+import { Flow } from "../../components/objects/Flow";
+import { tileset } from "../../presets/tilesets/easyrpg/basic";
+import { Tilemap } from "../../components/objects/Tilemap";
+import { zip, unzip } from "../../utils/helper";
+import * as se from "../../presets/synth/se/factory";
 
 export const MapEditorScene = createScene(
   [World],

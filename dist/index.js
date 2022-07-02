@@ -60946,7 +60946,7 @@ exports.damage = [1.99,, 485, 0.01, 0.13, 0, 1, 0,,,,, 0.07, 0.1, -6,, 0.38, 0.3
 exports.bomb = [1.08,, 449, 0.01, 0.2, 0.56, 4, 0.03, 0.9, 0.2,,, 0.16, 1,, 0.5,, 0.5, 0.13, 0.14];
 exports.dig = [2,, 975, 0.01, 0.02, 0.01, 4, 0.56,,,,,, 0.9, 24,, 0.29, 0.3, 0.01, 0.67];
 exports.pick = [1.99,, 22, 0.02, 0.01, 0.02, 1, 0.04, 27,,,,, 0.2,,, 0.12,,, 0.39];
-},{}],"game/MapEditorScene.ts":[function(require,module,exports) {
+},{}],"game/scenes/MapEditorScene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -61080,19 +61080,19 @@ var World_png_1 = __importDefault(require("easyrpg-rtp/chipset/World.png"));
 
 var PIXI = __importStar(require("pixi.js"));
 
-var Asset_1 = require("../components/objects/Asset");
+var Asset_1 = require("../../components/objects/Asset");
 
-var Scene_1 = require("../components/objects/Scene");
+var Scene_1 = require("../../components/objects/Scene");
 
-var Flow_1 = require("../components/objects/Flow");
+var Flow_1 = require("../../components/objects/Flow");
 
-var basic_1 = require("../presets/tilesets/easyrpg/basic");
+var basic_1 = require("../../presets/tilesets/easyrpg/basic");
 
-var Tilemap_1 = require("../components/objects/Tilemap");
+var Tilemap_1 = require("../../components/objects/Tilemap");
 
-var helper_1 = require("../utils/helper");
+var helper_1 = require("../../utils/helper");
 
-var se = __importStar(require("../presets/synth/se/factory"));
+var se = __importStar(require("../../presets/synth/se/factory"));
 
 exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
@@ -61280,7 +61280,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","../presets/tilesets/easyrpg/basic":"presets/tilesets/easyrpg/basic.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts","../utils/helper":"utils/helper.ts","../presets/synth/se/factory":"presets/synth/se/factory.ts"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","../../presets/tilesets/easyrpg/basic":"presets/tilesets/easyrpg/basic.ts","../../components/objects/Tilemap":"components/objects/Tilemap.ts","../../utils/helper":"utils/helper.ts","../../presets/synth/se/factory":"presets/synth/se/factory.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -61289,7 +61289,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var app_1 = require("./app");
 
-var MapEditorScene_1 = require("./game/MapEditorScene"); // ゲーム開始
+var MapEditorScene_1 = require("./game/scenes/MapEditorScene"); // ゲーム開始
 
 
 new app_1.App(MapEditorScene_1.MapEditorScene, {
@@ -61298,7 +61298,7 @@ new app_1.App(MapEditorScene_1.MapEditorScene, {
   height: 240,
   backgroundColor: 0xaaaaaa
 });
-},{"./app":"app.ts","./game/MapEditorScene":"game/MapEditorScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./app":"app.ts","./game/scenes/MapEditorScene":"game/scenes/MapEditorScene.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

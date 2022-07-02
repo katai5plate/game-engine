@@ -1,8 +1,8 @@
 import Cloud from "easyrpg-rtp/Picture/Cloud.png";
-import { Asset } from "../components/objects/Asset";
-import { Flow } from "../components/objects/Flow";
-import { createScene, Scene } from "../components/objects/Scene";
-import { LabeledButton } from "../components/ui/molecules/LabeledButton";
+import { Asset } from "../../components/objects/Asset";
+import { Flow } from "../../components/objects/Flow";
+import { createScene, Scene } from "../../components/objects/Scene";
+import { LabeledButton } from "../../components/ui/molecules/LabeledButton";
 
 export const ButtonTestScene = createScene(
   [Cloud],
