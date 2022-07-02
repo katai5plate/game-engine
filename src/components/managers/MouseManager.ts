@@ -1,3 +1,5 @@
+import { inside } from "../../utils/math";
+
 type MouseValues =
   | "LEFT_DOWN"
   | "CENTER_DOWN"
@@ -40,6 +42,7 @@ export class MouseManager {
     }
   }
   #onMouseDown(e: MouseEvent) {
+    if (!inside($app.screenRect(), this.getScreenPosition())) return;
     if (e.button === 0) {
       if (this.#mouseState.get("LEFT_DOWN") === undefined) {
         this.#mouseState.set("LEFT_DOWN", 0);
@@ -100,7 +103,10 @@ export class MouseManager {
   isNotPressed(button: "LEFT" | "CENTER" | "RIGHT" = "LEFT") {
     return !this.#mouseState.get(`${button}_DOWN`);
   }
-  getPosition() {
-    return $app._touch.getPosition();
+  getScreenPosition() {
+    return $app._touch.getScreenPosition();
+  }
+  getWorldPosition() {
+    return $app._touch.getWorldPosition();
   }
 }

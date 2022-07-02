@@ -13,6 +13,7 @@ import { WatchManager } from "./components/managers/WatcherManager";
 import { SceneData } from "./components/objects/Scene";
 import { TouchableSprite } from "./components/ui/atoms/TouchableSprite";
 import { toGlobalForDebug, uuid } from "./utils/helper";
+import { CameraManager } from "./components/managers/CameraManager";
 
 export class App extends PIXI.Application {
   /** ゲームが始まって何秒経ったか */
@@ -21,6 +22,8 @@ export class App extends PIXI.Application {
   frameCount: number = 0;
   width: number;
   height: number;
+  worldWidth: number;
+  worldHeight: number;
 
   _key: KeyboardManager;
   _mouse: MouseManager;
@@ -30,6 +33,7 @@ export class App extends PIXI.Application {
   #scener: SceneManager;
   // #debugger?: DebugManager;
   _synth: SynthManager;
+  _camera: CameraManager;
 
   constructor(
     initialScene: SceneData<any>,
@@ -39,6 +43,8 @@ export class App extends PIXI.Application {
       height: number;
       // ここから固有
       title: string;
+      worldWidth?: number;
+      worldHeight?: number;
     }
   ) {
     const { title, ...rest } = options;
@@ -46,6 +52,8 @@ export class App extends PIXI.Application {
     globalThis.$app = this;
     this.width = rest.width;
     this.height = rest.height;
+    this.worldWidth = rest.worldWidth ?? 10000;
+    this.worldHeight = rest.worldHeight ?? 10000;
     document.title = title;
     document.body.appendChild(this.view);
 
@@ -56,6 +64,7 @@ export class App extends PIXI.Application {
     /* this.#resizer = */ new ResizeManager();
     this.#scener = new SceneManager();
     this._synth = new SynthManager();
+    this._camera = new CameraManager();
     if (!!window?.$isTest) {
       /* this.#debugger = */ new DebugManager();
     }
@@ -90,5 +99,17 @@ export class App extends PIXI.Application {
   }
   async sceneTo(sceneData: SceneData<any>) {
     this.#scener._gotoScene(sceneData);
+  }
+  screenRect() {
+    return this.screen;
+  }
+  worldRect() {
+    const camera = this._camera.getPosition();
+    return new PIXI.Rectangle(
+      camera.x + this.screen.x,
+      camera.y + this.screen.y,
+      this.screen.width,
+      this.screen.height
+    );
   }
 }

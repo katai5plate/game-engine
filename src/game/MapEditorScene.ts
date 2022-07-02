@@ -7,6 +7,7 @@ import { tileset } from "./tiles";
 import { Tilemap } from "../components/objects/Tilemap";
 import { zip, unzip } from "../utils/helper";
 import * as se from "../synth/sounds";
+import { inside } from "../utils/math";
 
 export const MapEditorScene = createScene(
   [World],
@@ -19,14 +20,14 @@ export const MapEditorScene = createScene(
     constructor() {
       super();
       this.lowerTilemap = this.spawn(
-        new Tilemap(new Asset(World).toTexture(), tileset, 20, 15)
+        new Tilemap(new Asset(World).toTexture(), tileset, 40, 30)
       );
       this.upperTilemap = this.spawn(
-        new Tilemap(new Asset(World).toTexture(), tileset, 20, 15)
+        new Tilemap(new Asset(World).toTexture(), tileset, 40, 30)
       );
       this.label = this.spawn(
         new PIXI.Text(
-          "マウスホイールでタイル変更\n 右クリックでレイヤー変更\n ドラッグでお絵描き\n Enterで出力, Spaceで読込\n UIがないのでログを見ながら操作する",
+          "マウスホイールでタイル変更\n 右クリックでレイヤー変更\n ドラッグでお絵描き\n Enterで出力, Spaceで読込\n 方向キーでスクロール\n UIがないのでログを見ながら操作する",
           {
             fontSize: 12,
           }
@@ -77,15 +78,18 @@ export const MapEditorScene = createScene(
               : this.paintTileId - 1;
           console.log(`タイル選択: ${tileset.terrains[this.paintTileId].name}`);
         }
+        // マウス座標の先にタイルを設定
         if ($app.useMouse.isPressed() || $app.useTouch.isPressed()) {
-          // マウス座標の先にタイルを設定
-          [
-            $app.useMouse.getPosition(),
-            ...$app.useTouch.getPositions(),
-          ].forEach(({ x: px, y: py }) => {
-            const [tx, ty] = [Math.floor(px / 16), Math.floor(py / 16)];
+          const positions = $app.useMouse.isPressed()
+            ? [$app.useMouse.getScreenPosition()]
+            : $app.useTouch.getScreenPositions();
+          positions.forEach(({ x: px, y: py }) => {
+            const { x: cx, y: cy } = $app._camera.getPosition();
+            const [wx, wy] = [px - cx, py - cy];
+            const [tx, ty] = [Math.floor(wx / 16), Math.floor(wy / 16)];
             if (this.paintLayerId === 0) {
-              if (this.lowerTilemap.getTile(tx, ty) !== this.paintTileId) {
+              const tile = this.lowerTilemap.getTile(tx, ty);
+              if (tile !== this.paintTileId && tile !== undefined) {
                 $app.useSynth.playSe(se.dig);
               }
               this.lowerTilemap.setTile(tx, ty, this.paintTileId);
@@ -125,6 +129,9 @@ export const MapEditorScene = createScene(
             console.warn(error);
           }
         }
+        Flow.use.moveLikeRPG($app._camera.getPosition(), 0.1, 16, {
+          reverse: { x: true, y: true },
+        });
       });
     }
   }

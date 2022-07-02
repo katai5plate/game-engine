@@ -34,6 +34,7 @@ export class TouchManager {
   }
   #onPointerDown(e: PIXI.InteractionEvent) {
     this.#updateTouchData(e);
+    if (!inside($app.screenRect(), e.data.global)) return;
     if (this.#touchTime === undefined) {
       this.#touchTime = 0;
     }
@@ -44,7 +45,8 @@ export class TouchManager {
   }
   #onPointerMove(e: PIXI.InteractionEvent) {
     this.#updateTouchData(e);
-    if (!inside($app.screen, e.data.global)) {
+    if (!inside($app.screenRect(), e.data.global)) {
+      console.log(111);
       this.#touchTime = undefined;
     }
   }
@@ -57,10 +59,23 @@ export class TouchManager {
   isNotPressed() {
     return !this.#touchTime;
   }
-  getPosition() {
+  getScreenPosition() {
     return $app._touch.#singlePosition;
   }
-  getPositions() {
+  getScreenPositions() {
     return $app._touch.#multiPosition;
+  }
+  getWorldPosition() {
+    const worldPos = $app._camera.getPosition();
+    return new PIXI.Point(
+      worldPos.x + $app._touch.#singlePosition.x,
+      worldPos.y + $app._touch.#singlePosition.y
+    );
+  }
+  getWorldPositions() {
+    const worldPos = $app._camera.getPosition();
+    return $app._touch.#multiPosition.map(
+      ({ x, y }) => new PIXI.Point(worldPos.x + x, worldPos.y + y)
+    );
   }
 }

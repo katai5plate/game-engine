@@ -99,6 +99,7 @@ export class Flow<T> {
       {
         keys,
         ease,
+        reverse,
       }: {
         keys?: {
           up: KeyboardCodeNames[];
@@ -107,6 +108,10 @@ export class Flow<T> {
           right: KeyboardCodeNames[];
         };
         ease?: EasingType;
+        reverse?: {
+          x?: boolean;
+          y?: boolean;
+        };
       } = {}
     ) {
       const _keys = keys ?? {
@@ -117,6 +122,7 @@ export class Flow<T> {
       };
       const _ease = ease ?? "linear";
       const { x, y } = target;
+      const [rx, ry] = [reverse?.x ? -1 : 1, reverse?.y ? -1 : 1];
       const pressed = (names: KeyboardCodeNames[]) =>
         names.find((k) => $app.useKey.isPressed(k));
       if (pressed(_keys.left)) {
@@ -125,7 +131,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: x,
-            to: x - range,
+            to: x - range * rx,
           },
           (n) => {
             target.x = n;
@@ -137,7 +143,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: x,
-            to: x + range,
+            to: x + range * rx,
           },
           (n) => {
             target.x = n;
@@ -149,7 +155,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: y,
-            to: y - range,
+            to: y - range * ry,
           },
           (n) => {
             target.y = n;
@@ -161,7 +167,7 @@ export class Flow<T> {
             ease: _ease,
             time,
             from: y,
-            to: y + range,
+            to: y + range * ry,
           },
           (n) => {
             target.y = n;
