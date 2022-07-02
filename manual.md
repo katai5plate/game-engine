@@ -1,5 +1,32 @@
 # ゲーム制作マニュアル
 
+## 始め方
+
+### 必要なもの
+
+- [Node.js v16.8.0 以上](https://nodejs.org/ja/)
+- [VSCode](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)
+- [VSCode 拡張: Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+
+#### 予備知識
+
+- ターミナル(コマンドプロンプト, powershell)の使い方
+- VSCode の使い方
+- Node.js の使い方
+- TypeScript の書き方
+
+### 初期設定
+
+1. [ここからゲームエンジンをダウンロードして解凍](https://github.com/katai5plate/game-engine/archive/refs/heads/main.zip)
+2. 解凍したフォルダをターミナルで開く
+3. `npm i` を実行
+
+### 開発をはじめる
+
+1. `npm run dev` を実行する。
+   これを実行するとファイルが監視され、変更を加えるごとに `dist/` が書き換えられる。
+2. `index.html` を Live Server で開く。
+
 ## クリエイター側が編集したり作るもの
 
 - `src/index.ts`: ゲームの開始設定
