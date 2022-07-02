@@ -1,15 +1,5 @@
 import * as PIXI from "pixi.js";
 
-type PointerValues =
-  | "DOWN"
-  | "CENTER_DOWN"
-  | "RIGHT_DOWN"
-  | "CLICK"
-  | "DOUBLE_CLICK"
-  | "RIGHT_CLICK"
-  | "WHEEL_DOWN"
-  | "WHEEL_UP";
-
 /**
  * InteractivePanel関連
  */
@@ -44,7 +34,6 @@ export class TouchManager {
   #onPointerDown(e: PIXI.InteractionEvent) {
     this.#updateTouchData(e);
     if (this.#touchTime === undefined) {
-      console.log("DOWN");
       this.#touchTime = 0;
     }
   }

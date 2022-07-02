@@ -49,6 +49,8 @@ export class SynthManager {
   seVolume: number = 0;
   bgmNode?: AudioBufferSourceNode;
   seNode?: AudioBufferSourceNode;
+  /** スマホで音が鳴らない対策 */
+  emptyBuffer?: AudioBufferSourceNode;
   constructor() {
     this.seGainNode = this.#getContext().createGain();
     this.seGainNode.connect(this.#getContext().destination);
@@ -59,12 +61,13 @@ export class SynthManager {
     this.#initContext();
   }
   #initContext() {
-    const init = () => {
-      document.removeEventListener("touchstart", init);
-      const buf = this.#getContext().createBufferSource();
-      buf.start(), buf.stop();
-    };
-    document.addEventListener("touchstart", init);
+    this.emptyBuffer = this.#getContext().createBufferSource();
+    document.addEventListener("touchstart", () => {
+      if (this.emptyBuffer) {
+        this.emptyBuffer.start();
+        this.emptyBuffer.stop();
+      }
+    });
   }
   #getContext() {
     return window.zzfxX;

@@ -49970,8 +49970,6 @@ _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMa
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
   if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") === undefined) {
-    console.log("DOWN");
-
     __classPrivateFieldSet(this, _TouchManager_touchTime, 0, "f");
   }
 }, _TouchManager_onPointerUp = function _TouchManager_onPointerUp(e) {
@@ -51584,15 +51582,14 @@ exports.SynthManager = SynthManager;
 _SynthManager_instances = new WeakSet(), _SynthManager_initContext = function _SynthManager_initContext() {
   var _this = this;
 
-  var init = function init() {
-    document.removeEventListener("touchstart", init);
+  this.emptyBuffer = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createBufferSource();
+  document.addEventListener("touchstart", function () {
+    if (_this.emptyBuffer) {
+      _this.emptyBuffer.start();
 
-    var buf = __classPrivateFieldGet(_this, _SynthManager_instances, "m", _SynthManager_getContext).call(_this).createBufferSource();
-
-    buf.start(), buf.stop();
-  };
-
-  document.addEventListener("touchstart", init);
+      _this.emptyBuffer.stop();
+    }
+  });
 }, _SynthManager_getContext = function _SynthManager_getContext() {
   return window.zzfxX;
 }, _SynthManager_updateGain = function _SynthManager_updateGain() {
