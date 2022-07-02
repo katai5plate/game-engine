@@ -51525,7 +51525,9 @@ Scene.assetUrls = [];
 var createScene = function createScene(preloadAssets, scene) {
   return {
     scene: scene,
-    assetUrls: preloadAssets
+    assetUrls: function assetUrls() {
+      return preloadAssets;
+    }
   };
 };
 
@@ -51603,12 +51605,11 @@ var SceneManager = /*#__PURE__*/function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                // $app.stage.removeChild(this.currentScene);
                 $app._camera.getCamera().removeChild(this.currentScene);
 
                 console.time("SCENE LOADED");
                 console.log("SCENE LOADING... (PRELOAD ASSETS)");
-                sceneData.assetUrls.forEach(function (url) {
+                sceneData.assetUrls().forEach(function (url) {
                   return $app.loader.add(url, "./dist/".concat(url));
                 });
                 _context.next = 6;
@@ -51617,7 +51618,7 @@ var SceneManager = /*#__PURE__*/function () {
                 });
 
               case 6:
-                this.currentScene = new sceneData.scene(); // $app.stage.addChild(this.currentScene);
+                this.currentScene = new sceneData.scene();
 
                 $app._camera.getCamera().addChild(this.currentScene);
 
@@ -57815,8 +57816,8 @@ var CameraManager = /*#__PURE__*/function () {
     __classPrivateFieldSet(this, _CameraManager_viewport, new pixi_viewport_1.Viewport({
       screenWidth: $app.view.offsetWidth,
       screenHeight: $app.view.offsetHeight,
-      worldWidth: 1000,
-      worldHeight: 1000
+      worldWidth: $app.worldWidth,
+      worldHeight: $app.worldHeight
     }), "f");
 
     $app.stage.addChild(__classPrivateFieldGet(this, _CameraManager_viewport, "f"));
@@ -60760,17 +60761,14 @@ _Tilemap_tilemapTexture = new WeakMap(), _Tilemap_tileSettings = new WeakMap(), 
 }, _Tilemap_decorationPosition = function _Tilemap_decorationPosition(tileX, tileY, decoX, decoY) {
   return [tileX * 16 + decoX * 8, tileY * 16 + decoY * 8];
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","@pixi/tilemap":"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js"}],"game/tiles.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","@pixi/tilemap":"../node_modules/@pixi/tilemap/lib/pixi-tilemap.es.js"}],"presets/tilesets/rules.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.tileset = void 0;
-
-var Tilemap_1 = require("../components/objects/Tilemap");
-
-var easyRPGAutoTileRules = {
+exports.rules = void 0;
+exports.rules = {
   land: [{
     frame: [0, 4, 1, 2],
     pos: [0, 0],
@@ -60870,6 +60868,18 @@ var easyRPGAutoTileRules = {
     matrix: [[null, null, null], [null, true, true], [null, true, false]]
   }]
 };
+},{}],"presets/tilesets/easyrpg/basic.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tileset = void 0;
+
+var Tilemap_1 = require("../../../components/objects/Tilemap");
+
+var rules_1 = require("../rules");
+
 exports.tileset = {
   transColor: [255, 103, 139],
   terrains: [{
@@ -60883,7 +60893,7 @@ exports.tileset = {
     origin: [0, 0],
     frame: [0, 8, 2, 2],
     animType: Tilemap_1.TileAnimType.EASY_RPG_SEA,
-    autoTileRules: easyRPGAutoTileRules.sea
+    autoTileRules: rules_1.rules.sea
   }, // {
   //   name: "海（深）",
   //   grid: 8,
@@ -60897,19 +60907,19 @@ exports.tileset = {
     grid: 8,
     origin: [0, 16],
     frame: [3, 3, 2, 2],
-    autoTileRules: easyRPGAutoTileRules.land
+    autoTileRules: rules_1.rules.land
   }, {
     name: "草むら",
     grid: 8,
     origin: [6, 16],
     frame: [3, 3, 2, 2],
-    autoTileRules: easyRPGAutoTileRules.land
+    autoTileRules: rules_1.rules.land
   }, {
     name: "山",
     grid: 8,
     origin: [6, 24],
     frame: [3, 3, 2, 2],
-    autoTileRules: easyRPGAutoTileRules.land
+    autoTileRules: rules_1.rules.land
   }, {
     name: "看板",
     grid: 1,
@@ -60922,7 +60932,7 @@ exports.tileset = {
     frame: [0, 0, 32, 32]
   }]
 };
-},{"../components/objects/Tilemap":"components/objects/Tilemap.ts"}],"synth/sounds.ts":[function(require,module,exports) {
+},{"../../../components/objects/Tilemap":"components/objects/Tilemap.ts","../rules":"presets/tilesets/rules.ts"}],"presets/synth/se/factory.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -61076,13 +61086,13 @@ var Scene_1 = require("../components/objects/Scene");
 
 var Flow_1 = require("../components/objects/Flow");
 
-var tiles_1 = require("./tiles");
+var basic_1 = require("../presets/tilesets/easyrpg/basic");
 
 var Tilemap_1 = require("../components/objects/Tilemap");
 
 var helper_1 = require("../utils/helper");
 
-var se = __importStar(require("../synth/sounds"));
+var se = __importStar(require("../presets/synth/se/factory"));
 
 exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
@@ -61097,8 +61107,8 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
     _this = _super.call(this);
     _this.paintTileId = 1;
     _this.paintLayerId = 0;
-    _this.lowerTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), tiles_1.tileset, 40, 30));
-    _this.upperTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), tiles_1.tileset, 40, 30));
+    _this.lowerTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), basic_1.tileset, 40, 30));
+    _this.upperTilemap = _this.spawn(new Tilemap_1.Tilemap(new Asset_1.Asset(World_png_1.default).toTexture(), basic_1.tileset, 40, 30));
     _this.label = _this.spawn(new PIXI.Text("マウスホイールでタイル変更\n 右クリックでレイヤー変更\n ドラッグでお絵描き\n Enterで出力, Spaceで読込\n 方向キーでスクロール\n UIがないのでログを見ながら操作する", {
       fontSize: 12
     }));
@@ -61167,19 +61177,19 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                             if ($app.useMouse.isClicked("CENTER")) {
                               $app.useSynth.playSe(se.jump);
                               this.paintTileId = 0;
-                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[0].name));
+                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(basic_1.tileset.terrains[0].name));
                             }
 
                             if ($app.useMouse.isWheelUp()) {
                               $app.useSynth.playSe(se.pick);
-                              this.paintTileId = this.paintTileId === tiles_1.tileset.terrains.length - 1 ? 0 : this.paintTileId + 1;
-                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
+                              this.paintTileId = this.paintTileId === basic_1.tileset.terrains.length - 1 ? 0 : this.paintTileId + 1;
+                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(basic_1.tileset.terrains[this.paintTileId].name));
                             }
 
                             if ($app.useMouse.isWheelDown()) {
                               $app.useSynth.playSe(se.pick);
-                              this.paintTileId = this.paintTileId === 0 ? tiles_1.tileset.terrains.length - 1 : this.paintTileId - 1;
-                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
+                              this.paintTileId = this.paintTileId === 0 ? basic_1.tileset.terrains.length - 1 : this.paintTileId - 1;
+                              console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(basic_1.tileset.terrains[this.paintTileId].name));
                             } // マウス座標の先にタイルを設定
 
 
@@ -61270,7 +61280,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
 
   return _class;
 }(Scene_1.Scene));
-},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","./tiles":"game/tiles.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts","../utils/helper":"utils/helper.ts","../synth/sounds":"synth/sounds.ts"}],"index.ts":[function(require,module,exports) {
+},{"easyrpg-rtp/chipset/World.png":"../node_modules/easyrpg-rtp/chipset/World.png","pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../components/objects/Asset":"components/objects/Asset.ts","../components/objects/Scene":"components/objects/Scene.ts","../components/objects/Flow":"components/objects/Flow.ts","../presets/tilesets/easyrpg/basic":"presets/tilesets/easyrpg/basic.ts","../components/objects/Tilemap":"components/objects/Tilemap.ts","../utils/helper":"utils/helper.ts","../presets/synth/se/factory":"presets/synth/se/factory.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -61316,7 +61326,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "4105" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1146" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
