@@ -12,8 +12,8 @@ export class CameraManager {
     this.#viewport = new Viewport({
       screenWidth: $app.view.offsetWidth,
       screenHeight: $app.view.offsetHeight,
-      worldWidth: 1000,
-      worldHeight: 1000,
+      worldWidth: $app.worldWidth,
+      worldHeight: $app.worldHeight,
     });
     $app.stage.addChild(this.#viewport);
     this.#culling = new cull.Simple();
