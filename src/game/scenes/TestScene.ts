@@ -1,22 +1,3 @@
-# ゲーム制作マニュアル
-
-## ゲームのリリース方法
-
-1. `npm run build` を実行
-2. `dist/`, `libs/`, `index.html` を新しいフォルダにコピー
-3. これをサーバーにアップするなり、圧縮して投稿サイトにアップするなりする
-
-## クリエイター側が編集したり作るもの
-
-- `src/index.ts`: ゲームの開始設定
-- `src/presets/synth/`: ZzFX で鳴らす BGM や SE
-- `src/presets/tilesets/`: Tilemap を使用する場合のタイル設定
-- `src/game/scenes/`: ゲームで使用するシーン置き場
-- `src/game/assets/`: ゲームで使用する素材置き場
-
-## シーンの構成
-
-```ts
 // 描画エンジンの機能
 import * as PIXI from "pixi.js";
 
@@ -125,4 +106,3 @@ export const CustomScene = createScene(
     }
   }
 );
-```
