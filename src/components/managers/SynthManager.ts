@@ -1,3 +1,5 @@
+import battle from "../../synth/music/battle";
+
 export type SynthSeData = [
   q?: number,
   k?: number,
@@ -49,6 +51,7 @@ export class SynthManager {
   seVolume: number = 0;
   bgmNode?: AudioBufferSourceNode;
   seNode?: AudioBufferSourceNode;
+  preloadedBgmBuffers: Map<string, number[][]> = new Map();
   /** スマホで音が鳴らない対策 */
   emptyBuffer?: AudioBufferSourceNode;
   constructor() {
@@ -98,20 +101,28 @@ export class SynthManager {
     this.seVolume = volume;
     this.#updateGain();
   }
-  playBgm(bgmData: SynthBgmData, isLoop: boolean) {
+  preloadBgm(alias: string, bgmData: SynthBgmData) {
+    this.preloadedBgmBuffers.set(alias, window.zzfxM(...bgmData));
+  }
+  playPreloadedBgm(alias: string, isLoop: boolean) {
+    if (this.bgmBuffer) this.stopBgm();
+    this.bgmBuffer = this.preloadedBgmBuffers.get(alias);
     if (this.bgmBuffer) {
-      this.stopBgm();
+      this.bgmNode = window.zzfxP(...this.bgmBuffer);
+      this.bgmNode.loop = !!isLoop;
+      this.bgmGainNode && this.bgmNode.connect(this.bgmGainNode);
     }
+  }
+  playBgm(bgmData: SynthBgmData, isLoop: boolean) {
+    if (this.bgmBuffer) this.stopBgm();
     this.bgmBuffer = window.zzfxM(...bgmData);
     this.bgmNode = window.zzfxP(...this.bgmBuffer);
     this.bgmNode.loop = !!isLoop;
     this.bgmGainNode && this.bgmNode.connect(this.bgmGainNode);
   }
-  playSe(seData: SynthSeData, volume = this.seVolume || window.zzfxV) {
+  playSe(seData: SynthSeData) {
     if (seData === null) return;
-    const [dataVolume = 1, ...rest] = seData;
-    this.setSeVolume((dataVolume * volume) / dataVolume);
-    this.seBuffer = window.zzfxG(this.seVolume, ...rest);
+    this.seBuffer = window.zzfxG(...seData);
     this.seNode = window.zzfxP(this.seBuffer);
     this.seGainNode && this.seNode.connect(this.seGainNode);
   }

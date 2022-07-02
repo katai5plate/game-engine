@@ -51597,12 +51597,6 @@ exports.SceneManager = SceneManager;
 },{"../objects/Scene":"components/objects/Scene.ts"}],"components/managers/SynthManager.ts":[function(require,module,exports) {
 "use strict";
 
-function _toArray(arr) { return _arrayWithHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -51645,6 +51639,7 @@ var SynthManager = /*#__PURE__*/function () {
 
     this.bgmVolume = 0;
     this.seVolume = 0;
+    this.preloadedBgmBuffers = new Map();
     this.seGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
     this.seGainNode.connect(__classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).destination);
     this.bgmGainNode = __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_getContext).call(this).createGain();
@@ -51676,34 +51671,44 @@ var SynthManager = /*#__PURE__*/function () {
       __classPrivateFieldGet(this, _SynthManager_instances, "m", _SynthManager_updateGain).call(this);
     }
   }, {
-    key: "playBgm",
-    value: function playBgm(bgmData, isLoop) {
-      var _window, _window2;
+    key: "preloadBgm",
+    value: function preloadBgm(alias, bgmData) {
+      var _window;
+
+      this.preloadedBgmBuffers.set(alias, (_window = window).zzfxM.apply(_window, _toConsumableArray(bgmData)));
+    }
+  }, {
+    key: "playPreloadedBgm",
+    value: function playPreloadedBgm(alias, isLoop) {
+      if (this.bgmBuffer) this.stopBgm();
+      this.bgmBuffer = this.preloadedBgmBuffers.get(alias);
 
       if (this.bgmBuffer) {
-        this.stopBgm();
-      }
+        var _window2;
 
-      this.bgmBuffer = (_window = window).zzfxM.apply(_window, _toConsumableArray(bgmData));
-      this.bgmNode = (_window2 = window).zzfxP.apply(_window2, _toConsumableArray(this.bgmBuffer));
+        this.bgmNode = (_window2 = window).zzfxP.apply(_window2, _toConsumableArray(this.bgmBuffer));
+        this.bgmNode.loop = !!isLoop;
+        this.bgmGainNode && this.bgmNode.connect(this.bgmGainNode);
+      }
+    }
+  }, {
+    key: "playBgm",
+    value: function playBgm(bgmData, isLoop) {
+      var _window3, _window4;
+
+      if (this.bgmBuffer) this.stopBgm();
+      this.bgmBuffer = (_window3 = window).zzfxM.apply(_window3, _toConsumableArray(bgmData));
+      this.bgmNode = (_window4 = window).zzfxP.apply(_window4, _toConsumableArray(this.bgmBuffer));
       this.bgmNode.loop = !!isLoop;
       this.bgmGainNode && this.bgmNode.connect(this.bgmGainNode);
     }
   }, {
     key: "playSe",
     value: function playSe(seData) {
-      var _window3;
+      var _window5;
 
-      var volume = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.seVolume || window.zzfxV;
       if (seData === null) return;
-
-      var _seData = _toArray(seData),
-          _seData$ = _seData[0],
-          dataVolume = _seData$ === void 0 ? 1 : _seData$,
-          rest = _seData.slice(1);
-
-      this.setSeVolume(dataVolume * volume / dataVolume);
-      this.seBuffer = (_window3 = window).zzfxG.apply(_window3, [this.seVolume].concat(_toConsumableArray(rest)));
+      this.seBuffer = (_window5 = window).zzfxG.apply(_window5, _toConsumableArray(seData));
       this.seNode = window.zzfxP(this.seBuffer);
       this.seGainNode && this.seNode.connect(this.seGainNode);
     }
