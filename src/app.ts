@@ -76,18 +76,16 @@ export class App extends PIXI.Application {
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     this.view.style.imageRendering = "pixelated";
   }
-  getKey() {
+  get useKey() {
     return this._key;
   }
-  getMouse() {
+  get useMouse() {
     return this._mouse;
   }
-  getTouch() {
+  get useTouch() {
     return this._touch;
   }
-  useSynth(bgmVolume?: number, seVolume?: number) {
-    bgmVolume && this._synth.setBgmVolume(bgmVolume);
-    seVolume && this._synth.setSeVolume(seVolume);
+  get useSynth() {
     return this._synth;
   }
   async sceneTo(sceneData: SceneData<any>) {

@@ -51508,6 +51508,12 @@ var SynthManager = /*#__PURE__*/function () {
   }
 
   _createClass(SynthManager, [{
+    key: "setVolume",
+    value: function setVolume(bgmVolume, seVolume) {
+      bgmVolume && this.setBgmVolume(bgmVolume);
+      seVolume && this.setSeVolume(seVolume);
+    }
+  }, {
     key: "setBgmVolume",
     value: function setBgmVolume(volume) {
       this.bgmVolume = volume;
@@ -51983,25 +51989,23 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
   }
 
   _createClass(App, [{
-    key: "getKey",
-    value: function getKey() {
+    key: "useKey",
+    get: function get() {
       return this._key;
     }
   }, {
-    key: "getMouse",
-    value: function getMouse() {
+    key: "useMouse",
+    get: function get() {
       return this._mouse;
     }
   }, {
-    key: "getTouch",
-    value: function getTouch() {
+    key: "useTouch",
+    get: function get() {
       return this._touch;
     }
   }, {
     key: "useSynth",
-    value: function useSynth(bgmVolume, seVolume) {
-      bgmVolume && this._synth.setBgmVolume(bgmVolume);
-      seVolume && this._synth.setSeVolume(seVolume);
+    get: function get() {
       return this._synth;
     }
   }, {
@@ -52527,7 +52531,7 @@ Flow.use = {
 
               pressed = function pressed(names) {
                 return names.find(function (k) {
-                  return $app.getKey().isPressed(k);
+                  return $app.useKey.isPressed(k);
                 });
               };
 
@@ -55116,7 +55120,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
 
     _this.upperTilemap.updateMap();
 
-    $app.useSynth(0.5, 0.5);
+    $app.useSynth.setVolume(0.5, 0.5);
 
     _this.ready();
 
@@ -55164,35 +55168,35 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                       while (1) {
                         switch (_context2.prev = _context2.next) {
                           case 0:
-                            if ($app.getMouse().isClicked("RIGHT")) {
-                              $app.useSynth().playSe(se.coin);
+                            if ($app.useMouse.isClicked("RIGHT")) {
+                              $app.useSynth.playSe(se.coin);
                               this.paintLayerId = this.paintLayerId === 0 ? 1 : 0;
                               this.lowerTilemap.setAlpha(this.paintLayerId === 1 ? 0.5 : 1);
                               this.upperTilemap.setAlpha(this.paintLayerId === 0 ? 0.5 : 1);
                               console.log(this.paintLayerId === 0 ? "下層" : "上層", "レイヤー");
                             }
 
-                            if ($app.getMouse().isClicked("CENTER")) {
-                              $app.useSynth().playSe(se.jump);
+                            if ($app.useMouse.isClicked("CENTER")) {
+                              $app.useSynth.playSe(se.jump);
                               this.paintTileId = 0;
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[0].name));
                             }
 
-                            if ($app.getMouse().isWheelUp()) {
-                              $app.useSynth().playSe(se.pick);
+                            if ($app.useMouse.isWheelUp()) {
+                              $app.useSynth.playSe(se.pick);
                               this.paintTileId = this.paintTileId === tiles_1.tileset.terrains.length - 1 ? 0 : this.paintTileId + 1;
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
                             }
 
-                            if ($app.getMouse().isWheelDown()) {
-                              $app.useSynth().playSe(se.pick);
+                            if ($app.useMouse.isWheelDown()) {
+                              $app.useSynth.playSe(se.pick);
                               this.paintTileId = this.paintTileId === 0 ? tiles_1.tileset.terrains.length - 1 : this.paintTileId - 1;
                               console.log("\u30BF\u30A4\u30EB\u9078\u629E: ".concat(tiles_1.tileset.terrains[this.paintTileId].name));
                             }
 
-                            if ($app.getTouch().isPressed()) {
+                            if ($app.useTouch.isPressed()) {
                               // マウス座標の先にタイルを設定
-                              $app.getTouch().getPositions().forEach(function (_ref) {
+                              $app.useTouch.getPositions().forEach(function (_ref) {
                                 var px = _ref.x,
                                     py = _ref.y;
                                 var _ref2 = [Math.floor(px / 16), Math.floor(py / 16)],
@@ -55201,7 +55205,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
 
                                 if (_this3.paintLayerId === 0) {
                                   if (_this3.lowerTilemap.getTile(tx, ty) !== _this3.paintTileId) {
-                                    $app.useSynth().playSe(se.dig);
+                                    $app.useSynth.playSe(se.dig);
                                   }
 
                                   _this3.lowerTilemap.setTile(tx, ty, _this3.paintTileId);
@@ -55209,7 +55213,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                                   _this3.lowerTilemap.updateMap();
                                 } else {
                                   if (_this3.upperTilemap.getTile(tx, ty) !== _this3.paintTileId) {
-                                    $app.useSynth().playSe(se.dig);
+                                    $app.useSynth.playSe(se.dig);
                                   }
 
                                   _this3.upperTilemap.setTile(tx, ty, _this3.paintTileId);
@@ -55219,14 +55223,14 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                               });
                             }
 
-                            if ($app.getKey().isTriggered("ENTER")) {
-                              $app.useSynth().playSe(se.powerup);
+                            if ($app.useKey.isTriggered("ENTER")) {
+                              $app.useSynth.playSe(se.powerup);
                               console.log("マップデータ出力", {
                                 data: (0, helper_1.zip)(JSON.stringify([_toConsumableArray(this.lowerTilemap.map), _toConsumableArray(this.upperTilemap.map)]))
                               });
                             }
 
-                            if ($app.getKey().isTriggered("SPACE")) {
+                            if ($app.useKey.isTriggered("SPACE")) {
                               try {
                                 input = prompt("マップデータ入力");
                                 _JSON$parse = JSON.parse((0, helper_1.unzip)(JSON.parse(input).data)), _JSON$parse2 = _slicedToArray(_JSON$parse, 2), lower = _JSON$parse2[0], upper = _JSON$parse2[1];
@@ -55234,7 +55238,7 @@ exports.MapEditorScene = (0, Scene_1.createScene)([World_png_1.default], /*#__PU
                                 this.upperTilemap.map = new Uint8ClampedArray(upper);
                                 this.lowerTilemap.updateMap();
                                 this.upperTilemap.updateMap();
-                                $app.useSynth().playSe(se.bomb);
+                                $app.useSynth.playSe(se.bomb);
                               } catch (error) {
                                 console.warn(error);
                               }

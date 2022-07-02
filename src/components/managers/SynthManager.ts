@@ -66,6 +66,10 @@ export class SynthManager {
     this.bgmGainNode.gain.value = -1 + this.bgmVolume * 2;
     this.seGainNode.gain.value = -1 + this.seVolume * 2;
   }
+  setVolume(bgmVolume?: number, seVolume?: number) {
+    bgmVolume && this.setBgmVolume(bgmVolume);
+    seVolume && this.setSeVolume(seVolume);
+  }
   setBgmVolume(volume: number) {
     this.bgmVolume = volume;
     this.#updateGain();
