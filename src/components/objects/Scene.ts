@@ -90,7 +90,7 @@ export class Scene extends PIXI.Container {
 
 export interface SceneData<S extends Scene> {
   scene: { new (): S };
-  assetUrls: string[];
+  assetUrls: () => string[];
 }
 
 /**
@@ -101,4 +101,4 @@ export interface SceneData<S extends Scene> {
 export const createScene = <S extends Scene>(
   preloadAssets: string[],
   scene: { new (): S }
-): SceneData<S> => ({ scene, assetUrls: preloadAssets });
+): SceneData<S> => ({ scene, assetUrls: () => preloadAssets });

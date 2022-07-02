@@ -3,9 +3,8 @@ import { Asset } from "../components/objects/Asset";
 import { Flow } from "../components/objects/Flow";
 import { createScene, Scene } from "../components/objects/Scene";
 import { LabeledButton } from "../components/ui/molecules/LabeledButton";
-import { lerp } from "../utils/math";
 
-export const TestScene = createScene(
+export const ButtonTestScene = createScene(
   [Cloud],
   class extends Scene {
     enemy: LabeledButton;

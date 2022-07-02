@@ -1,5 +1,5 @@
 import { App } from "./app";
-import { TestScene } from "./game/TestScene";
+import { ButtonTestScene } from "./game/ButtonTestScene";
 import { MapEditorScene } from "./game/MapEditorScene";
 
 // ゲーム開始
