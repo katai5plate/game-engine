@@ -22,7 +22,7 @@ import { Asset } from "../../components/objects/Asset";
 import { createScene, Scene } from "../../components/objects/Scene";
 import { Flow } from "../../components/objects/Flow";
 
-// 素材の読み込み
+// 素材の宣言
 import Sozai1 from "../assets/Sozai1.png";
 // import Sozai2 from "../assets/Sozai2.png";
 // import Sozai3 from "../assets/Sozai3.png";
@@ -35,7 +35,7 @@ export const CustomScene = createScene(
     // Sozai3,
   ],
   class extends Scene {
-    // ここで使用するゲームオブジェクトや内部変数などを定義
+    // ここで使用するゲームオブジェクトや内部変数などを宣言
     nanika: PIXI.Sprite;
     isTweenPlaying: boolean;
 
