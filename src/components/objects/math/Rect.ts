@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import XY from "./XY";
 
 export default class Rect extends PIXI.Rectangle {
+  readonly _shapeName: "Rect" | "Circle" = "Rect";
   constructor(x: number = 0, y: number = 0, w: number = 1, h: number = 1) {
     super(x, y, w, h);
   }
@@ -125,5 +126,8 @@ export default class Rect extends PIXI.Rectangle {
     }
     const [w, h] = args;
     return this.set(this.x, this.y, this.width % w, this.height % h);
+  }
+  toArray(): [number, number, number, number] {
+    return [this.x, this.y, this.width, this.height];
   }
 }

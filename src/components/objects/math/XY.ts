@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 
 export default class XY extends PIXI.Point {
+  readonly _shapeName = "XY";
   constructor(x: number = 0, y: number = 0) {
     super(x, y);
   }
@@ -56,5 +57,8 @@ export default class XY extends PIXI.Point {
     }
     const [x, y] = args;
     return this.set(this.x % x, this.y % y);
+  }
+  toArray(): [number, number] {
+    return [this.x, this.y];
   }
 }

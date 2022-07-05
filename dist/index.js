@@ -49875,80 +49875,1253 @@ exports.easing = {
     }
 };
 
-},{}],"utils/math.ts":[function(require,module,exports) {
-"use strict";
+},{}],"../node_modules/intersects/circle-point.js":[function(require,module,exports) {
+'use strict'
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.inside = exports.lerp = void 0;
+/**
+ * circle-point collision
+ * @param {number} x1 center of circle
+ * @param {number} y1 center of circle
+ * @param {radius} r1 radius of circle
+ * @param {number} x2 point
+ * @param {number} y2 point
+ * @return {boolean}
+ */
+module.exports = function circlePoint(x1, y1, r1, x2, y2)
+{
+    var x = x2 - x1
+    var y = y2 - y1
+    return x * x + y * y <= r1 * r1
+}
 
-var ts_easing_1 = require("ts-easing");
+},{}],"../node_modules/intersects/circle-circle.js":[function(require,module,exports) {
+'use strict'
 
-var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
-  inElastic: function inElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
-  },
-  outElastic: function outElastic(x) {
-    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
-  },
-  inOutElastic: function inOutElastic(x) {
-    var a = 2 * Math.PI / 4.5;
-    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
-  },
-  inBack: function inBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return b * x * x * x - a * x * x;
-  },
-  outBack: function outBack(x) {
-    var a = 1.70158;
-    var b = a + 1;
-    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
-  },
-  inOutBack: function inOutBack(x) {
-    var a = 1.70158;
-    var b = a * 1.525;
-    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
-  },
-  inBounce: function inBounce(x) {
-    return 1 - easing.outBounce(1 - x);
-  },
-  outBounce: function outBounce(x) {
-    var a = 7.5625;
-    var b = 2.75;
+/**
+ * circle-circle collision
+ * @param {number} x1 center of circle 1
+ * @param {number} y1 center of circle 1
+ * @param {number} r1 radius of circle 1
+ * @param {number} x2 center of circle 2
+ * @param {number} y2 center of circle 2
+ * @param {number} r2 radius of circle 2
+ * @return {boolean}
+ */
+module.exports = function circleCircle(x1, y1, r1, x2, y2, r2)
+{
+    var x = x1 - x2
+    var y = y2 - y1
+    var radii = r1 + r2
+    return x * x + y * y <= radii * radii
+}
 
-    if (x < 1 / b) {
-      return a * x * x;
-    } else if (x < 2 / b) {
-      return a * (x -= 1.5 / b) * x + 0.75;
-    } else if (x < 2.5 / b) {
-      return a * (x -= 2.25 / b) * x + 0.9375;
-    } else {
-      return a * (x -= 2.625 / b) * x + 0.984375;
+},{}],"../node_modules/intersects/line-circle.js":[function(require,module,exports) {
+'use strict'
+
+/**
+ * line-circle collision
+ number @param {number} x1 point 1 of line
+ number @param {number} y1 point 1 of line
+ number @param {number} x2 point 2 of line
+ number @param {number} y2 point 2 of line
+ number @param {number} xc center of circle
+ number @param {number} yc center of circle
+ number @param {number} rc radius of circle
+ */
+module.exports = function lineCircle(x1, y1, x2, y2, xc, yc, rc)
+{
+    var ac = [xc - x1, yc - y1]
+    var ab = [x2 - x1, y2 - y1]
+    var ab2 = dot(ab, ab)
+    var acab = dot(ac, ab)
+    var t = acab / ab2
+    t = (t < 0) ? 0 : t
+    t = (t > 1) ? 1 : t
+    var h = [(ab[0] * t + x1) - xc, (ab[1] * t + y1) - yc]
+    var h2 = dot(h, h)
+    return h2 <= rc * rc
+}
+
+function dot(v1, v2)
+{
+    return (v1[0] * v2[0]) + (v1[1] * v2[1])
+}
+
+},{}],"../node_modules/intersects/circle-line.js":[function(require,module,exports) {
+'use strict'
+
+var lineCircle = require('./line-circle')
+
+/**
+ * circle-line collision
+ * from http://stackoverflow.com/a/10392860/1955997
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} x1 first point of line
+ * @param {number} y1 first point of line
+ * @param {number} x2 second point of line
+ * @param {number} y2 second point of line
+ * @return {boolean}
+ */
+module.exports = function circleLine(xc, yc, rc, x1, y1, x2, y2)
+{
+    return lineCircle(x1, y1, x2, y2, xc, yc, rc)
+}
+
+},{"./line-circle":"../node_modules/intersects/line-circle.js"}],"../node_modules/intersects/box-circle.js":[function(require,module,exports) {
+'use strict'
+
+/**
+ * box-circle collision
+ * @param {number} xb top-left corner of box
+ * @param {number} yb top-left corner of box
+ * @param {number} wb width of box
+ * @param {number} hb height of box
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {number} rc radius of circle
+ */
+module.exports = function boxCircle(xb, yb, wb, hb, xc, yc, rc)
+{
+    var hw = wb / 2
+    var hh = hb / 2
+    var distX = Math.abs(xc - (xb + wb / 2))
+    var distY = Math.abs(yc - (yb + hb / 2))
+
+    if (distX > hw + rc || distY > hh + rc)
+    {
+        return false
     }
-  },
-  inOutBounce: function inOutBounce(x) {
-    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
-  }
-});
 
-var lerp = function lerp(ease, a, b, x) {
-  var f = easing[ease];
-  var d = b - a;
-  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
-  var r = a + t * d;
-  return r;
-};
+    if (distX <= hw || distY <= hh)
+    {
+        return true
+    }
 
-exports.lerp = lerp;
+    var x = distX - hw
+    var y = distY - hh
+    return x * x + y * y <= rc * rc
+}
 
-var inside = function inside(rect, point) {
-  return rect.x <= point.x && point.x < rect.x + rect.width && rect.y <= point.y && point.y < rect.y + rect.height;
-};
+},{}],"../node_modules/intersects/circle-box.js":[function(require,module,exports) {
+'use strict'
 
-exports.inside = inside;
-},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/math/XY.ts":[function(require,module,exports) {
+var boxCircle = require('./box-circle')
+
+/**
+ * circle-box (axis-oriented rectangle) collision
+ * from http://stackoverflow.com/a/402010/1955997
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} xb top-left corner of rectangle
+ * @param {number} yb top-left corner of rectangle
+ * @param {number} wb width of rectangle
+ * @param {number} hb height of rectangle
+ */
+module.exports = function circleBox(xc, yc, rc, xb, yb, wb, hb)
+{
+    return boxCircle(xb, yb, wb, hb, xc, yc, rc)
+}
+
+},{"./box-circle":"../node_modules/intersects/box-circle.js"}],"../node_modules/intersects/line-point.js":[function(require,module,exports) {
+'use strict'
+
+function distanceSquared(x1, y1, x2, y2)
+{
+    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
+}
+
+/**
+ * line-point collision
+ * from https://stackoverflow.com/a/17693146/1955997
+ * @param {number} x1 first point in line
+ * @param {number} y1 first point in line
+ * @param {number} x2 second point in line
+ * @param {number} y2 second point in line
+ * @param {number} xp point
+ * @param {number} yp point
+ * @param {number} [tolerance=1]
+ * @return {boolean}
+ */
+module.exports = function linePoint(x1, y1, x2, y2, xp, yp, tolerance)
+{
+    tolerance = tolerance || 1
+    return Math.abs(distanceSquared(x1, y1, x2, y2) - (distanceSquared(x1, y1, xp, yp) + distanceSquared(x2, y2, xp, yp))) <= tolerance
+}
+},{}],"../node_modules/intersects/polygon-point.js":[function(require,module,exports) {
+'use strict'
+
+const linePoint = require('./line-point')
+
+/**
+ * polygon-point collision
+ * based on https://stackoverflow.com/a/17490923/1955997
+ * @param {number[]} points [x1, y1, x2, y2, ... xn, yn] of polygon
+ * @param {number} x of point
+ * @param {number} y of point
+ * @param {number} [tolerance=1] maximum distance of point to polygon's edges that triggers collision (see pointLine)
+ */
+module.exports = function polygonPoint(points, x, y, tolerance)
+{
+    var length = points.length
+    var c = false
+    var i, j
+    for (i = 0, j = length - 2; i < length; i += 2)
+    {
+        if (((points[i + 1] > y) !== (points[j + 1] > y)) && (x < (points[j] - points[i]) * (y - points[i + 1]) / (points[j + 1] - points[i + 1]) + points[i]))
+        {
+            c = !c
+        }
+        j = i
+    }
+    if (c)
+    {
+        return true
+    }
+    for (i = 0; i < length; i += 2)
+    {
+        var p1x = points[i]
+        var p1y = points[i + 1]
+        var p2x, p2y
+        if (i === length - 2)
+        {
+            p2x = points[0]
+            p2y = points[1]
+        }
+        else
+        {
+            p2x = points[i + 2]
+            p2y = points[i + 3]
+        }
+        if (linePoint(p1x, p1y, p2x, p2y, x, y, tolerance))
+        {
+            return true
+        }
+    }
+    return false
+}
+
+},{"./line-point":"../node_modules/intersects/line-point.js"}],"../node_modules/intersects/polygon-circle.js":[function(require,module,exports) {
+var polygonPoint = require('./polygon-point')
+var lineCircle = require('./line-circle')
+
+/**
+ * polygon-circle collision
+ * @param {number[]} points [x1, y1, x2, y2, ... xn, yn] of polygon
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {number} rc radius of circle
+ * @param {number} [tolerance=1] maximum distance of point to polygon's edges that triggers collision (see pointLine)
+ */
+module.exports = function polygonCircle(points, xc, yc, rc, tolerance)
+{
+    if (polygonPoint(points, xc, yc, tolerance))
+    {
+        return true
+    }
+    var count = points.length
+    for (var i = 0; i < count - 2; i += 2)
+    {
+        if (lineCircle(points[i], points[i + 1], points[i + 2], points[i + 3], xc, yc, rc))
+        {
+            return true
+        }
+    }
+    return lineCircle(points[0], points[1], points[count - 2], points[count - 1], xc, yc, rc)
+}
+
+},{"./polygon-point":"../node_modules/intersects/polygon-point.js","./line-circle":"../node_modules/intersects/line-circle.js"}],"../node_modules/intersects/circle-polygon.js":[function(require,module,exports) {
+'use strict'
+
+var polygonCircle = require('./polygon-circle')
+
+/**
+ * circle-polygon collision
+ * from http://stackoverflow.com/a/402019/1955997
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number[]} points [x1, y1, x2, y2, ... xn, yn] of polygon
+ */
+module.exports = function circlePolygon(xc, yc, rc, points, tolerance)
+{
+    return polygonCircle(points, xc, yc, rc, tolerance)
+}
+
+},{"./polygon-circle":"../node_modules/intersects/polygon-circle.js"}],"../node_modules/intersects/ellipse-helper.js":[function(require,module,exports) {
+// from http://yehar.com/blog/?p=2926
+
+var MAX_ITERATIONS = 10
+var innerPolygonCoef, outerPolygonCoef, initialized
+
+function initialize()
+{
+    innerPolygonCoef = []
+    outerPolygonCoef = []
+    for (var t = 0; t <= MAX_ITERATIONS; t++)
+    {
+        var numNodes = 4 << t
+        innerPolygonCoef[t] = 0.5 / Math.cos(4 * Math.acos(0) / numNodes)
+        outerPolygonCoef[t] = 0.5 / (Math.cos(2 * Math.acos(0) / numNodes) * Math.cos(2 * Math.acos(0) / numNodes))
+    }
+    initialized = true
+}
+
+function iterate(x, y, c0x, c0y, c2x, c2y, rr)
+{
+    for (var t = 1; t <= MAX_ITERATIONS; t++)
+    {
+        var c1x = (c0x + c2x) * innerPolygonCoef[t]
+        var c1y = (c0y + c2y) * innerPolygonCoef[t]
+        var tx = x - c1x
+        var ty = y - c1y
+        if (tx * tx + ty * ty <= rr)
+        {
+            return true
+        }
+        var t2x = c2x - c1x
+        var t2y = c2y - c1y
+        if (tx * t2x + ty * t2y >= 0 && tx * t2x + ty * t2y <= t2x * t2x + t2y * t2y &&
+            (ty * t2x - tx * t2y >= 0 || rr * (t2x * t2x + t2y * t2y) >= (ty * t2x - tx * t2y) * (ty * t2x - tx * t2y)))
+        {
+            return true
+        }
+        var t0x = c0x - c1x
+        var t0y = c0y - c1y
+        if (tx * t0x + ty * t0y >= 0 && tx * t0x + ty * t0y <= t0x * t0x + t0y * t0y &&
+            (ty * t0x - tx * t0y <= 0 || rr * (t0x * t0x + t0y * t0y) >= (ty * t0x - tx * t0y) * (ty * t0x - tx * t0y)))
+        {
+            return true
+        }
+        var c3x = (c0x + c1x) * outerPolygonCoef[t]
+        var c3y = (c0y + c1y) * outerPolygonCoef[t]
+        if ((c3x - x) * (c3x - x) + (c3y - y) * (c3y - y) < rr)
+        {
+            c2x = c1x
+            c2y = c1y
+            continue
+        }
+        var c4x = c1x - c3x + c1x
+        var c4y = c1y - c3y + c1y
+        if ((c4x - x) * (c4x - x) + (c4y - y) * (c4y - y) < rr)
+        {
+            c0x = c1x
+            c0y = c1y
+            continue
+        }
+        var t3x = c3x - c1x
+        var t3y = c3y - c1y
+        if (ty * t3x - tx * t3y <= 0 || rr * (t3x * t3x + t3y * t3y) > (ty * t3x - tx * t3y) * (ty * t3x - tx * t3y))
+        {
+            if (tx * t3x + ty * t3y > 0)
+            {
+                if (Math.abs(tx * t3x + ty * t3y) <= t3x * t3x + t3y * t3y || (x - c3x) * (c0x - c3x) + (y - c3y) * (c0y - c3y) >= 0)
+                {
+                    c2x = c1x
+                    c2y = c1y
+                    continue
+                }
+            } else if (-(tx * t3x + ty * t3y) <= t3x * t3x + t3y * t3y || (x - c4x) * (c2x - c4x) + (y - c4y) * (c2y - c4y) >= 0)
+            {
+                c0x = c1x
+                c0y = c1y
+                continue
+            }
+        }
+        return false
+    }
+    return false // Out of iterations so it is unsure if there was a collision. But have to return something.
+}
+
+// Test for collision between an ellipse of horizontal radius w0 and vertical radius h0 at (x0, y0) and
+// an ellipse of horizontal radius w1 and vertical radius h1 at (x1, y1)
+function ellipseEllipse(x0, y0, w0, h0, x1, y1, w1, h1)
+{
+    if (!initialized)
+    {
+        initialize()
+    }
+
+    var x = Math.abs(x1 - x0) * h1
+    var y = Math.abs(y1 - y0) * w1
+    w0 *= h1
+    h0 *= w1
+    var r = w1 * h1
+
+    if (x * x + (h0 - y) * (h0 - y) <= r * r || (w0 - x) * (w0 - x) + y * y <= r * r || x * h0 + y * w0 <= w0 * h0
+        || ((x * h0 + y * w0 - w0 * h0) * (x * h0 + y * w0 - w0 * h0) <= r * r * (w0 * w0 + h0 * h0) && x * w0 - y * h0 >= -h0 * h0 && x * w0 - y * h0 <= w0 * w0))
+    {
+        return true
+    }
+    else
+    {
+        if ((x - w0) * (x - w0) + (y - h0) * (y - h0) <= r * r || (x <= w0 && y - r <= h0) || (y <= h0 && x - r <= w0))
+        {
+            return iterate(x, y, w0, 0, 0, h0, r * r)
+        }
+        return false
+    }
+}
+
+// Test for collision between an ellipse of horizontal radius w and vertical radius h at (x0, y0) and
+// a circle of radius r at (x1, y1)
+function ellipseCircle(x0, y0, w, h, x1, y1, r)
+{
+    if (!initialized)
+    {
+        initialize()
+    }
+    var x = Math.abs(x1 - x0)
+    var y = Math.abs(y1 - y0)
+
+    if (x * x + (h - y) * (h - y) <= r * r || (w - x) * (w - x) + y * y <= r * r || x * h + y * w <= w * h
+        || ((x * h + y * w - w * h) * (x * h + y * w - w * h) <= r * r * (w * w + h * h) && x * w - y * h >= -h * h && x * w - y * h <= w * w))
+    {
+        return true
+    }
+    else
+    {
+        if ((x - w) * (x - w) + (y - h) * (y - h) <= r * r || (x <= w && y - r <= h) || (y <= h && x - r <= w))
+        {
+            return iterate(x, y, w, 0, 0, h, r * r)
+        }
+        return false
+    }
+}
+
+module.exports = {
+    ellipseCircle: ellipseCircle,
+    ellipseEllipse: ellipseEllipse
+}
+},{}],"../node_modules/intersects/ellipse-circle.js":[function(require,module,exports) {
+var ellipseHelper = require('./ellipse-helper')
+
+/**
+ * ellipse-circle collision
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {number} rex radius-x of ellipse
+ * @param {number} rey radius-y of ellipse
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {number} rc radius of circle
+ * @return {boolean}
+ */
+module.exports = function ellipseCircle(xe, ye, rex, rey, xc, yc, rc)
+{
+    return ellipseHelper.ellipseCircle(xe, ye, rex, rey, xc, yc, rc)
+}
+
+},{"./ellipse-helper":"../node_modules/intersects/ellipse-helper.js"}],"../node_modules/intersects/circle-ellipse.js":[function(require,module,exports) {
+var ellipseCircle = require('./ellipse-circle')
+
+/**
+ * circle-ellipse collision
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {number} rc radius of circle
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {number} rex radius-x of ellipse
+ * @param {number} rey radius-y of ellipse
+ * @return {boolean}
+ */
+module.exports = function circleEllipse(xc, yc, rc, xe, ye, rex, rey)
+{
+    return ellipseCircle(xe, ye, rex, rey, xc, yc, rc)
+}
+
+},{"./ellipse-circle":"../node_modules/intersects/ellipse-circle.js"}],"../node_modules/intersects/circleOutline-box.js":[function(require,module,exports) {
+var circlePoint = require('./circle-point')
+var boxCircle = require('./box-circle')
+
+/**
+ * circleOutline-box (axis-aligned) collision
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} x top-left corner of box
+ * @param {number} y top-left corner of box
+ * @param {number} width of box
+ * @param {number} height of box
+ * @param {number} thickness of circle outline
+ */
+module.exports = function circleOutlineBox(xc, yc, rc, x, y, width, height, thickness)
+{
+    thickness = thickness || 1
+    var count = 0
+    count += circlePoint(xc, yc, rc, x, y) ? 1 : 0
+    count += circlePoint(xc, yc, rc, x + width, y) ? 1 : 0
+    count += circlePoint(xc, yc, rc, x, y + height) ? 1 : 0
+    count += circlePoint(xc, yc, rc, x + width, y + height) ? 1 : 0
+
+    // if no corners are inside the circle, then intersects only if box encloses circle-outline
+    if (count === 0)
+    {
+        return boxCircle(x, y, width, height, xc, yc, rc)
+    }
+
+    // if one corner is inside and one corner is outside then box intersects circle-outline
+    if (count >= 1 && count <= 3)
+    {
+        return true
+    }
+
+    // last check is if box is inside circle, need to check that a corner is not inside the inner circle
+    if (count === 4)
+    {
+        return !circlePoint(xc, yc, rc - thickness, x, y) ||
+            !circlePoint(xc, yc, rc - thickness, x + width, y) ||
+            !circlePoint(xc, yc, rc - thickness, x, y + height) ||
+            !circlePoint(xc, yc, rc - thickness, x + width, y + height)
+    }
+}
+},{"./circle-point":"../node_modules/intersects/circle-point.js","./box-circle":"../node_modules/intersects/box-circle.js"}],"../node_modules/intersects/circleOutline-line.js":[function(require,module,exports) {
+var lineCircle = require('./line-circle')
+var circlePoint = require('./circle-point')
+
+/**
+ * circleOutline-line collision
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} x1 of point 1 of line
+ * @param {number} y1 of point 1 of line
+ * @param {number} x2 of point 2 of line
+ * @param {number} y2 of point 2 of line
+ * @param {number} thickness of circle outline
+ */
+module.exports = function circleOutlineLine(xc, yc, rc, x1, y1, x2, y2, thickness)
+{
+    thickness = thickness || 1
+    return lineCircle(x1, y1, x2, y2, xc, yc, rc) && !(circlePoint(xc, yc, rc - thickness, x1, y1) && circlePoint(xc, yc, rc - thickness, x2, y2))
+}
+},{"./line-circle":"../node_modules/intersects/line-circle.js","./circle-point":"../node_modules/intersects/circle-point.js"}],"../node_modules/intersects/circleOutline-point.js":[function(require,module,exports) {
+var circlePoint = require('./circle-point')
+
+/**
+ * circleOutline-point collision
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} x of point
+ * @param {number} y of point
+ * @param {number} thickness of circle outline
+ */
+module.exports = function circleOutlinePoint(xc, yc, rc, x, y, thickness)
+{
+    thickness = thickness || 1
+    return circlePoint(xc, yc, rc, x, y) && !circlePoint(xc, yc, rc - thickness, x, y)
+}
+},{"./circle-point":"../node_modules/intersects/circle-point.js"}],"../node_modules/intersects/lineToLine.js":[function(require,module,exports) {
+'use strict'
+
+/**
+ * lineToLine helper function (to avoid circular dependencies)
+ * from http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+ * @param {number} x1 first point in line 1
+ * @param {number} y1 first point in line 1
+ * @param {number} x2 second point in line 1
+ * @param {number} y2 second point in line 1
+ * @param {number} x3 first point in line 2
+ * @param {number} y3 first point in line 2
+ * @param {number} x4 second point in line 2
+ * @param {number} y4 second point in line 2
+ * @return {boolean}
+ */
+module.exports = function lineToLine(x1, y1, x2, y2, x3, y3, x4, y4)
+{
+    var s1_x = x2 - x1
+    var s1_y = y2 - y1
+    var s2_x = x4 - x3
+    var s2_y = y4 - y3
+    var s = (-s1_y * (x1 - x3) + s1_x * (y1 - y3)) / (-s2_x * s1_y + s1_x * s2_y)
+    var t = (s2_x * (y1 - y3) - s2_y * (x1 - x3)) / (-s2_x * s1_y + s1_x * s2_y)
+    return s >= 0 && s <= 1 && t >= 0 && t <= 1
+}
+},{}],"../node_modules/intersects/line-polygon.js":[function(require,module,exports) {
+var polygonPoint = require('./polygon-point')
+var lineLine = require('./lineToLine')
+
+/**
+ * line-polygon collision
+ @param {number} x1 point 1 of line
+ @param {number} y1 point 1 of line
+ @param {number} x2 point 2 of line
+ @param {number} y2 point 2 of line
+ @param {number[]} points of polygon
+ @param {tolerance=1} maximum distance of point to polygon's edges that triggers collision (see pointLine)
+ */
+module.exports = function linePolygon(x1, y1, x2, y2, points, tolerance)
+{
+    var length = points.length
+
+    // check if first point is inside the shape (this covers if the line is completely enclosed by the shape)
+    if (polygonPoint(points, x1, y1, tolerance))
+    {
+        return true
+    }
+
+    // check for intersections for all of the sides
+    for (var i = 0; i < length; i += 2)
+    {
+        var j = (i + 2) % length
+        if (lineLine(x1, y1, x2, y2, points[i], points[i + 1], points[j], points[j + 1]))
+        {
+            return true
+        }
+    }
+    return false
+}
+
+},{"./polygon-point":"../node_modules/intersects/polygon-point.js","./lineToLine":"../node_modules/intersects/lineToLine.js"}],"../node_modules/intersects/polygon-line.js":[function(require,module,exports) {
+var linePolygon = require('./line-polygon')
+
+/**
+ * polygon-line collisions
+ * @param {number[]} points [x1, y1, x2, y2, ... xn, yn] of polygon
+ * @param {number} x1 first point in line
+ * @param {number} y1 first point in line
+ * @param {number} x2 second point in line
+ * @param {number} y2 second point in line
+ * @param {tolerance=1} maximum distance of point to polygon's edges that triggers collision (see pointLine)
+ * @return {boolean}
+ */
+module.exports = function polygonLine(points, x1, y1, x2, y2, tolerance)
+{
+    return linePolygon(x1, y1, x2, y2, points, tolerance)
+}
+
+},{"./line-polygon":"../node_modules/intersects/line-polygon.js"}],"../node_modules/intersects/polygon-polygon.js":[function(require,module,exports) {
+'use strict'
+
+/**
+ * polygon-polygon collision
+ * based on http://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles
+ * @param {number[]} points1 [x1, y1, x2, y2, ... xn, yn] of first polygon
+ * @param {number[]} points2 [x1, y1, x2, y2, ... xn, yn] of second polygon
+ * @return {boolean}
+ */
+module.exports = function polygonPolygon(points1, points2)
+{
+    var a = points1
+    var b = points2
+    var polygons = [a, b]
+    var minA, maxA, projected, minB, maxB, j
+    for (var i = 0; i < polygons.length; i++)
+    {
+        var polygon = polygons[i]
+        for (var i1 = 0; i1 < polygon.length; i1 += 2)
+        {
+            var i2 = (i1 + 2) % polygon.length
+            var normal = { x: polygon[i2 + 1] - polygon[i1 + 1], y: polygon[i1] - polygon[i2] }
+            minA = maxA = null
+            for (j = 0; j < a.length; j += 2)
+            {
+                projected = normal.x * a[j] + normal.y * a[j + 1]
+                if (minA === null || projected < minA)
+                {
+                    minA = projected
+                }
+                if (maxA === null || projected > maxA)
+                {
+                    maxA = projected
+                }
+            }
+            minB = maxB = null
+            for (j = 0; j < b.length; j += 2)
+            {
+                projected = normal.x * b[j] + normal.y * b[j + 1]
+                if (minB === null || projected < minB)
+                {
+                    minB = projected
+                }
+                if (maxB === null || projected > maxB)
+                {
+                    maxB = projected
+                }
+            }
+            if (maxA < minB || maxB < minA)
+            {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+},{}],"../node_modules/intersects/polygon-box.js":[function(require,module,exports) {
+'use strict'
+
+var polygonPolygon = require('./polygon-polygon')
+
+/**
+ * polygon-box collision
+ * @param {number[]} points [x1, y1, x2, y2, ... xn, yn] of polygon
+ * @param {number} x of box
+ * @param {number} y of box
+ * @param {number} w of box
+ * @param {number} h of box
+ */
+module.exports = function polygonBox(points, x, y, w, h)
+{
+    var points2 = [x, y, x + w, y, x + w, y + h, x, y + h]
+    return polygonPolygon(points, points2)
+}
+
+},{"./polygon-polygon":"../node_modules/intersects/polygon-polygon.js"}],"../node_modules/intersects/ellipse-line.js":[function(require,module,exports) {
+/**
+ * ellipse-line collision
+ * adapted from http://csharphelper.com/blog/2017/08/calculate-where-a-line-segment-and-an-ellipse-intersect-in-c/
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {number} rex radius-x of ellipse
+ * @param {number} rey radius-y of ellipse
+ * @param {number} x1 first point of line
+ * @param {number} y1 first point of line
+ * @param {number} x2 second point of line
+ * @param {number} y2 second point of line
+ */
+module.exports = function ellipseLine(xe, ye, rex, rey, x1, y1, x2, y2)
+{
+    x1 -= xe
+    x2 -= xe
+    y1 -= ye
+    y2 -= ye
+
+    var A = Math.pow(x2 - x1, 2) / rex / rex + Math.pow(y2 - y1, 2) / rey / rey
+    var B = 2 * x1 * (x2 - x1) / rex / rex + 2 * y1 * (y2 - y1) / rey / rey
+    var C = x1 * x1 / rex / rex + y1 * y1 / rey / rey - 1
+    var D = B * B - 4 * A * C
+    if (D === 0)
+    {
+        var t = -B / 2 / A
+        return t >= 0 && t <= 1
+    }
+    else if (D > 0)
+    {
+        var sqrt = Math.sqrt(D)
+        var t1 = (-B + sqrt) / 2 / A
+        var t2 = (-B - sqrt) / 2 / A
+        return (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1)
+    }
+    else
+    {
+        return false
+    }
+}
+},{}],"../node_modules/intersects/line-ellipse.js":[function(require,module,exports) {
+var ellipseLine = require('./ellipse-line')
+
+/**
+ * line-ellipse collision
+ * @param {number} x1 first point of line
+ * @param {number} y1 first point of line
+ * @param {number} x2 second point of line
+ * @param {number} y2 second point of line
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {number} rx radius-x of ellipse
+ * @param {number} ry radius-y of ellipse
+ */
+module.exports = function lineEllipse(x1, y1, x2, y2, xe, ye, rex, rey)
+{
+    return ellipseLine(xe, ye, rex, rey, x1, y1, x2, y2)
+}
+},{"./ellipse-line":"../node_modules/intersects/ellipse-line.js"}],"../node_modules/intersects/polygon-ellipse.js":[function(require,module,exports) {
+var polygonPoint = require('./polygon-point')
+var lineEllipse = require('./line-ellipse')
+
+/**
+ * polygon-ellipse collision
+ * @param {number[]} points [x1, y1, x2, y2, ... xn, yn] of polygon
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {number} rex radius-x of ellipse
+ * @param {number} rey radius-y of ellipse
+ */
+module.exports = function polygonEllipse(points, xe, ye, rex, rey)
+{
+    if (polygonPoint(points, xe, ye))
+    {
+        return true
+    }
+    var count = points.length
+    for (var i = 0; i < count - 2; i += 2)
+    {
+        if (lineEllipse(points[i], points[i + 1], points[i + 2], points[i + 3], xe, ye, rex, rey))
+        {
+            return true
+        }
+    }
+    return lineEllipse(points[0], points[1], points[count - 2], points[count - 1], xe, ye, rex, rey)
+}
+},{"./polygon-point":"../node_modules/intersects/polygon-point.js","./line-ellipse":"../node_modules/intersects/line-ellipse.js"}],"../node_modules/intersects/box-point.js":[function(require,module,exports) {
+'use strict'
+
+/**
+ * box-point collision
+ * @param {number} x1 top-left corner of box
+ * @param {number} y1 top-left corner of box
+ * @param {number} w1 width of box
+ * @param {number} h1 height of box
+ * @param {number} x2 of point
+ * @param {number} y2 of point
+ * @return {boolean}
+ */
+module.exports = function boxPoint(x1, y1, w1, h1, x2, y2)
+{
+    return x2 >= x1 && x2 <= x1 + w1 && y2 >= y1 && y2 <= y1 + h1
+}
+
+},{}],"../node_modules/intersects/box-box.js":[function(require,module,exports) {
+'use strict'
+
+/**
+ * box-box collision
+ * @param {number} x1 top-left corner of first box
+ * @param {number} y1 top-left corner of first box
+ * @param {number} w1 width of first box
+ * @param {number} h1 height of first box
+ * @param {number} x2 top-left corner of second box
+ * @param {number} y2 top-left corner of second box
+ * @param {number} w2 width of second box
+ * @param {number} h2 height of second box
+ */
+module.exports = function boxBox(x1, y1, w1, h1, x2, y2, w2, h2)
+{
+    return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+}
+
+},{}],"../node_modules/intersects/lineToPolygon.js":[function(require,module,exports) {
+'use strict'
+
+/**
+ * turns a line into a polygon using thickness
+ * @param {number} x1 first point of line
+ * @param {number} y1 first point of line
+ * @param {number} x2 second point of line
+ * @param {number} y2 second point of line
+ * @param {number} thickness of line
+ */
+module.exports = function lineToPolygon(x1, y1, x2, y2, thickness)
+{
+    const angle = Math.atan2(y2 - y1, x2 - x1) - Math.PI / 2
+    const half = thickness / 2
+    const cos = Math.cos(angle) * half
+    const sin = Math.sin(angle) * half
+    return [
+        x1 - cos, y1 - sin,
+        x2 - cos, y2 - sin,
+        x2 + cos, y2 + sin,
+        x1 + cos, y1 + sin
+    ]
+}
+},{}],"../node_modules/intersects/line-line.js":[function(require,module,exports) {
+'use strict'
+
+const lineToPolygon = require('./lineToPolygon')
+const polygonPolygon = require('./polygon-polygon')
+const linePolygon = require('./line-polygon')
+const lineToLine = require('./lineToLine')
+
+/**
+ * line-line collision
+ * from http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+ * @param {number} x1 first point in line 1
+ * @param {number} y1 first point in line 1
+ * @param {number} x2 second point in line 1
+ * @param {number} y2 second point in line 1
+ * @param {number} x3 first point in line 2
+ * @param {number} y3 first point in line 2
+ * @param {number} x4 second point in line 2
+ * @param {number} y4 second point in line 2
+ * @param {number} [thickness1] of line 1 (the line is centered in its thickness--see demo)
+ * @param {number} [thickness2] of line 2 (the line is centered in its thickness--see demo)
+ * @return {boolean}
+ */
+module.exports = function lineLine(x1, y1, x2, y2, x3, y3, x4, y4, thickness1, thickness2)
+{
+    if (thickness1 || thickness2)
+    {
+        return lineLineThickness(x1, y1, x2, y2, x3, y3, x4, y4, thickness1, thickness2)
+    }
+    else
+    {
+        return lineToLine(x1, y1, x2, y2, x3, y3, x4, y4)
+    }
+}
+
+function lineLineThickness(x1, y1, x2, y2, x3, y3, x4, y4, thickness1, thickness2)
+{
+    if (thickness1 && thickness2)
+    {
+        return polygonPolygon(lineToPolygon(x1, y1, x2, y2, thickness1), lineToPolygon(x3, y3, x4, y4, thickness2))
+    }
+    else if (thickness1)
+    {
+        return linePolygon(x3, y3, x4, y4, lineToPolygon(x1, y1, x2, y2, thickness1))
+    }
+    else if (thickness2)
+    {
+        return linePolygon(x1, y1, x2, y2, lineToPolygon(x3, y3, x4, y4, thickness1))
+    }
+}
+},{"./lineToPolygon":"../node_modules/intersects/lineToPolygon.js","./polygon-polygon":"../node_modules/intersects/polygon-polygon.js","./line-polygon":"../node_modules/intersects/line-polygon.js","./lineToLine":"../node_modules/intersects/lineToLine.js"}],"../node_modules/intersects/line-box.js":[function(require,module,exports) {
+'use strict'
+
+var boxPoint = require('./box-point')
+var lineLine = require('./line-line')
+
+/**
+ * line-box collision
+ number @param {number} x1 point 1 of line
+ number @param {number} y1 point 1 of line
+ number @param {number} x2 point 2 of line
+ number @param {number} y2 point 2 of line
+ number @param {number} xb top-left of box
+ number @param {number} yb top-left of box
+ number @param {number} wb width of box
+ number @param {number} hb height of box
+ */
+module.exports = function lineBox(x1, y1, x2, y2, xb, yb, wb, hb)
+{
+    if (boxPoint(xb, yb, wb, hb, x1, y1) || boxPoint(xb, yb, wb, hb, x2, y2))
+    {
+        return true
+    }
+    return lineLine(x1, y1, x2, y2, xb, yb, xb + wb, yb) ||
+        lineLine(x1, y1, x2, y2, xb + wb, yb, xb + wb, yb + hb) ||
+        lineLine(x1, y1, x2, y2, xb, yb + hb, xb + wb, yb + hb) ||
+        lineLine(x1, y1, x2, y2, xb, yb, xb, yb + hb)
+}
+
+},{"./box-point":"../node_modules/intersects/box-point.js","./line-line":"../node_modules/intersects/line-line.js"}],"../node_modules/intersects/box-line.js":[function(require,module,exports) {
+'use strict'
+
+var lineBox = require('./line-box')
+
+/**
+ * box-line collision
+ * @param {number} xb top-left corner of box
+ * @param {number} yb top-left corner of box
+ * @param {number} wb width of box
+ * @param {number} hb height of box
+ * @param {number} x1 first point of line
+ * @param {number} y1 first point of line
+ * @param {number} x2 second point of line
+ * @param {number} y2 second point of line
+ */
+module.exports = function boxLine(xb, yb, wb, hb, x1, y1, x2, y2)
+{
+    return lineBox(x1, y1, x2, y2, xb, yb, wb, hb)
+}
+
+},{"./line-box":"../node_modules/intersects/line-box.js"}],"../node_modules/intersects/box-polygon.js":[function(require,module,exports) {
+'use strict'
+
+var polygonBox = require('./polygon-box')
+
+/**
+ * box-polygon collision
+ * @param {number} xb top-left corner of box
+ * @param {number} yb top-left corner of box
+ * @param {number} wb width of box
+ * @param {number} hb height of box
+ * @param {number[]} points of polygon
+ */
+module.exports = function boxPolygon(xb, yb, wb, hb, points)
+{
+    return polygonBox(points, xb, yb, wb, hb)
+}
+
+},{"./polygon-box":"../node_modules/intersects/polygon-box.js"}],"../node_modules/intersects/ellipse-box.js":[function(require,module,exports) {
+var ellipseLine = require('./ellipse-line')
+var boxPoint = require('./box-point')
+
+/**
+ * ellipse-box (axis-oriented rectangle) collision
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {radius} rex radius-x of ellipse
+ * @param {radius} rey radius-y of ellipse
+ * @param {number} xb top-left corner of box
+ * @param {number} yb top-left corner of box
+ * @param {number} wb width of box
+ * @param {number} hb height of box
+ */
+module.exports = function ellipseBox(xe, ye, rex, rey, xb, yb, wb, hb)
+{
+    return boxPoint(xb, yb, wb, hb, xe, ye) ||
+        ellipseLine(xe, ye, rex, rey, xb, yb, xb + wb, yb) ||
+        ellipseLine(xe, ye, rex, rey, xb, yb + hb, xb + wb, yb + hb) ||
+        ellipseLine(xe, ye, rex, rey, xb, yb, xb, yb + hb) ||
+        ellipseLine(xe, ye, rex, rey, xb + wb, yb, xb + wb, yb + hb)
+}
+},{"./ellipse-line":"../node_modules/intersects/ellipse-line.js","./box-point":"../node_modules/intersects/box-point.js"}],"../node_modules/intersects/box-ellipse.js":[function(require,module,exports) {
+var ellipseBox = require('./ellipse-box')
+
+/**
+ * box-ellipse (axis-oriented rectangle) collision
+ * @param {number} xb top-left corner of rectangle
+ * @param {number} yb top-left corner of rectangle
+ * @param {number} wb width of rectangle
+ * @param {number} hb height of rectangle
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {radius} rex radius-x of ellipse
+ * @param {radius} rey radius-y of ellipse
+ */
+module.exports = function boxEllipse(xb, yb, wb, hb, xe, ye, rex, rey)
+{
+    return ellipseBox(xe, ye, rex, rey, xb, yb, wb, hb)
+}
+},{"./ellipse-box":"../node_modules/intersects/ellipse-box.js"}],"../node_modules/intersects/box-circleOutline.js":[function(require,module,exports) {
+var circleOutlineBox = require('./circleOutline-box')
+
+/**
+ * circleOutline-box (axis-aligned) collision
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} x top-left corner of box
+ * @param {number} y top-left corner of box
+ * @param {number} width of box
+ * @param {number} height of box
+ * @param {number} thickness of circle outline
+ */
+module.exports = function boxCircleOutline(x, y, width, height, xc, yc, rc, thickness)
+{
+    return circleOutlineBox(xc, yc, rc, x, y, width, height, thickness)
+}
+},{"./circleOutline-box":"../node_modules/intersects/circleOutline-box.js"}],"../node_modules/intersects/point-box.js":[function(require,module,exports) {
+'use strict'
+
+var boxPoint = require('./box-point')
+
+/**
+ * point-box collision
+ * @param {number} x1 point
+ * @param {number} y1 point
+ * @param {number} xb top-left corner of box
+ * @param {number} yb top-left corner of box
+ * @param {number} wb width of box
+ * @param {number} hb height of box
+ * @return {boolean}
+ */
+module.exports = function pointBox(x1, y1, xb, yb, wb, hb)
+{
+    return boxPoint(xb, yb, wb, hb, x1, y1)
+}
+
+},{"./box-point":"../node_modules/intersects/box-point.js"}],"../node_modules/intersects/point-polygon.js":[function(require,module,exports) {
+'use strict'
+
+var polygonPoint = require('./polygon-point')
+
+/**
+ * polygon-point collision
+ * based on https://stackoverflow.com/a/17490923/1955997
+ * @param {number} x1
+ * @param {number} y1
+ * @param {number[]} points
+ * @param {number} [tolerance=1] maximum distance of point to polygon's edges that triggers collision (see pointLine)
+ * @return {boolean}
+ */
+module.exports = function pointPolygon(x1, y1, points, tolerance)
+{
+    return polygonPoint(points, x1, y1, tolerance)
+}
+
+},{"./polygon-point":"../node_modules/intersects/polygon-point.js"}],"../node_modules/intersects/point-circle.js":[function(require,module,exports) {
+'use strict'
+
+var circlePoint = require('./circle-point')
+
+module.exports = function pointCircle(x1, y1, xc, yc, rc)
+{
+    return circlePoint(xc, yc, rc, x1, y1)
+}
+
+},{"./circle-point":"../node_modules/intersects/circle-point.js"}],"../node_modules/intersects/point-line.js":[function(require,module,exports) {
+'use strict'
+
+var linePoint = require('./line-point')
+
+/**
+ * point-line collision
+ * @param {number} xp point
+ * @param {number} yp point
+ * @param {number} x1 first point in line
+ * @param {number} y1 first point in line
+ * @param {number} x2 second point in line
+ * @param {number} y2 second point in line
+ * @return {boolean}
+ */
+module.exports = function pointLine(xp, yp, x1, y1, x2, y2)
+{
+    return linePoint(x1, y1, x2, y2, xp, yp)
+}
+
+},{"./line-point":"../node_modules/intersects/line-point.js"}],"../node_modules/intersects/ellipse-point.js":[function(require,module,exports) {
+/**
+ * ellipse-point collision
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {radius} rex radius-x of ellipse
+ * @param {radius} rey radius-y of ellipse
+ * @param {number} x1 point
+ * @param {number} y1 point
+ * @return {boolean}
+ */
+module.exports = function ellipsePoint(xe, ye, rex, rey, x1, y1)
+{
+    var x = Math.pow(x1 - xe, 2) / (rex * rex)
+    var y = Math.pow(y1 - ye, 2) / (rey * rey)
+    return x + y <= 1
+}
+
+},{}],"../node_modules/intersects/point-ellipse.js":[function(require,module,exports) {
+var ellipsePoint = require('./ellipse-point')
+
+/**
+ * point-ellipse collision
+ * @param {number} x1 point
+ * @param {number} y1 point
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {radius} rex radius-x of ellipse
+ * @param {radius} rey radius-y of ellipse
+ * @return {boolean}
+ */
+module.exports = function pointEllipse(x1, y1, xe, ye, rex, rey)
+{
+    return ellipsePoint(xe, ye, rex, rey, x1, y1)
+}
+},{"./ellipse-point":"../node_modules/intersects/ellipse-point.js"}],"../node_modules/intersects/point-circleOutline.js":[function(require,module,exports) {
+var circleOutlinePoint = require('./circleOutline-point')
+
+/**
+ * point-circleOutline collision
+ * @param {number} x of point
+ * @param {number} y of point
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} thickness of circle outline
+ */
+module.exports = function pointCircleOutline(x, y, xc, yc, rc, thickness)
+{
+    return circleOutlinePoint(x, y, xc, yc, rc, thickness)
+}
+},{"./circleOutline-point":"../node_modules/intersects/circleOutline-point.js"}],"../node_modules/intersects/line-circleOutline.js":[function(require,module,exports) {
+var circleOutlineLine = require('./circleOutline-line')
+
+/**
+ * line-circleOutline collision
+ * @param {number} x1 of point 1 of line
+ * @param {number} y1 of point 1 of line
+ * @param {number} x2 of point 2 of line
+ * @param {number} y2 of point 2 of line
+ * @param {number} xc center of circle
+ * @param {number} yc center of circle
+ * @param {radius} rc radius of circle
+ * @param {number} thickness of circle outline
+ */
+module.exports = function lineCircleOutline(x1, y1, x2, y2, xc, yc, rc, thickness)
+{
+    return circleOutlineLine(xc, yc, rc, x1, y1, x2, y2, thickness)
+}
+},{"./circleOutline-line":"../node_modules/intersects/circleOutline-line.js"}],"../node_modules/intersects/ellipse-ellipse.js":[function(require,module,exports) {
+var ellipseHelper = require('./ellipse-helper')
+
+/**
+ * ellipse-ellipse collision
+ * @param {number} x1 center of ellipse 1
+ * @param {number} y1 center of ellipse 1
+ * @param {number} r1x radius-x of ellipse 1
+ * @param {number} r1y radius-y of ellipse 1
+ * @param {number} x2 center of ellipse 2
+ * @param {number} y2 center of ellipse 2
+ * @param {number} r2x radius of ellipse 2
+ * @param {number} r2y radius of ellipse 2
+ * @return {boolean}
+ */
+module.exports = function ellipseEllipse(x1, y1, r1x, r1y, x2, y2, r2x, r2y)
+{
+    return ellipseHelper.ellipseEllipse(x1, y1, r1x, r1y, x2, y2, r2x, r2y)
+}
+
+},{"./ellipse-helper":"../node_modules/intersects/ellipse-helper.js"}],"../node_modules/intersects/ellipse-polygon.js":[function(require,module,exports) {
+var polygonEllipse = require('./polygon-ellipse')
+
+/**
+ * ellipse-polygon collision
+ * @param {number} xe center of ellipse
+ * @param {number} ye center of ellipse
+ * @param {number} rex radius-x of ellipse
+ * @param {number} rey radius-y of ellipse
+ * @param {number[]} points [x1, y1, x2, y2, ... xn, yn] of polygon
+ */
+module.exports = function ellipsePolygon(xe, ye, rex, rey, points)
+{
+    return polygonEllipse(points, xe, ye, rex, rey)
+}
+},{"./polygon-ellipse":"../node_modules/intersects/polygon-ellipse.js"}],"../node_modules/intersects/index.js":[function(require,module,exports) {
+module.exports = {
+    circlePoint: require('./circle-point'),
+    circleCircle: require('./circle-circle'),
+    circleLine: require('./circle-line'),
+    circleBox: require('./circle-box'),
+    circlePolygon: require('./circle-polygon'),
+    circleEllipse: require('./circle-ellipse'),
+    // circleCircleOutline: require('./circle-circleOutline'),
+
+    circleOutlineBox: require('./circleOutline-box'),
+    circleOutlineLine: require('./circleOutline-line'),
+    circleOutlinePoint: require('./circleOutline-point'),
+    // circleOutlineCircle: require('./circleOutline-circle'),
+
+    polygonPoint: require('./polygon-point'),
+    polygonLine: require('./polygon-line'),
+    polygonPolygon: require('./polygon-polygon'),
+    polygonBox: require('./polygon-box'),
+    polygonCircle: require('./polygon-circle'),
+    polygonEllipse: require('./polygon-ellipse'),
+
+    boxPoint: require('./box-point'),
+    boxBox: require('./box-box'),
+    boxLine: require('./box-line'),
+    boxPolygon: require('./box-polygon'),
+    boxCircle: require('./box-circle'),
+    boxEllipse: require('./box-ellipse'),
+    boxCircleOutline: require('./box-circleOutline'),
+
+    pointBox: require('./point-box'),
+    pointPolygon: require('./point-polygon'),
+    pointCircle: require('./point-circle'),
+    pointLine: require('./point-line'),
+    pointEllipse: require('./point-ellipse'),
+    pointCircleOutline: require('./point-circleOutline'),
+
+    lineLine: require('./line-line'),
+    lineBox: require('./line-box'),
+    linePolygon: require('./line-polygon'),
+    lineCircle: require('./line-circle'),
+    linePoint: require('./line-point'),
+    lineEllipse: require('./line-ellipse'),
+    lineCircleOutline: require('./line-circleOutline'),
+
+    ellipsePoint: require('./ellipse-point'),
+    ellipseLine: require('./ellipse-line'),
+    ellipseBox: require('./ellipse-box'),
+    ellipseCircle: require('./ellipse-circle'),
+    ellipseEllipse: require('./ellipse-ellipse'),
+    ellipsePolygon: require('./ellipse-polygon')
+}
+},{"./circle-point":"../node_modules/intersects/circle-point.js","./circle-circle":"../node_modules/intersects/circle-circle.js","./circle-line":"../node_modules/intersects/circle-line.js","./circle-box":"../node_modules/intersects/circle-box.js","./circle-polygon":"../node_modules/intersects/circle-polygon.js","./circle-ellipse":"../node_modules/intersects/circle-ellipse.js","./circleOutline-box":"../node_modules/intersects/circleOutline-box.js","./circleOutline-line":"../node_modules/intersects/circleOutline-line.js","./circleOutline-point":"../node_modules/intersects/circleOutline-point.js","./polygon-point":"../node_modules/intersects/polygon-point.js","./polygon-line":"../node_modules/intersects/polygon-line.js","./polygon-polygon":"../node_modules/intersects/polygon-polygon.js","./polygon-box":"../node_modules/intersects/polygon-box.js","./polygon-circle":"../node_modules/intersects/polygon-circle.js","./polygon-ellipse":"../node_modules/intersects/polygon-ellipse.js","./box-point":"../node_modules/intersects/box-point.js","./box-box":"../node_modules/intersects/box-box.js","./box-line":"../node_modules/intersects/box-line.js","./box-polygon":"../node_modules/intersects/box-polygon.js","./box-circle":"../node_modules/intersects/box-circle.js","./box-ellipse":"../node_modules/intersects/box-ellipse.js","./box-circleOutline":"../node_modules/intersects/box-circleOutline.js","./point-box":"../node_modules/intersects/point-box.js","./point-polygon":"../node_modules/intersects/point-polygon.js","./point-circle":"../node_modules/intersects/point-circle.js","./point-line":"../node_modules/intersects/point-line.js","./point-ellipse":"../node_modules/intersects/point-ellipse.js","./point-circleOutline":"../node_modules/intersects/point-circleOutline.js","./line-line":"../node_modules/intersects/line-line.js","./line-box":"../node_modules/intersects/line-box.js","./line-polygon":"../node_modules/intersects/line-polygon.js","./line-circle":"../node_modules/intersects/line-circle.js","./line-point":"../node_modules/intersects/line-point.js","./line-ellipse":"../node_modules/intersects/line-ellipse.js","./line-circleOutline":"../node_modules/intersects/line-circleOutline.js","./ellipse-point":"../node_modules/intersects/ellipse-point.js","./ellipse-line":"../node_modules/intersects/ellipse-line.js","./ellipse-box":"../node_modules/intersects/ellipse-box.js","./ellipse-circle":"../node_modules/intersects/ellipse-circle.js","./ellipse-ellipse":"../node_modules/intersects/ellipse-ellipse.js","./ellipse-polygon":"../node_modules/intersects/ellipse-polygon.js"}],"components/objects/math/XY.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -50025,12 +51198,16 @@ var XY = /*#__PURE__*/function (_PIXI$Point) {
   var _super = _createSuper(XY);
 
   function XY() {
+    var _this;
+
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
     _classCallCheck(this, XY);
 
-    return _super.call(this, x, y);
+    _this = _super.call(this, x, y);
+    _this._shapeName = "XY";
+    return _this;
   }
 
   _createClass(XY, [{
@@ -50112,6 +51289,11 @@ var XY = /*#__PURE__*/function (_PIXI$Point) {
       var x = args[0],
           y = args[1];
       return this.set(this.x % x, this.y % y);
+    }
+  }, {
+    key: "toArray",
+    value: function toArray() {
+      return [this.x, this.y];
     }
   }], [{
     key: "from",
@@ -50201,6 +51383,8 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   var _super = _createSuper(Rect);
 
   function Rect() {
+    var _this;
+
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
     var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
     var w = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
@@ -50208,7 +51392,9 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
 
     _classCallCheck(this, Rect);
 
-    return _super.call(this, x, y, w, h);
+    _this = _super.call(this, x, y, w, h);
+    _this._shapeName = "Rect";
+    return _this;
   }
 
   _createClass(Rect, [{
@@ -50394,6 +51580,11 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
           h = args[1];
       return this.set(this.x, this.y, this.width % w, this.height % h);
     }
+  }, {
+    key: "toArray",
+    value: function toArray() {
+      return [this.x, this.y, this.width, this.height];
+    }
   }], [{
     key: "from",
     value: function from(p) {
@@ -50412,8 +51603,42 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
 }(PIXI.Rectangle);
 
 exports.default = Rect;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/math/index.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/math/Shape.ts":[function(require,module,exports) {
 "use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 var __importDefault = this && this.__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
@@ -50424,7 +51649,387 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Rect = exports.XY = void 0;
+exports.Polygon = exports.Line = exports.Circle = void 0;
+
+var Rect_1 = __importDefault(require("./Rect"));
+
+var XY_1 = __importDefault(require("./XY"));
+
+var Circle = /*#__PURE__*/function (_Rect_1$default) {
+  _inherits(Circle, _Rect_1$default);
+
+  var _super = _createSuper(Circle);
+
+  function Circle() {
+    var _this;
+
+    _classCallCheck(this, Circle);
+
+    if (arguments.length === 0) {
+      var rect = arguments.length <= 0 ? undefined : arguments[0];
+      _this = _super.call(this, rect.x, rect.y, rect.width, rect.height);
+    } else {
+      var xy = arguments.length <= 0 ? undefined : arguments[0];
+      var r = arguments.length <= 1 ? undefined : arguments[1];
+      _this = _super.call(this, xy.x, xy.y, r, r);
+    }
+
+    _this._shapeName = "Circle";
+    return _possibleConstructorReturn(_this);
+  }
+
+  _createClass(Circle, [{
+    key: "isEllipse",
+    value: function isEllipse() {
+      return this.width !== this.height;
+    }
+  }, {
+    key: "getRadius",
+    value: function getRadius() {
+      return new XY_1.default(this.width, this.height);
+    }
+  }]);
+
+  return Circle;
+}(Rect_1.default);
+
+exports.Circle = Circle;
+
+var Line = /*#__PURE__*/function () {
+  function Line(a, b) {
+    _classCallCheck(this, Line);
+
+    this._shapeName = "Line";
+    this.a = a;
+    this.b = b;
+  }
+
+  _createClass(Line, [{
+    key: "add",
+    value: function add() {
+      var a = this.a,
+          b = this.b;
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        [a, b].forEach(function (l) {
+          return l.add(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        [a, b].forEach(function (l) {
+          return l.add(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "sub",
+    value: function sub() {
+      var a = this.a,
+          b = this.b;
+
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        [a, b].forEach(function (l) {
+          return l.sub(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        [a, b].forEach(function (l) {
+          return l.sub(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "mul",
+    value: function mul() {
+      var a = this.a,
+          b = this.b;
+
+      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        [a, b].forEach(function (l) {
+          return l.mul(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        [a, b].forEach(function (l) {
+          return l.mul(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "div",
+    value: function div() {
+      var a = this.a,
+          b = this.b;
+
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        [a, b].forEach(function (l) {
+          return l.div(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        [a, b].forEach(function (l) {
+          return l.div(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "mod",
+    value: function mod() {
+      var a = this.a,
+          b = this.b;
+
+      for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        [a, b].forEach(function (l) {
+          return l.mod(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        [a, b].forEach(function (l) {
+          return l.mod(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "toArray",
+    value: function toArray() {
+      return [this.a.x, this.a.y, this.b.x, this.b.y];
+    }
+  }]);
+
+  return Line;
+}();
+
+exports.Line = Line;
+
+var Polygon = /*#__PURE__*/function () {
+  function Polygon(points) {
+    _classCallCheck(this, Polygon);
+
+    this._shapeName = "Polygon";
+    this.points = points;
+  }
+
+  _createClass(Polygon, [{
+    key: "add",
+    value: function add() {
+      for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+        args[_key6] = arguments[_key6];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        this.points.forEach(function (p) {
+          return p.add(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        this.points.forEach(function (p) {
+          return p.add(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "sub",
+    value: function sub() {
+      for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+        args[_key7] = arguments[_key7];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        this.points.forEach(function (p) {
+          return p.sub(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        this.points.forEach(function (p) {
+          return p.sub(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "mul",
+    value: function mul() {
+      for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+        args[_key8] = arguments[_key8];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        this.points.forEach(function (p) {
+          return p.mul(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        this.points.forEach(function (p) {
+          return p.mul(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "div",
+    value: function div() {
+      for (var _len9 = arguments.length, args = new Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+        args[_key9] = arguments[_key9];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        this.points.forEach(function (p) {
+          return p.div(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        this.points.forEach(function (p) {
+          return p.div(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "mod",
+    value: function mod() {
+      for (var _len10 = arguments.length, args = new Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+        args[_key10] = arguments[_key10];
+      }
+
+      if (args.length === 1) {
+        var v = args[0];
+        this.points.forEach(function (p) {
+          return p.mod(v);
+        });
+      } else {
+        var x = args[0],
+            y = args[1];
+        this.points.forEach(function (p) {
+          return p.mod(x, y);
+        });
+      }
+
+      return this;
+    }
+  }, {
+    key: "getPoints",
+    value: function getPoints() {
+      return this.points;
+    }
+  }, {
+    key: "toArray",
+    value: function toArray() {
+      return this.points.reduce(function (p, c) {
+        return [].concat(_toConsumableArray(p), [c.x, c.y]);
+      }, []);
+    }
+  }]);
+
+  return Polygon;
+}();
+
+exports.Polygon = Polygon;
+},{"./Rect":"components/objects/math/Rect.ts","./XY":"components/objects/math/XY.ts"}],"components/objects/math/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Shape = exports.Rect = exports.XY = void 0;
 
 var XY_1 = __importDefault(require("./XY"));
 
@@ -50433,7 +52038,191 @@ exports.XY = XY_1.default;
 var Rect_1 = __importDefault(require("./Rect"));
 
 exports.Rect = Rect_1.default;
-},{"./XY":"components/objects/math/XY.ts","./Rect":"components/objects/math/Rect.ts"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
+
+var Shape = __importStar(require("./Shape"));
+
+exports.Shape = Shape;
+},{"./XY":"components/objects/math/XY.ts","./Rect":"components/objects/math/Rect.ts","./Shape":"components/objects/math/Shape.ts"}],"utils/math.ts":[function(require,module,exports) {
+"use strict";
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.hit = exports.lerp = void 0;
+
+var ts_easing_1 = require("ts-easing");
+
+var col = __importStar(require("intersects"));
+
+var math_1 = require("../components/objects/math");
+
+var easing = Object.assign(Object.assign({}, ts_easing_1.easing), {
+  inElastic: function inElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * (2 * Math.PI / 3));
+  },
+  outElastic: function outElastic(x) {
+    return x === 0 ? 0 : x === 1 ? 1 : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+  },
+  inOutElastic: function inOutElastic(x) {
+    var a = 2 * Math.PI / 4.5;
+    return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * a)) / 2 : Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * a) / 2 + 1;
+  },
+  inBack: function inBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return b * x * x * x - a * x * x;
+  },
+  outBack: function outBack(x) {
+    var a = 1.70158;
+    var b = a + 1;
+    return 1 + b * Math.pow(x - 1, 3) + a * Math.pow(x - 1, 2);
+  },
+  inOutBack: function inOutBack(x) {
+    var a = 1.70158;
+    var b = a * 1.525;
+    return x < 0.5 ? Math.pow(2 * x, 2) * ((b + 1) * 2 * x - b) / 2 : (Math.pow(2 * x - 2, 2) * ((b + 1) * (x * 2 - 2) + b) + 2) / 2;
+  },
+  inBounce: function inBounce(x) {
+    return 1 - easing.outBounce(1 - x);
+  },
+  outBounce: function outBounce(x) {
+    var a = 7.5625;
+    var b = 2.75;
+
+    if (x < 1 / b) {
+      return a * x * x;
+    } else if (x < 2 / b) {
+      return a * (x -= 1.5 / b) * x + 0.75;
+    } else if (x < 2.5 / b) {
+      return a * (x -= 2.25 / b) * x + 0.9375;
+    } else {
+      return a * (x -= 2.625 / b) * x + 0.984375;
+    }
+  },
+  inOutBounce: function inOutBounce(x) {
+    return x < 0.5 ? (1 - easing.outBounce(1 - 2 * x)) / 2 : (1 + easing.outBounce(2 * x - 1)) / 2;
+  }
+});
+
+var lerp = function lerp(ease, a, b, x) {
+  var f = easing[ease];
+  var d = b - a;
+  var t = f(0 > x ? 0 : 1 < x ? 1 : x);
+  var r = a + t * d;
+  return r;
+};
+
+exports.lerp = lerp;
+
+var hit = function hit(a, b) {
+  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+  if (a instanceof math_1.Rect) {
+    var p = a.toArray();
+    if (b._shapeName === "Rect") return col.boxBox.apply(col, _toConsumableArray(p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Circle") return col.boxEllipse.apply(col, _toConsumableArray(p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Line") return col.boxLine.apply(col, _toConsumableArray(p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "XY") return col.boxPoint.apply(col, _toConsumableArray(p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Polygon") return col.boxPolygon.apply(col, _toConsumableArray(p).concat([b.toArray()]));
+  }
+
+  if (a instanceof math_1.Shape.Circle) {
+    var _p = a.toArray();
+
+    if (b._shapeName === "Rect") return col.ellipseBox.apply(col, _toConsumableArray(_p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Circle") return col.ellipseEllipse.apply(col, _toConsumableArray(_p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Line") return col.ellipseLine.apply(col, _toConsumableArray(_p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "XY") return col.ellipsePoint.apply(col, _toConsumableArray(_p).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Polygon") return col.ellipsePolygon.apply(col, _toConsumableArray(_p).concat([b.toArray()]));
+  }
+
+  if (a instanceof math_1.Shape.Line) {
+    var _p2 = a.toArray();
+
+    if (b._shapeName === "Rect") return col.lineBox.apply(col, _toConsumableArray(_p2).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Circle") return col.lineEllipse.apply(col, _toConsumableArray(_p2).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Line") return col.lineLine.apply(col, _toConsumableArray(_p2).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "XY") return col.linePoint.apply(col, _toConsumableArray(_p2).concat(_toConsumableArray(b.toArray()), [tolerance]));
+    if (b._shapeName === "Polygon") col.linePolygon.apply(col, _toConsumableArray(_p2).concat([b.toArray(), tolerance]));
+  }
+
+  if (a instanceof math_1.XY) {
+    var _p3 = a.toArray();
+
+    if (b._shapeName === "Rect") return col.pointBox.apply(col, _toConsumableArray(_p3).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Circle") return col.pointEllipse.apply(col, _toConsumableArray(_p3).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Line") return col.pointLine.apply(col, _toConsumableArray(_p3).concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "XY") col.circleCircle.apply(col, _toConsumableArray(_p3).concat([tolerance], _toConsumableArray(b.toArray()), [tolerance]));
+    if (b._shapeName === "Polygon") col.pointPolygon.apply(col, _toConsumableArray(_p3).concat([b.toArray(), tolerance]));
+  }
+
+  if (a instanceof math_1.Shape.Polygon) {
+    var _p4 = a.toArray();
+
+    if (b._shapeName === "Rect") return col.polygonBox.apply(col, [_p4].concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Circle") return col.polygonEllipse.apply(col, [_p4].concat(_toConsumableArray(b.toArray())));
+    if (b._shapeName === "Line") return col.polygonLine.apply(col, [_p4].concat(_toConsumableArray(b.toArray()), [tolerance]));
+    if (b._shapeName === "XY") return col.polygonPoint.apply(col, [_p4].concat(_toConsumableArray(b.toArray()), [tolerance]));
+    if (b._shapeName === "Polygon") return col.polygonPolygon(_p4, b.toArray());
+  }
+
+  throw new Error("存在しない Shape です");
+};
+
+exports.hit = hit;
+},{"ts-easing":"../node_modules/ts-easing/lib/index.js","intersects":"../node_modules/intersects/index.js","../components/objects/math":"components/objects/math/index.ts"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -50585,7 +52374,7 @@ _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMa
 }, _TouchManager_onPointerDown = function _TouchManager_onPointerDown(e) {
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
-  if (!(0, math_1.inside)($app.screenRect(), math_2.XY.from(e.data.global))) return;
+  if (!(0, math_1.hit)($app.screenRect(), math_2.XY.from(e.data.global))) return;
 
   if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") === undefined) {
     __classPrivateFieldSet(this, _TouchManager_touchTime, 0, "f");
@@ -50597,7 +52386,7 @@ _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMa
 }, _TouchManager_onPointerMove = function _TouchManager_onPointerMove(e) {
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
-  if (!(0, math_1.inside)($app.screenRect(), math_2.XY.from(e.data.global))) {
+  if (!(0, math_1.hit)($app.screenRect(), math_2.XY.from(e.data.global))) {
     console.log(111);
 
     __classPrivateFieldSet(this, _TouchManager_touchTime, undefined, "f");
@@ -51570,7 +53359,7 @@ _MouseManager_mouseState = new WeakMap(), _MouseManager_instances = new WeakSet(
     __classPrivateFieldGet(this, _MouseManager_mouseState, "f").delete("WHEEL_UP");
   }
 }, _MouseManager_onMouseDown = function _MouseManager_onMouseDown(e) {
-  if (!(0, math_1.inside)($app.screenRect(), this.getScreenPosition())) return;
+  if (!(0, math_1.hit)($app.screenRect(), this.getScreenPosition())) return;
 
   if (e.button === 0) {
     if (__classPrivateFieldGet(this, _MouseManager_mouseState, "f").get("LEFT_DOWN") === undefined) {
@@ -51859,7 +53648,7 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
   }, {
     key: "getRect",
     value: function getRect() {
-      return new math_1.Rect(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + this.width, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + this.height);
+      return new math_1.Rect(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y, this.width, this.height);
     }
   }, {
     key: "getPosition",
@@ -59339,6 +61128,8 @@ var PhysicsSprite_1 = require("../../components/objects/PhysicsSprite");
 
 var math_1 = require("../../components/objects/math");
 
+var math_2 = require("../../utils/math");
+
 exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
 
@@ -59356,14 +61147,17 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
     }));
 
     _this.player.setDelta(function () {
-      return new math_1.XY(1, 1);
+      return new math_1.XY(Math.random() * 5, Math.random() * 5);
     });
 
-    _this.bounds = [new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
-      position: new math_1.XY(200, 200)
-    })].map(function (x) {
-      return _this.spawn(x);
-    });
+    _this.bounds = {
+      top: new math_1.Rect(0, -100, 320, 100),
+      bottom: new math_1.Rect(0, 240, 320, 100),
+      left: new math_1.Rect(-100, 0, 100, 240),
+      right: new math_1.Rect(320, 0, 100, 240)
+    }; // new PhysicsSprite(new Asset(Cloud).toTexture(), {
+    //   position: new XY(200, 200),
+    // }),
 
     _this.ready();
 
@@ -59389,11 +61183,44 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                       while (1) {
                         switch (_context.prev = _context.next) {
                           case 0:
-                            this.updatePhysics(); // if(this.player.getRect().bottom >= $app.screenRect().bottom){
+                            this.updatePhysics();
+
+                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.top)) {
+                              this.player.setDelta(function (_ref) {
+                                var x = _ref.x,
+                                    y = _ref.y;
+                                return new math_1.XY(x, -y);
+                              });
+                            }
+
+                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.bottom)) {
+                              this.player.setDelta(function (_ref2) {
+                                var x = _ref2.x,
+                                    y = _ref2.y;
+                                return new math_1.XY(x, -y);
+                              });
+                            }
+
+                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.left)) {
+                              this.player.setDelta(function (_ref3) {
+                                var x = _ref3.x,
+                                    y = _ref3.y;
+                                return new math_1.XY(-x, y);
+                              });
+                            }
+
+                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.right)) {
+                              this.player.setDelta(function (_ref4) {
+                                var x = _ref4.x,
+                                    y = _ref4.y;
+                                return new math_1.XY(-x, y);
+                              });
+                            } // if(this.player.getRect().bottom >= $app.screenRect().bottom){
                             //   this.player.setPosition(({x,y})=>new XY(x,))
                             // }
 
-                          case 1:
+
+                          case 5:
                           case "end":
                             return _context.stop();
                         }
@@ -59414,7 +61241,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-},{"../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts","../../components/objects/math":"components/objects/math/index.ts"}],"index.ts":[function(require,module,exports) {
+},{"../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts","../../components/objects/math":"components/objects/math/index.ts","../../utils/math":"utils/math.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

@@ -1,5 +1,6 @@
 import { easing as tsEasing } from "ts-easing";
-import { Rect, XY } from "../components/objects/math";
+import * as col from "intersects";
+import { Rect, Shape, Shapes, XY } from "../components/objects/math";
 
 const easing = {
   ...tsEasing,
@@ -78,11 +79,71 @@ export const lerp = (ease: EasingType, a: number, b: number, x: number) => {
   return r;
 };
 
-export const inside = (rect: Rect, point: XY) => {
-  return (
-    rect.x <= point.x &&
-    point.x < rect.x + rect.width &&
-    rect.y <= point.y &&
-    point.y < rect.y + rect.height
-  );
+export const hit = (a: Shapes, b: Shapes, tolerance: number = 1) => {
+  if (a instanceof Rect) {
+    const p = a.toArray();
+    if (b._shapeName === "Rect")
+      return col.boxBox(...p, ...(b as Rect).toArray());
+    if (b._shapeName === "Circle")
+      return col.boxEllipse(...p, ...(b as Shape.Circle).toArray());
+    if (b._shapeName === "Line")
+      return col.boxLine(...p, ...(b as Shape.Line).toArray());
+    if (b._shapeName === "XY")
+      return col.boxPoint(...p, ...(b as XY).toArray());
+    if (b._shapeName === "Polygon")
+      return col.boxPolygon(...p, (b as Shape.Polygon).toArray());
+  }
+  if (a instanceof Shape.Circle) {
+    const p = a.toArray();
+    if (b._shapeName === "Rect")
+      return col.ellipseBox(...p, ...(b as Rect).toArray());
+    if (b._shapeName === "Circle")
+      return col.ellipseEllipse(...p, ...(b as Shape.Circle).toArray());
+    if (b._shapeName === "Line")
+      return col.ellipseLine(...p, ...(b as Shape.Line).toArray());
+    if (b._shapeName === "XY")
+      return col.ellipsePoint(...p, ...(b as XY).toArray());
+    if (b._shapeName === "Polygon")
+      return col.ellipsePolygon(...p, (b as Shape.Polygon).toArray());
+  }
+  if (a instanceof Shape.Line) {
+    const p = a.toArray();
+    if (b._shapeName === "Rect")
+      return col.lineBox(...p, ...(b as Rect).toArray());
+    if (b._shapeName === "Circle")
+      return col.lineEllipse(...p, ...(b as Shape.Circle).toArray());
+    if (b._shapeName === "Line")
+      return col.lineLine(...p, ...(b as Shape.Line).toArray());
+    if (b._shapeName === "XY")
+      return col.linePoint(...p, ...(b as XY).toArray(), tolerance);
+    if (b._shapeName === "Polygon")
+      col.linePolygon(...p, b.toArray(), tolerance);
+  }
+  if (a instanceof XY) {
+    const p = a.toArray();
+    if (b._shapeName === "Rect")
+      return col.pointBox(...p, ...(b as Rect).toArray());
+    if (b._shapeName === "Circle")
+      return col.pointEllipse(...p, ...(b as Shape.Circle).toArray());
+    if (b._shapeName === "Line")
+      return col.pointLine(...p, ...(b as Shape.Line).toArray());
+    if (b._shapeName === "XY")
+      col.circleCircle(...p, tolerance, ...(b as XY).toArray(), tolerance);
+    if (b._shapeName === "Polygon")
+      col.pointPolygon(...p, (b as Shape.Polygon).toArray(), tolerance);
+  }
+  if (a instanceof Shape.Polygon) {
+    const p = a.toArray();
+    if (b._shapeName === "Rect")
+      return col.polygonBox(p, ...(b as Rect).toArray());
+    if (b._shapeName === "Circle")
+      return col.polygonEllipse(p, ...(b as Shape.Circle).toArray());
+    if (b._shapeName === "Line")
+      return col.polygonLine(p, ...(b as Shape.Line).toArray(), tolerance);
+    if (b._shapeName === "XY")
+      return col.polygonPoint(p, ...(b as XY).toArray(), tolerance);
+    if (b._shapeName === "Polygon")
+      return col.polygonPolygon(p, (b as Shape.Polygon).toArray());
+  }
+  throw new Error("存在しない Shape です");
 };

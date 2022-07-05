@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { inside } from "../../utils/math";
+import { hit } from "../../utils/math";
 import { XY } from "../objects/math";
 
 /**
@@ -35,7 +35,7 @@ export class TouchManager {
   }
   #onPointerDown(e: PIXI.InteractionEvent) {
     this.#updateTouchData(e);
-    if (!inside($app.screenRect(), XY.from(e.data.global))) return;
+    if (!hit($app.screenRect(), XY.from(e.data.global))) return;
     if (this.#touchTime === undefined) {
       this.#touchTime = 0;
     }
@@ -46,7 +46,7 @@ export class TouchManager {
   }
   #onPointerMove(e: PIXI.InteractionEvent) {
     this.#updateTouchData(e);
-    if (!inside($app.screenRect(), XY.from(e.data.global))) {
+    if (!hit($app.screenRect(), XY.from(e.data.global))) {
       console.log(111);
       this.#touchTime = undefined;
     }

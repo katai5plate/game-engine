@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Rect, XY } from "./math";
+import { Rect, Shape, XY } from "./math";
 
 export class PhysicsSprite extends PIXI.Sprite {
   #position: XY;
@@ -25,8 +25,8 @@ export class PhysicsSprite extends PIXI.Sprite {
     return new Rect(
       this.#position.x,
       this.#position.y,
-      this.#position.x + this.width,
-      this.#position.y + this.height
+      this.width,
+      this.height
     );
   }
   getPosition() {

@@ -1,4 +1,4 @@
-import { inside } from "../../utils/math";
+import { hit } from "../../utils/math";
 
 type MouseValues =
   | "LEFT_DOWN"
@@ -42,7 +42,7 @@ export class MouseManager {
     }
   }
   #onMouseDown(e: MouseEvent) {
-    if (!inside($app.screenRect(), this.getScreenPosition())) return;
+    if (!hit($app.screenRect(), this.getScreenPosition())) return;
     if (e.button === 0) {
       if (this.#mouseState.get("LEFT_DOWN") === undefined) {
         this.#mouseState.set("LEFT_DOWN", 0);
