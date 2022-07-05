@@ -53598,7 +53598,7 @@ var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (re
   return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 
-var _PhysicsSprite_instances, _PhysicsSprite_position, _PhysicsSprite_delta, _PhysicsSprite_accel, _PhysicsSprite_updatePosition;
+var _PhysicsSprite_instances, _PhysicsSprite_position, _PhysicsSprite_delta, _PhysicsSprite_accel, _PhysicsSprite_gravity, _PhysicsSprite_updatePosition;
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -53629,7 +53629,13 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 
     _PhysicsSprite_accel.set(_assertThisInitialized(_this), new math_1.XY(0, 0));
 
+    _PhysicsSprite_gravity.set(_assertThisInitialized(_this), 0);
+
     __classPrivateFieldSet(_assertThisInitialized(_this), _PhysicsSprite_position, params.position, "f");
+
+    params.delta && __classPrivateFieldSet(_assertThisInitialized(_this), _PhysicsSprite_delta, params.delta, "f");
+    params.accel && __classPrivateFieldSet(_assertThisInitialized(_this), _PhysicsSprite_accel, params.accel, "f");
+    params.gravity && __classPrivateFieldSet(_assertThisInitialized(_this), _PhysicsSprite_gravity, params.gravity, "f");
 
     __classPrivateFieldGet(_assertThisInitialized(_this), _PhysicsSprite_instances, "m", _PhysicsSprite_updatePosition).call(_assertThisInitialized(_this));
 
@@ -53676,8 +53682,8 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 }(PIXI.Sprite);
 
 exports.PhysicsSprite = PhysicsSprite;
-_PhysicsSprite_position = new WeakMap(), _PhysicsSprite_delta = new WeakMap(), _PhysicsSprite_accel = new WeakMap(), _PhysicsSprite_instances = new WeakSet(), _PhysicsSprite_updatePosition = function _PhysicsSprite_updatePosition() {
-  __classPrivateFieldSet(this, _PhysicsSprite_delta, new math_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").y), "f");
+_PhysicsSprite_position = new WeakMap(), _PhysicsSprite_delta = new WeakMap(), _PhysicsSprite_accel = new WeakMap(), _PhysicsSprite_gravity = new WeakMap(), _PhysicsSprite_instances = new WeakSet(), _PhysicsSprite_updatePosition = function _PhysicsSprite_updatePosition() {
+  __classPrivateFieldSet(this, _PhysicsSprite_delta, new math_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_gravity, "f")), "f");
 
   __classPrivateFieldSet(this, _PhysicsSprite_position, new math_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y), "f");
 
@@ -61143,13 +61149,10 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
     _this = _super.call(this);
     _this.player = _this.spawn(new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
-      position: new math_1.XY(0, 0)
+      position: new math_1.XY(0, 0),
+      delta: new math_1.XY(1 + Math.random() * 2, 1 + Math.random() * 2).mul(Math.random() * 10),
+      gravity: 0.3
     }));
-
-    _this.player.setDelta(function () {
-      return new math_1.XY(Math.random() * 5, Math.random() * 5);
-    });
-
     _this.bounds = {
       top: new math_1.Rect(0, -100, 320, 100),
       bottom: new math_1.Rect(0, 240, 320, 100),
@@ -61162,8 +61165,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
     _this.ready();
 
     return _this;
-  } // メイン処理設定
-
+  }
 
   _createClass(_class, [{
     key: "main",
@@ -61175,10 +61177,10 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                // ループ処理を定義する
-                // ここではキーボード操作を行う
                 Flow_1.Flow.loop(function () {
                   return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+                    var _this3 = this;
+
                     return _regeneratorRuntime().wrap(function _callee$(_context) {
                       while (1) {
                         switch (_context.prev = _context.next) {
@@ -61186,14 +61188,11 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                             this.updatePhysics();
 
                             if ((0, math_2.hit)(this.player.getRect(), this.bounds.top)) {
-                              this.player.setDelta(function (_ref) {
+                              this.player.setPosition(function (_ref) {
                                 var x = _ref.x,
                                     y = _ref.y;
-                                return new math_1.XY(x, -y);
+                                return new math_1.XY(x, _this3.bounds.top.bottom + 1);
                               });
-                            }
-
-                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.bottom)) {
                               this.player.setDelta(function (_ref2) {
                                 var x = _ref2.x,
                                     y = _ref2.y;
@@ -61201,21 +61200,50 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                               });
                             }
 
-                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.left)) {
-                              this.player.setDelta(function (_ref3) {
+                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.bottom)) {
+                              this.player.setPosition(function (_ref3) {
                                 var x = _ref3.x,
                                     y = _ref3.y;
+                                return new math_1.XY(x, _this3.bounds.bottom.top - _this3.player.getRect().height - 1);
+                              });
+                              this.player.setDelta(function (_ref4) {
+                                var x = _ref4.x,
+                                    y = _ref4.y;
+                                return new math_1.XY(x, -y);
+                              });
+                            }
+
+                            if ((0, math_2.hit)(this.player.getRect(), this.bounds.left)) {
+                              this.player.setPosition(function (_ref5) {
+                                var x = _ref5.x,
+                                    y = _ref5.y;
+                                return new math_1.XY(_this3.bounds.left.right + 1, y);
+                              });
+                              this.player.setDelta(function (_ref6) {
+                                var x = _ref6.x,
+                                    y = _ref6.y;
                                 return new math_1.XY(-x, y);
                               });
                             }
 
                             if ((0, math_2.hit)(this.player.getRect(), this.bounds.right)) {
-                              this.player.setDelta(function (_ref4) {
-                                var x = _ref4.x,
-                                    y = _ref4.y;
+                              this.player.setPosition(function (_ref7) {
+                                var x = _ref7.x,
+                                    y = _ref7.y;
+                                return new math_1.XY(_this3.bounds.right.left - _this3.player.getRect().width - 1, y);
+                              });
+                              this.player.setDelta(function (_ref8) {
+                                var x = _ref8.x,
+                                    y = _ref8.y;
                                 return new math_1.XY(-x, y);
                               });
-                            } // if(this.player.getRect().bottom >= $app.screenRect().bottom){
+                            } // if (hit(this.player.getRect(), this.bounds.left)) {
+                            //   this.player.setDelta(({ x, y }) => new XY(-x, y));
+                            // }
+                            // if (hit(this.player.getRect(), this.bounds.right)) {
+                            //   this.player.setDelta(({ x, y }) => new XY(-x, y));
+                            // }
+                            // if(this.player.getRect().bottom >= $app.screenRect().bottom){
                             //   this.player.setPosition(({x,y})=>new XY(x,))
                             // }
 

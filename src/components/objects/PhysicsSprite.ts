@@ -5,14 +5,21 @@ export class PhysicsSprite extends PIXI.Sprite {
   #position: XY;
   #delta: XY = new XY(0, 0);
   #accel: XY = new XY(0, 0);
+  #gravity: number = 0;
   constructor(
     texture: PIXI.Texture<PIXI.Resource> | undefined,
     params: {
       position: XY;
+      delta?: XY;
+      accel?: XY;
+      gravity?: number;
     }
   ) {
     super(texture);
     this.#position = params.position;
+    params.delta && (this.#delta = params.delta);
+    params.accel && (this.#accel = params.accel);
+    params.gravity && (this.#gravity = params.gravity);
     this.#updatePosition();
   }
   setPosition(value: XY | ((position: XY) => XY)) {
@@ -44,7 +51,7 @@ export class PhysicsSprite extends PIXI.Sprite {
   #updatePosition() {
     this.#delta = new XY(
       this.#delta.x + this.#accel.x,
-      this.#delta.y + this.#accel.y
+      this.#delta.y + this.#accel.y + this.#gravity
     );
     this.#position = new XY(
       this.#position.x + this.#delta.x,
