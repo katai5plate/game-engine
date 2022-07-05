@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import * as PIXITilemap from "@pixi/tilemap";
-import { XY } from "./XY";
+import { XY } from "./math";
 
 export type AutoTileMatrix = [
   [null | boolean, null | boolean, null | boolean],

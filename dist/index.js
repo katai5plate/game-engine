@@ -49948,7 +49948,7 @@ var inside = function inside(rect, point) {
 };
 
 exports.inside = inside;
-},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/XY.ts":[function(require,module,exports) {
+},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/math.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -50168,7 +50168,7 @@ exports.TouchManager = void 0;
 
 var math_1 = require("../../utils/math");
 
-var XY_1 = require("../objects/XY");
+var math_2 = require("../objects/math");
 /**
  * InteractivePanel関連
  */
@@ -50186,7 +50186,7 @@ var TouchManager = /*#__PURE__*/function () {
     /** MouseManager転送用 */
 
 
-    _TouchManager_singlePosition.set(this, new XY_1.XY(0, 0));
+    _TouchManager_singlePosition.set(this, new math_2.XY(0, 0));
 
     _TouchManager_multiPosition.set(this, []);
   }
@@ -50247,7 +50247,7 @@ var TouchManager = /*#__PURE__*/function () {
     value: function getWorldPosition() {
       var worldPos = $app._camera.getPosition();
 
-      return new XY_1.XY(worldPos.x + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").x, worldPos.y + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").y);
+      return new math_2.XY(worldPos.x + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").x, worldPos.y + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").y);
     }
   }, {
     key: "getWorldPositions",
@@ -50257,7 +50257,7 @@ var TouchManager = /*#__PURE__*/function () {
       return __classPrivateFieldGet($app._touch, _TouchManager_multiPosition, "f").map(function (_ref) {
         var x = _ref.x,
             y = _ref.y;
-        return new XY_1.XY(worldPos.x + x, worldPos.y + y);
+        return new math_2.XY(worldPos.x + x, worldPos.y + y);
       });
     }
   }]);
@@ -50267,17 +50267,17 @@ var TouchManager = /*#__PURE__*/function () {
 
 exports.TouchManager = TouchManager;
 _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMap(), _TouchManager_singlePosition = new WeakMap(), _TouchManager_multiPosition = new WeakMap(), _TouchManager_instances = new WeakSet(), _TouchManager_updateTouchData = function _TouchManager_updateTouchData(e) {
-  __classPrivateFieldSet(this, _TouchManager_singlePosition, XY_1.XY.from(e.data.global), "f");
+  __classPrivateFieldSet(this, _TouchManager_singlePosition, math_2.XY.from(e.data.global), "f");
 
   __classPrivateFieldSet(this, _TouchManager_multiPosition, _toConsumableArray(e.data.originalEvent.changedTouches || []).map(function (_ref2) {
     var globalX = _ref2.globalX,
         globalY = _ref2.globalY;
-    return new XY_1.XY(globalX, globalY);
+    return new math_2.XY(globalX, globalY);
   }), "f");
 }, _TouchManager_onPointerDown = function _TouchManager_onPointerDown(e) {
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
-  if (!(0, math_1.inside)($app.screenRect(), XY_1.XY.from(e.data.global))) return;
+  if (!(0, math_1.inside)($app.screenRect(), math_2.XY.from(e.data.global))) return;
 
   if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") === undefined) {
     __classPrivateFieldSet(this, _TouchManager_touchTime, 0, "f");
@@ -50289,13 +50289,13 @@ _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMa
 }, _TouchManager_onPointerMove = function _TouchManager_onPointerMove(e) {
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
-  if (!(0, math_1.inside)($app.screenRect(), XY_1.XY.from(e.data.global))) {
+  if (!(0, math_1.inside)($app.screenRect(), math_2.XY.from(e.data.global))) {
     console.log(111);
 
     __classPrivateFieldSet(this, _TouchManager_touchTime, undefined, "f");
   }
 };
-},{"../../utils/math":"utils/math.ts","../objects/XY":"components/objects/XY.ts"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
+},{"../../utils/math":"utils/math.ts","../objects/math":"components/objects/math.ts"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51510,7 +51510,7 @@ exports.PhysicsSprite = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
 
-var XY_1 = require("./XY");
+var math_1 = require("./math");
 
 var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
   _inherits(PhysicsSprite, _PIXI$Sprite);
@@ -51528,9 +51528,9 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 
     _PhysicsSprite_position.set(_assertThisInitialized(_this), void 0);
 
-    _PhysicsSprite_delta.set(_assertThisInitialized(_this), new XY_1.XY(0, 0));
+    _PhysicsSprite_delta.set(_assertThisInitialized(_this), new math_1.XY(0, 0));
 
-    _PhysicsSprite_accel.set(_assertThisInitialized(_this), new XY_1.XY(0, 0));
+    _PhysicsSprite_accel.set(_assertThisInitialized(_this), new math_1.XY(0, 0));
 
     __classPrivateFieldSet(_assertThisInitialized(_this), _PhysicsSprite_position, params.position, "f");
 
@@ -51580,14 +51580,14 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 
 exports.PhysicsSprite = PhysicsSprite;
 _PhysicsSprite_position = new WeakMap(), _PhysicsSprite_delta = new WeakMap(), _PhysicsSprite_accel = new WeakMap(), _PhysicsSprite_instances = new WeakSet(), _PhysicsSprite_updatePosition = function _PhysicsSprite_updatePosition() {
-  __classPrivateFieldSet(this, _PhysicsSprite_delta, new XY_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").y), "f");
+  __classPrivateFieldSet(this, _PhysicsSprite_delta, new math_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").y), "f");
 
-  __classPrivateFieldSet(this, _PhysicsSprite_position, new XY_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y), "f");
+  __classPrivateFieldSet(this, _PhysicsSprite_position, new math_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y), "f");
 
   this.x = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x;
   this.y = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y;
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./XY":"components/objects/XY.ts"}],"components/objects/Scene.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./math":"components/objects/math.ts"}],"components/objects/Scene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -58138,7 +58138,7 @@ var pixi_viewport_1 = require("pixi-viewport");
 
 var cull = __importStar(require("pixi-cull"));
 
-var XY_1 = require("../objects/XY");
+var math_1 = require("../objects/math");
 /**
  * カメラ関連
  */
@@ -58193,7 +58193,7 @@ var CameraManager = /*#__PURE__*/function () {
       var pos;
 
       if (typeof value === "function") {
-        pos = value(XY_1.XY.from(__classPrivateFieldGet(this, _CameraManager_viewport, "f").position));
+        pos = value(math_1.XY.from(__classPrivateFieldGet(this, _CameraManager_viewport, "f").position));
       } else {
         pos = value;
       }
@@ -58208,7 +58208,7 @@ var CameraManager = /*#__PURE__*/function () {
 
 exports.CameraManager = CameraManager;
 _CameraManager_viewport = new WeakMap(), _CameraManager_culling = new WeakMap();
-},{"pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js","../objects/XY":"components/objects/XY.ts"}],"app.ts":[function(require,module,exports) {
+},{"pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js","../objects/math":"components/objects/math.ts"}],"app.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -59027,7 +59027,7 @@ var Cloud_png_1 = __importDefault(require("easyrpg-rtp/Picture/Cloud.png"));
 
 var PhysicsSprite_1 = require("../../components/objects/PhysicsSprite");
 
-var XY_1 = require("../../components/objects/XY");
+var math_1 = require("../../components/objects/math");
 
 exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
@@ -59042,15 +59042,15 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
     _this = _super.call(this);
     _this.player = _this.spawn(new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
-      position: new XY_1.XY(0, 0)
+      position: new math_1.XY(0, 0)
     }));
 
     _this.player.setDelta(function () {
-      return new XY_1.XY(1, 1);
+      return new math_1.XY(1, 1);
     });
 
     _this.bounds = [new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
-      position: new XY_1.XY(200, 200)
+      position: new math_1.XY(200, 200)
     })].map(function (x) {
       return _this.spawn(x);
     });
@@ -59104,7 +59104,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-},{"../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts","../../components/objects/XY":"components/objects/XY.ts"}],"index.ts":[function(require,module,exports) {
+},{"../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts","../../components/objects/math":"components/objects/math.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

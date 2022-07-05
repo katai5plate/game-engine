@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { easing as tsEasing } from "ts-easing";
-import { XY } from "../components/objects/XY";
+import { XY } from "../components/objects/math";
 
 const easing = {
   ...tsEasing,

@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { XY } from "./XY";
+import { XY } from "./math";
 
 export class PhysicsSprite extends PIXI.Sprite {
   #position: XY;

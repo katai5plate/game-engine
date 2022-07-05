@@ -1,6 +1,6 @@
 import { Viewport } from "pixi-viewport";
 import * as cull from "pixi-cull";
-import { XY } from "../objects/XY";
+import { XY } from "../objects/math";
 
 /**
  * カメラ関連

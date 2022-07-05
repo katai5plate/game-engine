@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { inside } from "../../utils/math";
-import { XY } from "../objects/XY";
+import { XY } from "../objects/math";
 
 /**
  * InteractivePanel関連

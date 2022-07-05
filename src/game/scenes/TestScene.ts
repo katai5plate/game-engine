@@ -3,7 +3,7 @@ import { createScene, Scene } from "../../components/objects/Scene";
 import { Flow } from "../../components/objects/Flow";
 import Cloud from "easyrpg-rtp/Picture/Cloud.png";
 import { PhysicsSprite } from "../../components/objects/PhysicsSprite";
-import { XY } from "../../components/objects/XY";
+import { XY } from "../../components/objects/math";
 
 export const TestScene = createScene(
   [Cloud],
