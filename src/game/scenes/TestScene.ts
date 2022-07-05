@@ -1,4 +1,3 @@
-import * as PIXI from "pixi.js";
 import { Asset } from "../../components/objects/Asset";
 import { createScene, Scene } from "../../components/objects/Scene";
 import { Flow } from "../../components/objects/Flow";
