@@ -49948,26 +49948,30 @@ var inside = function inside(rect, point) {
 };
 
 exports.inside = inside;
-},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
+},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/XY.ts":[function(require,module,exports) {
 "use strict";
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
   if (k2 === undefined) k2 = k;
@@ -50009,6 +50013,139 @@ var __importStar = this && this.__importStar || function (mod) {
   return result;
 };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.XY = void 0;
+
+var PIXI = __importStar(require("pixi.js"));
+
+var XY = /*#__PURE__*/function (_PIXI$Point) {
+  _inherits(XY, _PIXI$Point);
+
+  var _super = _createSuper(XY);
+
+  function XY() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+    _classCallCheck(this, XY);
+
+    return _super.call(this, x, y);
+  }
+
+  _createClass(XY, [{
+    key: "add",
+    value: function add() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x + a, this.y + a);
+      }
+
+      var x = args[0],
+          y = args[1];
+      return this.set(this.x + x, this.y + y);
+    }
+  }, {
+    key: "sub",
+    value: function sub() {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x - a, this.y - a);
+      }
+
+      var x = args[0],
+          y = args[1];
+      return this.set(this.x - x, this.y - y);
+    }
+  }, {
+    key: "mul",
+    value: function mul() {
+      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x * a, this.y * a);
+      }
+
+      var x = args[0],
+          y = args[1];
+      return this.set(this.x * x, this.y * y);
+    }
+  }, {
+    key: "div",
+    value: function div() {
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x / a, this.y / a);
+      }
+
+      var x = args[0],
+          y = args[1];
+      return this.set(this.x / x, this.y / y);
+    }
+  }, {
+    key: "mod",
+    value: function mod() {
+      for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x % a, this.y % a);
+      }
+
+      var x = args[0],
+          y = args[1];
+      return this.set(this.x % x, this.y % y);
+    }
+  }], [{
+    key: "from",
+    value: function from(p) {
+      return new this(p.x, p.y);
+    }
+  }]);
+
+  return XY;
+}(PIXI.Point);
+
+exports.XY = XY;
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
+"use strict";
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
 var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
   if (kind === "m") throw new TypeError("Private method is not writable");
   if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
@@ -50029,9 +50166,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TouchManager = void 0;
 
-var PIXI = __importStar(require("pixi.js"));
-
 var math_1 = require("../../utils/math");
+
+var XY_1 = require("../objects/XY");
 /**
  * InteractivePanel関連
  */
@@ -50049,7 +50186,7 @@ var TouchManager = /*#__PURE__*/function () {
     /** MouseManager転送用 */
 
 
-    _TouchManager_singlePosition.set(this, new PIXI.Point(0, 0));
+    _TouchManager_singlePosition.set(this, new XY_1.XY(0, 0));
 
     _TouchManager_multiPosition.set(this, []);
   }
@@ -50110,7 +50247,7 @@ var TouchManager = /*#__PURE__*/function () {
     value: function getWorldPosition() {
       var worldPos = $app._camera.getPosition();
 
-      return new PIXI.Point(worldPos.x + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").x, worldPos.y + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").y);
+      return new XY_1.XY(worldPos.x + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").x, worldPos.y + __classPrivateFieldGet($app._touch, _TouchManager_singlePosition, "f").y);
     }
   }, {
     key: "getWorldPositions",
@@ -50120,7 +50257,7 @@ var TouchManager = /*#__PURE__*/function () {
       return __classPrivateFieldGet($app._touch, _TouchManager_multiPosition, "f").map(function (_ref) {
         var x = _ref.x,
             y = _ref.y;
-        return new PIXI.Point(worldPos.x + x, worldPos.y + y);
+        return new XY_1.XY(worldPos.x + x, worldPos.y + y);
       });
     }
   }]);
@@ -50130,17 +50267,17 @@ var TouchManager = /*#__PURE__*/function () {
 
 exports.TouchManager = TouchManager;
 _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMap(), _TouchManager_singlePosition = new WeakMap(), _TouchManager_multiPosition = new WeakMap(), _TouchManager_instances = new WeakSet(), _TouchManager_updateTouchData = function _TouchManager_updateTouchData(e) {
-  __classPrivateFieldSet(this, _TouchManager_singlePosition, e.data.global, "f");
+  __classPrivateFieldSet(this, _TouchManager_singlePosition, XY_1.XY.from(e.data.global), "f");
 
   __classPrivateFieldSet(this, _TouchManager_multiPosition, _toConsumableArray(e.data.originalEvent.changedTouches || []).map(function (_ref2) {
     var globalX = _ref2.globalX,
         globalY = _ref2.globalY;
-    return new PIXI.Point(globalX, globalY);
+    return new XY_1.XY(globalX, globalY);
   }), "f");
 }, _TouchManager_onPointerDown = function _TouchManager_onPointerDown(e) {
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
-  if (!(0, math_1.inside)($app.screenRect(), e.data.global)) return;
+  if (!(0, math_1.inside)($app.screenRect(), XY_1.XY.from(e.data.global))) return;
 
   if (__classPrivateFieldGet(this, _TouchManager_touchTime, "f") === undefined) {
     __classPrivateFieldSet(this, _TouchManager_touchTime, 0, "f");
@@ -50152,13 +50289,13 @@ _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMa
 }, _TouchManager_onPointerMove = function _TouchManager_onPointerMove(e) {
   __classPrivateFieldGet(this, _TouchManager_instances, "m", _TouchManager_updateTouchData).call(this, e);
 
-  if (!(0, math_1.inside)($app.screenRect(), e.data.global)) {
+  if (!(0, math_1.inside)($app.screenRect(), XY_1.XY.from(e.data.global))) {
     console.log(111);
 
     __classPrivateFieldSet(this, _TouchManager_touchTime, undefined, "f");
   }
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../utils/math":"utils/math.ts"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
+},{"../../utils/math":"utils/math.ts","../objects/XY":"components/objects/XY.ts"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51373,6 +51510,8 @@ exports.PhysicsSprite = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
 
+var XY_1 = require("./XY");
+
 var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
   _inherits(PhysicsSprite, _PIXI$Sprite);
 
@@ -51387,12 +51526,11 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 
     _PhysicsSprite_instances.add(_assertThisInitialized(_this));
 
-    _PhysicsSprite_position.set(_assertThisInitialized(_this), void 0); // #system?: dc.System;
+    _PhysicsSprite_position.set(_assertThisInitialized(_this), void 0);
 
+    _PhysicsSprite_delta.set(_assertThisInitialized(_this), new XY_1.XY(0, 0));
 
-    _PhysicsSprite_delta.set(_assertThisInitialized(_this), new PIXI.Point(0, 0));
-
-    _PhysicsSprite_accel.set(_assertThisInitialized(_this), new PIXI.Point(0, 0));
+    _PhysicsSprite_accel.set(_assertThisInitialized(_this), new XY_1.XY(0, 0));
 
     __classPrivateFieldSet(_assertThisInitialized(_this), _PhysicsSprite_position, params.position, "f");
 
@@ -51442,14 +51580,14 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
 
 exports.PhysicsSprite = PhysicsSprite;
 _PhysicsSprite_position = new WeakMap(), _PhysicsSprite_delta = new WeakMap(), _PhysicsSprite_accel = new WeakMap(), _PhysicsSprite_instances = new WeakSet(), _PhysicsSprite_updatePosition = function _PhysicsSprite_updatePosition() {
-  __classPrivateFieldSet(this, _PhysicsSprite_delta, new PIXI.Point(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").y), "f");
+  __classPrivateFieldSet(this, _PhysicsSprite_delta, new XY_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").y), "f");
 
-  __classPrivateFieldSet(this, _PhysicsSprite_position, new PIXI.Point(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y), "f");
+  __classPrivateFieldSet(this, _PhysicsSprite_position, new XY_1.XY(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y), "f");
 
   this.x = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x;
   this.y = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y;
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/Scene.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./XY":"components/objects/XY.ts"}],"components/objects/Scene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -57999,6 +58137,8 @@ exports.CameraManager = void 0;
 var pixi_viewport_1 = require("pixi-viewport");
 
 var cull = __importStar(require("pixi-cull"));
+
+var XY_1 = require("../objects/XY");
 /**
  * カメラ関連
  */
@@ -58053,7 +58193,7 @@ var CameraManager = /*#__PURE__*/function () {
       var pos;
 
       if (typeof value === "function") {
-        pos = value(__classPrivateFieldGet(this, _CameraManager_viewport, "f").position);
+        pos = value(XY_1.XY.from(__classPrivateFieldGet(this, _CameraManager_viewport, "f").position));
       } else {
         pos = value;
       }
@@ -58068,7 +58208,7 @@ var CameraManager = /*#__PURE__*/function () {
 
 exports.CameraManager = CameraManager;
 _CameraManager_viewport = new WeakMap(), _CameraManager_culling = new WeakMap();
-},{"pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js"}],"app.ts":[function(require,module,exports) {
+},{"pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js","../objects/XY":"components/objects/XY.ts"}],"app.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -58834,46 +58974,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
-      }
-    };
-  }
-
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function (resolve) {
@@ -58917,8 +59017,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TestScene = void 0;
 
-var PIXI = __importStar(require("pixi.js"));
-
 var Asset_1 = require("../../components/objects/Asset");
 
 var Scene_1 = require("../../components/objects/Scene");
@@ -58928,6 +59026,8 @@ var Flow_1 = require("../../components/objects/Flow");
 var Cloud_png_1 = __importDefault(require("easyrpg-rtp/Picture/Cloud.png"));
 
 var PhysicsSprite_1 = require("../../components/objects/PhysicsSprite");
+
+var XY_1 = require("../../components/objects/XY");
 
 exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
@@ -58942,15 +59042,15 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
     _this = _super.call(this);
     _this.player = _this.spawn(new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
-      position: new PIXI.Point(0, 0)
+      position: new XY_1.XY(0, 0)
     }));
 
     _this.player.setDelta(function () {
-      return new PIXI.Point(1, 1);
+      return new XY_1.XY(1, 1);
     });
 
     _this.bounds = [new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
-      position: new PIXI.Point(200, 200)
+      position: new XY_1.XY(200, 200)
     })].map(function (x) {
       return _this.spawn(x);
     });
@@ -58980,7 +59080,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
                         switch (_context.prev = _context.next) {
                           case 0:
                             this.updatePhysics(); // if(this.player.getRect().bottom >= $app.screenRect().bottom){
-                            //   this.player.setPosition(({x,y})=>new PIXI.Point(x,))
+                            //   this.player.setPosition(({x,y})=>new XY(x,))
                             // }
 
                           case 1:
@@ -59004,7 +59104,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts"}],"index.ts":[function(require,module,exports) {
+},{"../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts","../../components/objects/XY":"components/objects/XY.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

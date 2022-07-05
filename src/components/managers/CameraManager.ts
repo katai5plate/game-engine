@@ -1,6 +1,6 @@
-import * as PIXI from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import * as cull from "pixi-cull";
+import { XY } from "../objects/XY";
 
 /**
  * カメラ関連
@@ -32,10 +32,10 @@ export class CameraManager {
   getPosition() {
     return this.#viewport.position;
   }
-  setPosition(value: PIXI.Point | ((prev: PIXI.Point) => PIXI.Point)) {
-    let pos: PIXI.Point;
+  setPosition(value: XY | ((prev: XY) => XY)) {
+    let pos: XY;
     if (typeof value === "function") {
-      pos = value(this.#viewport.position);
+      pos = value(XY.from(this.#viewport.position));
     } else {
       pos = value;
     }

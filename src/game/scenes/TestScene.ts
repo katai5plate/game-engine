@@ -4,6 +4,7 @@ import { createScene, Scene } from "../../components/objects/Scene";
 import { Flow } from "../../components/objects/Flow";
 import Cloud from "easyrpg-rtp/Picture/Cloud.png";
 import { PhysicsSprite } from "../../components/objects/PhysicsSprite";
+import { XY } from "../../components/objects/XY";
 
 export const TestScene = createScene(
   [Cloud],
@@ -16,13 +17,13 @@ export const TestScene = createScene(
       super();
       this.player = this.spawn(
         new PhysicsSprite(new Asset(Cloud).toTexture(), {
-          position: new PIXI.Point(0, 0),
+          position: new XY(0, 0),
         })
       );
-      this.player.setDelta(() => new PIXI.Point(1, 1));
+      this.player.setDelta(() => new XY(1, 1));
       this.bounds = [
         new PhysicsSprite(new Asset(Cloud).toTexture(), {
-          position: new PIXI.Point(200, 200),
+          position: new XY(200, 200),
         }),
       ].map((x) => this.spawn(x));
 
@@ -36,7 +37,7 @@ export const TestScene = createScene(
       Flow.loop(async () => {
         this.updatePhysics();
         // if(this.player.getRect().bottom >= $app.screenRect().bottom){
-        //   this.player.setPosition(({x,y})=>new PIXI.Point(x,))
+        //   this.player.setPosition(({x,y})=>new XY(x,))
         // }
       });
     }

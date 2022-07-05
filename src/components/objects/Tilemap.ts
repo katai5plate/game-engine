@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import * as PIXITilemap from "@pixi/tilemap";
+import { XY } from "./XY";
 
 export type AutoTileMatrix = [
   [null | boolean, null | boolean, null | boolean],
@@ -156,7 +157,7 @@ export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
   }
   /** this.map のインデックスから XY を取得 */
   #tileIndex(i: number) {
-    return new PIXI.Point(i % this.mapWidth, (i / this.mapWidth) | 0);
+    return new XY(i % this.mapWidth, (i / this.mapWidth) | 0);
   }
   /** オートタイルを設定 */
   #applyAutoTileRule(
