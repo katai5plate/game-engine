@@ -49948,7 +49948,7 @@ var inside = function inside(rect, point) {
 };
 
 exports.inside = inside;
-},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/math.ts":[function(require,module,exports) {
+},{"ts-easing":"../node_modules/ts-easing/lib/index.js"}],"components/objects/math/XY.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -50016,10 +50016,8 @@ var __importStar = this && this.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Rect = exports.XY = void 0;
 
-var PIXI = __importStar(require("pixi.js")); // import * as col from "inspector";
-
+var PIXI = __importStar(require("pixi.js"));
 
 var XY = /*#__PURE__*/function (_PIXI$Point) {
   _inherits(XY, _PIXI$Point);
@@ -50125,12 +50123,82 @@ var XY = /*#__PURE__*/function (_PIXI$Point) {
   return XY;
 }(PIXI.Point);
 
-exports.XY = XY;
+exports.default = XY;
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/math/Rect.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var PIXI = __importStar(require("pixi.js"));
 
 var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   _inherits(Rect, _PIXI$Rectangle);
 
-  var _super2 = _createSuper(Rect);
+  var _super = _createSuper(Rect);
 
   function Rect() {
     var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -50140,7 +50208,7 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
 
     _classCallCheck(this, Rect);
 
-    return _super2.call(this, x, y, w, h);
+    return _super.call(this, x, y, w, h);
   }
 
   _createClass(Rect, [{
@@ -50159,8 +50227,8 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   }, {
     key: "add",
     value: function add() {
-      for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
-        args[_key6] = arguments[_key6];
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
       }
 
       if (args.length === 1) {
@@ -50177,8 +50245,8 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   }, {
     key: "sub",
     value: function sub() {
-      for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-        args[_key7] = arguments[_key7];
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
       }
 
       if (args.length === 1) {
@@ -50195,8 +50263,8 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   }, {
     key: "mul",
     value: function mul() {
-      for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
-        args[_key8] = arguments[_key8];
+      for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        args[_key3] = arguments[_key3];
       }
 
       if (args.length === 1) {
@@ -50213,8 +50281,8 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   }, {
     key: "div",
     value: function div() {
-      for (var _len9 = arguments.length, args = new Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
-        args[_key9] = arguments[_key9];
+      for (var _len4 = arguments.length, args = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        args[_key4] = arguments[_key4];
       }
 
       if (args.length === 1) {
@@ -50231,8 +50299,8 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   }, {
     key: "mod",
     value: function mod() {
-      for (var _len10 = arguments.length, args = new Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
-        args[_key10] = arguments[_key10];
+      for (var _len5 = arguments.length, args = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
       }
 
       if (args.length === 1) {
@@ -50247,10 +50315,10 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
       return this.set(this.x % x, this.y % y, this.width % w, this.height % h);
     }
   }, {
-    key: "addWH",
-    value: function addWH() {
-      for (var _len11 = arguments.length, args = new Array(_len11), _key11 = 0; _key11 < _len11; _key11++) {
-        args[_key11] = arguments[_key11];
+    key: "addScale",
+    value: function addScale() {
+      for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+        args[_key6] = arguments[_key6];
       }
 
       if (args.length === 1) {
@@ -50263,10 +50331,10 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
       return this.set(this.x, this.y, this.width + w, this.height + h);
     }
   }, {
-    key: "subWH",
-    value: function subWH() {
-      for (var _len12 = arguments.length, args = new Array(_len12), _key12 = 0; _key12 < _len12; _key12++) {
-        args[_key12] = arguments[_key12];
+    key: "subScale",
+    value: function subScale() {
+      for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+        args[_key7] = arguments[_key7];
       }
 
       if (args.length === 1) {
@@ -50279,10 +50347,10 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
       return this.set(this.x, this.y, this.width - w, this.height - h);
     }
   }, {
-    key: "mulWH",
-    value: function mulWH() {
-      for (var _len13 = arguments.length, args = new Array(_len13), _key13 = 0; _key13 < _len13; _key13++) {
-        args[_key13] = arguments[_key13];
+    key: "mulScale",
+    value: function mulScale() {
+      for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+        args[_key8] = arguments[_key8];
       }
 
       if (args.length === 1) {
@@ -50295,10 +50363,10 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
       return this.set(this.x, this.y, this.width * w, this.height * h);
     }
   }, {
-    key: "divWH",
-    value: function divWH() {
-      for (var _len14 = arguments.length, args = new Array(_len14), _key14 = 0; _key14 < _len14; _key14++) {
-        args[_key14] = arguments[_key14];
+    key: "divScale",
+    value: function divScale() {
+      for (var _len9 = arguments.length, args = new Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+        args[_key9] = arguments[_key9];
       }
 
       if (args.length === 1) {
@@ -50311,10 +50379,10 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
       return this.set(this.x, this.y, this.width / w, this.height / h);
     }
   }, {
-    key: "modWH",
-    value: function modWH() {
-      for (var _len15 = arguments.length, args = new Array(_len15), _key15 = 0; _key15 < _len15; _key15++) {
-        args[_key15] = arguments[_key15];
+    key: "modScale",
+    value: function modScale() {
+      for (var _len10 = arguments.length, args = new Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+        args[_key10] = arguments[_key10];
       }
 
       if (args.length === 1) {
@@ -50343,8 +50411,29 @@ var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
   return Rect;
 }(PIXI.Rectangle);
 
-exports.Rect = Rect;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
+exports.default = Rect;
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/math/index.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Rect = exports.XY = void 0;
+
+var XY_1 = __importDefault(require("./XY"));
+
+exports.XY = XY_1.default;
+
+var Rect_1 = __importDefault(require("./Rect"));
+
+exports.Rect = Rect_1.default;
+},{"./XY":"components/objects/math/XY.ts","./Rect":"components/objects/math/Rect.ts"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -50514,7 +50603,7 @@ _TouchManager_currentPanel = new WeakMap(), _TouchManager_touchTime = new WeakMa
     __classPrivateFieldSet(this, _TouchManager_touchTime, undefined, "f");
   }
 };
-},{"../../utils/math":"utils/math.ts","../objects/math":"components/objects/math.ts"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
+},{"../../utils/math":"utils/math.ts","../objects/math":"components/objects/math/index.ts"}],"../node_modules/keycode-js/dist/keycode.esm.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51806,7 +51895,7 @@ _PhysicsSprite_position = new WeakMap(), _PhysicsSprite_delta = new WeakMap(), _
   this.x = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x;
   this.y = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y;
 };
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./math":"components/objects/math.ts"}],"components/objects/Scene.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./math":"components/objects/math/index.ts"}],"components/objects/Scene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -58427,7 +58516,7 @@ var CameraManager = /*#__PURE__*/function () {
 
 exports.CameraManager = CameraManager;
 _CameraManager_viewport = new WeakMap(), _CameraManager_culling = new WeakMap();
-},{"pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js","../objects/math":"components/objects/math.ts"}],"app.ts":[function(require,module,exports) {
+},{"pixi-viewport":"../node_modules/pixi-viewport/dist/esm/viewport.es.js","pixi-cull":"../node_modules/pixi-cull/dist/pixi-cull.es.js","../objects/math":"components/objects/math/index.ts"}],"app.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -58718,7 +58807,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 exports.App = App;
 _App_scener = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/TouchManager":"components/managers/TouchManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./utils/helper":"utils/helper.ts","./components/managers/CameraManager":"components/managers/CameraManager.ts","./components/objects/math":"components/objects/math.ts"}],"components/objects/Asset.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/TouchManager":"components/managers/TouchManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./utils/helper":"utils/helper.ts","./components/managers/CameraManager":"components/managers/CameraManager.ts","./components/objects/math":"components/objects/math/index.ts"}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -59325,7 +59414,7 @@ exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*
 
   return _class;
 }(Scene_1.Scene));
-},{"../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts","../../components/objects/math":"components/objects/math.ts"}],"index.ts":[function(require,module,exports) {
+},{"../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts","../../components/objects/math":"components/objects/math/index.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -59371,7 +59460,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "14602" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1300" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
