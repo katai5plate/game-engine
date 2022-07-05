@@ -51286,7 +51286,170 @@ _ResizeManager_instances = new WeakSet(), _ResizeManager_onResize = function _Re
 
   return;
 };
-},{}],"components/objects/Scene.ts":[function(require,module,exports) {
+},{}],"components/objects/PhysicsSprite.ts":[function(require,module,exports) {
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = this && this.__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+var __classPrivateFieldSet = this && this.__classPrivateFieldSet || function (receiver, state, value, kind, f) {
+  if (kind === "m") throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
+};
+
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var _PhysicsSprite_instances, _PhysicsSprite_position, _PhysicsSprite_delta, _PhysicsSprite_accel, _PhysicsSprite_updatePosition;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PhysicsSprite = void 0;
+
+var PIXI = __importStar(require("pixi.js"));
+
+var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
+  _inherits(PhysicsSprite, _PIXI$Sprite);
+
+  var _super = _createSuper(PhysicsSprite);
+
+  function PhysicsSprite(texture, params) {
+    var _this;
+
+    _classCallCheck(this, PhysicsSprite);
+
+    _this = _super.call(this, texture);
+
+    _PhysicsSprite_instances.add(_assertThisInitialized(_this));
+
+    _PhysicsSprite_position.set(_assertThisInitialized(_this), void 0); // #system?: dc.System;
+
+
+    _PhysicsSprite_delta.set(_assertThisInitialized(_this), new PIXI.Point(0, 0));
+
+    _PhysicsSprite_accel.set(_assertThisInitialized(_this), new PIXI.Point(0, 0));
+
+    __classPrivateFieldSet(_assertThisInitialized(_this), _PhysicsSprite_position, params.position, "f");
+
+    __classPrivateFieldGet(_assertThisInitialized(_this), _PhysicsSprite_instances, "m", _PhysicsSprite_updatePosition).call(_assertThisInitialized(_this));
+
+    return _this;
+  }
+
+  _createClass(PhysicsSprite, [{
+    key: "setPosition",
+    value: function setPosition(value) {
+      var position = typeof value === "function" ? value(__classPrivateFieldGet(this, _PhysicsSprite_position, "f")) : value;
+
+      __classPrivateFieldSet(this, _PhysicsSprite_position, position, "f");
+
+      __classPrivateFieldGet(this, _PhysicsSprite_instances, "m", _PhysicsSprite_updatePosition).call(this);
+    }
+  }, {
+    key: "getRect",
+    value: function getRect() {
+      return new PIXI.Rectangle(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + this.width, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + this.height);
+    }
+  }, {
+    key: "getPosition",
+    value: function getPosition() {
+      return __classPrivateFieldGet(this, _PhysicsSprite_position, "f");
+    }
+  }, {
+    key: "setDelta",
+    value: function setDelta(value) {
+      __classPrivateFieldSet(this, _PhysicsSprite_delta, typeof value === "function" ? value(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f")) : value, "f");
+    }
+  }, {
+    key: "setAccel",
+    value: function setAccel(value) {
+      __classPrivateFieldSet(this, _PhysicsSprite_accel, typeof value === "function" ? value(__classPrivateFieldGet(this, _PhysicsSprite_accel, "f")) : value, "f");
+    }
+  }, {
+    key: "_update",
+    value: function _update() {
+      __classPrivateFieldGet(this, _PhysicsSprite_instances, "m", _PhysicsSprite_updatePosition).call(this);
+    }
+  }]);
+
+  return PhysicsSprite;
+}(PIXI.Sprite);
+
+exports.PhysicsSprite = PhysicsSprite;
+_PhysicsSprite_position = new WeakMap(), _PhysicsSprite_delta = new WeakMap(), _PhysicsSprite_accel = new WeakMap(), _PhysicsSprite_instances = new WeakSet(), _PhysicsSprite_updatePosition = function _PhysicsSprite_updatePosition() {
+  __classPrivateFieldSet(this, _PhysicsSprite_delta, new PIXI.Point(__classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_accel, "f").y), "f");
+
+  __classPrivateFieldSet(this, _PhysicsSprite_position, new PIXI.Point(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + __classPrivateFieldGet(this, _PhysicsSprite_delta, "f").y), "f");
+
+  this.x = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x;
+  this.y = __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y;
+};
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/objects/Scene.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -51385,12 +51548,22 @@ var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, gene
   });
 };
 
+var __classPrivateFieldGet = this && this.__classPrivateFieldGet || function (receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+
+var _Scene_physicsSprites;
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.createScene = exports.Scene = void 0;
 
 var PIXI = __importStar(require("pixi.js"));
+
+var PhysicsSprite_1 = require("./PhysicsSprite");
 /**
  * シーンクラスで処理内容を定義
  * ```ts
@@ -51435,6 +51608,9 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
     _classCallCheck(this, Scene);
 
     _this = _super.call(this);
+
+    _Scene_physicsSprites.set(_assertThisInitialized(_this), new Set());
+
     _this.isReady = _this.isPlaying = false;
     _this.interactivePanel = new PIXI.Sprite();
     _this.interactivePanel.width = $app.width;
@@ -51506,8 +51682,30 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
   }, {
     key: "spawn",
     value: function spawn(object) {
+      if (object instanceof PhysicsSprite_1.PhysicsSprite) {
+        __classPrivateFieldGet(this, _Scene_physicsSprites, "f").add(object);
+      }
+
       this.addChild(object);
       return object;
+    }
+    /** デスポーンさせる */
+
+  }, {
+    key: "despawn",
+    value: function despawn(object) {
+      if (object instanceof PhysicsSprite_1.PhysicsSprite) {
+        __classPrivateFieldGet(this, _Scene_physicsSprites, "f").delete(object);
+      }
+
+      this.removeChild(object);
+    }
+  }, {
+    key: "updatePhysics",
+    value: function updatePhysics() {
+      __classPrivateFieldGet(this, _Scene_physicsSprites, "f").forEach(function (entity) {
+        entity._update();
+      });
     }
   }]);
 
@@ -51515,6 +51713,7 @@ var Scene = /*#__PURE__*/function (_PIXI$Container) {
 }(PIXI.Container);
 
 exports.Scene = Scene;
+_Scene_physicsSprites = new WeakMap();
 Scene.assetUrls = [];
 /**
  * シーンを作成
@@ -51532,7 +51731,7 @@ var createScene = function createScene(preloadAssets, scene) {
 };
 
 exports.createScene = createScene;
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/managers/SceneManager.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./PhysicsSprite":"components/objects/PhysicsSprite.ts"}],"components/managers/SceneManager.ts":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -58716,22 +58915,21 @@ var __importDefault = this && this.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TestScene = void 0; // 描画エンジンの機能
+exports.TestScene = void 0;
 
-var PIXI = __importStar(require("pixi.js")); // ゲームエンジンの機能
-
+var PIXI = __importStar(require("pixi.js"));
 
 var Asset_1 = require("../../components/objects/Asset");
 
 var Scene_1 = require("../../components/objects/Scene");
 
-var Flow_1 = require("../../components/objects/Flow"); // 素材の読み込み
-
+var Flow_1 = require("../../components/objects/Flow");
 
 var Cloud_png_1 = __importDefault(require("easyrpg-rtp/Picture/Cloud.png"));
 
-exports.TestScene = (0, Scene_1.createScene)( // ここにプリロードする素材を置く
-[Cloud_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
+var PhysicsSprite_1 = require("../../components/objects/PhysicsSprite");
+
+exports.TestScene = (0, Scene_1.createScene)([Cloud_png_1.default], /*#__PURE__*/function (_Scene_1$Scene) {
   _inherits(_class, _Scene_1$Scene);
 
   var _super = _createSuper(_class);
@@ -58742,16 +58940,20 @@ exports.TestScene = (0, Scene_1.createScene)( // ここにプリロードする�
 
     _classCallCheck(this, _class);
 
-    _this = _super.call(this); // nanika に Sozai1 から作ったスプライトを設定
+    _this = _super.call(this);
+    _this.player = _this.spawn(new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
+      position: new PIXI.Point(0, 0)
+    }));
 
-    _this.nanika = new Asset_1.Asset(Cloud_png_1.default).toSprite(); // nanika を初期スポーンする
+    _this.player.setDelta(function () {
+      return new PIXI.Point(1, 1);
+    });
 
-    _this.spawn(_this.nanika); // 次のように書くことで、設定と同時に初期スポーン可能
-    // this.nanika = this.spawn(new Asset(Sozai1).toSprite());
-    // 「アニメーション中かどうか」を意味する変数を定義
-
-
-    _this.isTweenPlaying = false; // main() を実行する
+    _this.bounds = [new PhysicsSprite_1.PhysicsSprite(new Asset_1.Asset(Cloud_png_1.default).toTexture(), {
+      position: new PIXI.Point(200, 200)
+    })].map(function (x) {
+      return _this.spawn(x);
+    });
 
     _this.ready();
 
@@ -58762,12 +58964,12 @@ exports.TestScene = (0, Scene_1.createScene)( // ここにプリロードする�
   _createClass(_class, [{
     key: "main",
     value: function main() {
-      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var _this2 = this;
 
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 // ループ処理を定義する
                 // ここではキーボード操作を行う
@@ -58777,22 +58979,9 @@ exports.TestScene = (0, Scene_1.createScene)( // ここにプリロードする�
                       while (1) {
                         switch (_context.prev = _context.next) {
                           case 0:
-                            // isTweenPlaying が false のとき...
-                            if (this.isTweenPlaying === false) {
-                              // 左キーが押されたら...
-                              if ($app.useKey.isPressed("LEFT")) {
-                                // nanika の X 座標を 10 減算
-                                this.nanika.x -= 10;
-                              } // 右キーが押されたら...
-
-
-                              if ($app.useKey.isPressed("RIGHT")) {
-                                // nanika の X 座標を 10 加算
-                                this.nanika.x += 10;
-                              }
-                            } // 内部で Flow.loop を使用することも可能だが、await を使用すること
-                            // await Flow.loop(async () => {})
-
+                            this.updatePhysics(); // if(this.player.getRect().bottom >= $app.screenRect().bottom){
+                            //   this.player.setPosition(({x,y})=>new PIXI.Point(x,))
+                            // }
 
                           case 1:
                           case "end":
@@ -58801,95 +58990,21 @@ exports.TestScene = (0, Scene_1.createScene)( // ここにプリロードする�
                       }
                     }, _callee, this);
                   }));
-                }); // 複数定義すると並列実行される
-                // ここではアニメーションを行う
-
-                Flow_1.Flow.loop(function () {
-                  return __awaiter(_this2, void 0, void 0, /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-                    var _this3 = this;
-
-                    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-                      while (1) {
-                        switch (_context2.prev = _context2.next) {
-                          case 0:
-                            // アニメーションを始める前に isTweenPlaying を true にする
-                            this.isTweenPlaying = true; // nanika の移動アニメーションを実行
-
-                            _context2.next = 3;
-                            return Flow_1.Flow.tween({
-                              // イージングを inOutExpo にする
-                              ease: "inOutExpo",
-                              // 0.5 秒で移動完了する
-                              time: 0.5,
-                              // 初期値
-                              from: this.nanika.y,
-                              // 完了値
-                              to: this.nanika.y + 100
-                            }, // 値が変化したら nanika の Y 座標に反映する
-                            function (value) {
-                              _this3.nanika.y = value;
-                            });
-
-                          case 3:
-                            // アニメーションが終わったので isTweenPlaying を false にする
-                            this.isTweenPlaying = false; // 1 秒待つ
-
-                            _context2.next = 6;
-                            return Flow_1.Flow.time(1);
-
-                          case 6:
-                            this.isTweenPlaying = true; // tween2D を使用することで座標指定することも可能
-
-                            _context2.next = 9;
-                            return Flow_1.Flow.tween2D({
-                              // イージングを inOutExpo にする
-                              ease: "inOutExpo",
-                              // 座標それぞれの挙動を変更することも可能
-                              // ease: {
-                              //   x: "inOutExpo",
-                              //   y: "inOutExpo",
-                              // },
-                              // 0.5 秒で移動完了する
-                              time: 0.5,
-                              // 初期値の参照には内部の {x, y} が使用される
-                              from: this.nanika,
-                              // 完了値
-                              to: new PIXI.Point(this.nanika.x, this.nanika.y - 100)
-                            }, // 値が変化したら nanika の座標に反映する
-                            function (_ref) {
-                              var x = _ref.x,
-                                  y = _ref.y;
-                              _this3.nanika.x = x;
-                              _this3.nanika.y = y;
-                            });
-
-                          case 9:
-                            this.isTweenPlaying = false;
-                            _context2.next = 12;
-                            return Flow_1.Flow.time(1);
-
-                          case 12:
-                          case "end":
-                            return _context2.stop();
-                        }
-                      }
-                    }, _callee2, this);
-                  }));
                 });
 
-              case 2:
+              case 1:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3);
+        }, _callee2);
       }));
     }
   }]);
 
   return _class;
 }(Scene_1.Scene));
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png"}],"index.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","../../components/objects/Asset":"components/objects/Asset.ts","../../components/objects/Scene":"components/objects/Scene.ts","../../components/objects/Flow":"components/objects/Flow.ts","easyrpg-rtp/Picture/Cloud.png":"../node_modules/easyrpg-rtp/Picture/Cloud.png","../../components/objects/PhysicsSprite":"components/objects/PhysicsSprite.ts"}],"index.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58935,7 +59050,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1146" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1790" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

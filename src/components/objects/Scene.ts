@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { PhysicsSprite } from "./PhysicsSprite";
 
 /**
  * シーンクラスで処理内容を定義
@@ -35,7 +36,11 @@ export class Scene extends PIXI.Container {
   isReady: boolean;
   isPlaying: boolean;
   interactivePanel: PIXI.Sprite;
+
+  #physicsSprites: Set<PhysicsSprite> = new Set();
+
   static assetUrls: string[] = [];
+
   constructor() {
     super();
     this.isReady = this.isPlaying = false;
@@ -83,8 +88,23 @@ export class Scene extends PIXI.Container {
    * ```
    */
   spawn<T extends PIXI.Container>(object: T) {
+    if (object instanceof PhysicsSprite) {
+      this.#physicsSprites.add(object);
+    }
     this.addChild(object);
     return object;
+  }
+  /** デスポーンさせる */
+  despawn<T extends PIXI.Container>(object: T) {
+    if (object instanceof PhysicsSprite) {
+      this.#physicsSprites.delete(object);
+    }
+    this.removeChild(object);
+  }
+  updatePhysics() {
+    this.#physicsSprites.forEach((entity) => {
+      entity._update();
+    });
   }
 }
 
