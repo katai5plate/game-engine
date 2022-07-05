@@ -50016,9 +50016,10 @@ var __importStar = this && this.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.XY = void 0;
+exports.Rect = exports.XY = void 0;
 
-var PIXI = __importStar(require("pixi.js"));
+var PIXI = __importStar(require("pixi.js")); // import * as col from "inspector";
+
 
 var XY = /*#__PURE__*/function (_PIXI$Point) {
   _inherits(XY, _PIXI$Point);
@@ -50125,6 +50126,224 @@ var XY = /*#__PURE__*/function (_PIXI$Point) {
 }(PIXI.Point);
 
 exports.XY = XY;
+
+var Rect = /*#__PURE__*/function (_PIXI$Rectangle) {
+  _inherits(Rect, _PIXI$Rectangle);
+
+  var _super2 = _createSuper(Rect);
+
+  function Rect() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var w = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+    var h = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+
+    _classCallCheck(this, Rect);
+
+    return _super2.call(this, x, y, w, h);
+  }
+
+  _createClass(Rect, [{
+    key: "set",
+    value: function set() {
+      var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var w = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+      var h = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+      this.x = x;
+      this.y = y;
+      this.width = w;
+      this.height = h;
+      return this;
+    }
+  }, {
+    key: "add",
+    value: function add() {
+      for (var _len6 = arguments.length, args = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+        args[_key6] = arguments[_key6];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x + a, this.y + a, this.width + a, this.height + a);
+      }
+
+      var x = args[0],
+          y = args[1],
+          w = args[2],
+          h = args[3];
+      return this.set(this.x + x, this.y + y, this.width + w, this.height + h);
+    }
+  }, {
+    key: "sub",
+    value: function sub() {
+      for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+        args[_key7] = arguments[_key7];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x - a, this.y - a, this.width - a, this.height - a);
+      }
+
+      var x = args[0],
+          y = args[1],
+          w = args[2],
+          h = args[3];
+      return this.set(this.x - x, this.y - y, this.width - w, this.height - h);
+    }
+  }, {
+    key: "mul",
+    value: function mul() {
+      for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+        args[_key8] = arguments[_key8];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x * a, this.y * a, this.width * a, this.height * a);
+      }
+
+      var x = args[0],
+          y = args[1],
+          w = args[2],
+          h = args[3];
+      return this.set(this.x * x, this.y * y, this.width * w, this.height * h);
+    }
+  }, {
+    key: "div",
+    value: function div() {
+      for (var _len9 = arguments.length, args = new Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+        args[_key9] = arguments[_key9];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x / a, this.y / a, this.width / a, this.height / a);
+      }
+
+      var x = args[0],
+          y = args[1],
+          w = args[2],
+          h = args[3];
+      return this.set(this.x / x, this.y / y, this.width / w, this.height / h);
+    }
+  }, {
+    key: "mod",
+    value: function mod() {
+      for (var _len10 = arguments.length, args = new Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+        args[_key10] = arguments[_key10];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x % a, this.y % a, this.width % a, this.height % a);
+      }
+
+      var x = args[0],
+          y = args[1],
+          w = args[2],
+          h = args[3];
+      return this.set(this.x % x, this.y % y, this.width % w, this.height % h);
+    }
+  }, {
+    key: "addWH",
+    value: function addWH() {
+      for (var _len11 = arguments.length, args = new Array(_len11), _key11 = 0; _key11 < _len11; _key11++) {
+        args[_key11] = arguments[_key11];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x, this.y, this.width + a, this.height + a);
+      }
+
+      var w = args[0],
+          h = args[1];
+      return this.set(this.x, this.y, this.width + w, this.height + h);
+    }
+  }, {
+    key: "subWH",
+    value: function subWH() {
+      for (var _len12 = arguments.length, args = new Array(_len12), _key12 = 0; _key12 < _len12; _key12++) {
+        args[_key12] = arguments[_key12];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x, this.y, this.width - a, this.height - a);
+      }
+
+      var w = args[0],
+          h = args[1];
+      return this.set(this.x, this.y, this.width - w, this.height - h);
+    }
+  }, {
+    key: "mulWH",
+    value: function mulWH() {
+      for (var _len13 = arguments.length, args = new Array(_len13), _key13 = 0; _key13 < _len13; _key13++) {
+        args[_key13] = arguments[_key13];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x, this.y, this.width * a, this.height * a);
+      }
+
+      var w = args[0],
+          h = args[1];
+      return this.set(this.x, this.y, this.width * w, this.height * h);
+    }
+  }, {
+    key: "divWH",
+    value: function divWH() {
+      for (var _len14 = arguments.length, args = new Array(_len14), _key14 = 0; _key14 < _len14; _key14++) {
+        args[_key14] = arguments[_key14];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x, this.y, this.width / a, this.height / a);
+      }
+
+      var w = args[0],
+          h = args[1];
+      return this.set(this.x, this.y, this.width / w, this.height / h);
+    }
+  }, {
+    key: "modWH",
+    value: function modWH() {
+      for (var _len15 = arguments.length, args = new Array(_len15), _key15 = 0; _key15 < _len15; _key15++) {
+        args[_key15] = arguments[_key15];
+      }
+
+      if (args.length === 1) {
+        var a = args[0];
+        return this.set(this.x, this.y, this.width % a, this.height % a);
+      }
+
+      var w = args[0],
+          h = args[1];
+      return this.set(this.x, this.y, this.width % w, this.height % h);
+    }
+  }], [{
+    key: "from",
+    value: function from(p) {
+      var _a, _b, _c, _d;
+
+      return new this(p.x, p.y, (_b = (_a = p.width) !== null && _a !== void 0 ? _a : p.w) !== null && _b !== void 0 ? _b : 1, (_d = (_c = p.height) !== null && _c !== void 0 ? _c : p.h) !== null && _d !== void 0 ? _d : 1);
+    }
+  }, {
+    key: "fromXY2",
+    value: function fromXY2(xy, wh) {
+      return new this(xy.x, xy.y, wh.x, wh.y);
+    }
+  }]);
+
+  return Rect;
+}(PIXI.Rectangle);
+
+exports.Rect = Rect;
 },{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js"}],"components/managers/TouchManager.ts":[function(require,module,exports) {
 "use strict";
 
@@ -51551,7 +51770,7 @@ var PhysicsSprite = /*#__PURE__*/function (_PIXI$Sprite) {
   }, {
     key: "getRect",
     value: function getRect() {
-      return new PIXI.Rectangle(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + this.width, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + this.height);
+      return new math_1.Rect(__classPrivateFieldGet(this, _PhysicsSprite_position, "f").x, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").x + this.width, __classPrivateFieldGet(this, _PhysicsSprite_position, "f").y + this.height);
     }
   }, {
     key: "getPosition",
@@ -58362,6 +58581,8 @@ var helper_1 = require("./utils/helper");
 
 var CameraManager_1 = require("./components/managers/CameraManager");
 
+var math_1 = require("./components/objects/math");
+
 var App = /*#__PURE__*/function (_PIXI$Application) {
   _inherits(App, _PIXI$Application);
 
@@ -58481,14 +58702,14 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
   }, {
     key: "screenRect",
     value: function screenRect() {
-      return this.screen;
+      return math_1.Rect.from(this.screen);
     }
   }, {
     key: "worldRect",
     value: function worldRect() {
       var camera = this._camera.getPosition();
 
-      return new PIXI.Rectangle(camera.x + this.screen.x, camera.y + this.screen.y, this.screen.width, this.screen.height);
+      return new math_1.Rect(camera.x + this.screen.x, camera.y + this.screen.y, this.screen.width, this.screen.height);
     }
   }]);
 
@@ -58497,7 +58718,7 @@ var App = /*#__PURE__*/function (_PIXI$Application) {
 
 exports.App = App;
 _App_scener = new WeakMap();
-},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/TouchManager":"components/managers/TouchManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./utils/helper":"utils/helper.ts","./components/managers/CameraManager":"components/managers/CameraManager.ts"}],"components/objects/Asset.ts":[function(require,module,exports) {
+},{"pixi.js":"../node_modules/pixi.js/dist/esm/pixi.js","./components/managers/DebugManager":"components/managers/DebugManager.ts","./components/managers/TouchManager":"components/managers/TouchManager.ts","./components/managers/KeyboardManager":"components/managers/KeyboardManager.ts","./components/managers/MouseManager":"components/managers/MouseManager.ts","./components/managers/ResizeManager":"components/managers/ResizeManager.ts","./components/managers/SceneManager":"components/managers/SceneManager.ts","./components/managers/SynthManager":"components/managers/SynthManager.ts","./components/managers/WatcherManager":"components/managers/WatcherManager.ts","./utils/helper":"utils/helper.ts","./components/managers/CameraManager":"components/managers/CameraManager.ts","./components/objects/math":"components/objects/math.ts"}],"components/objects/Asset.ts":[function(require,module,exports) {
 "use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -59150,7 +59371,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "1790" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "14602" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

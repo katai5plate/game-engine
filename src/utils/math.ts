@@ -1,6 +1,5 @@
-import * as PIXI from "pixi.js";
 import { easing as tsEasing } from "ts-easing";
-import { XY } from "../components/objects/math";
+import { Rect, XY } from "../components/objects/math";
 
 const easing = {
   ...tsEasing,
@@ -79,7 +78,7 @@ export const lerp = (ease: EasingType, a: number, b: number, x: number) => {
   return r;
 };
 
-export const inside = (rect: PIXI.Rectangle, point: XY) => {
+export const inside = (rect: Rect, point: XY) => {
   return (
     rect.x <= point.x &&
     point.x < rect.x + rect.width &&

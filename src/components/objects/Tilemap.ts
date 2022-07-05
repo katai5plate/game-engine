@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import * as PIXITilemap from "@pixi/tilemap";
-import { XY } from "./math";
+import { XY, Rect } from "./math";
 
 export type AutoTileMatrix = [
   [null | boolean, null | boolean, null | boolean],
@@ -86,7 +86,7 @@ export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
               frame[2],
               frame[3],
             ];
-            this.#tilemapTexture.frame = this.#mulRect(grid, fx, fy, fw, fh);
+            this.#tilemapTexture.frame = new Rect(fx, fy, fw, fh).mul(grid); // this.#mulRect(grid, fx, fy, fw, fh);
             this.tile(this.#tilemapTexture, x * 16, y * 16, {
               alpha: this.#tileAlpha,
             });
@@ -102,13 +102,7 @@ export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
                   frame[2],
                   frame[3],
                 ];
-                this.#tilemapTexture.frame = this.#mulRect(
-                  grid,
-                  fx,
-                  fy,
-                  fw,
-                  fh
-                );
+                this.#tilemapTexture.frame = new Rect(fx, fy, fw, fh).mul(grid);
                 this.tile(
                   this.#tilemapTexture,
                   ...this.#decorationPosition(x, y, ...pos),
@@ -182,10 +176,6 @@ export class Tilemap extends PIXITilemap.CompositeRectTileLayer {
       }
     }
     return r;
-  }
-  /** M 倍の Rectangle を生成 */
-  #mulRect(m: number, x: number, y: number, w = 1, h = 1) {
-    return new PIXI.Rectangle(x * m, y * m, m * w, m * h);
   }
   /** タイルにデコレーションする座標を指定 */
   #decorationPosition(

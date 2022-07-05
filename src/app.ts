@@ -14,6 +14,7 @@ import { SceneData } from "./components/objects/Scene";
 import { TouchableSprite } from "./components/ui/atoms/TouchableSprite";
 import { managerToUse, toGlobalForDebug, uuid } from "./utils/helper";
 import { CameraManager } from "./components/managers/CameraManager";
+import { Rect } from "./components/objects/math";
 
 export class App extends PIXI.Application {
   /** ゲームが始まって何秒経ったか */
@@ -105,11 +106,11 @@ export class App extends PIXI.Application {
     this.#scener._gotoScene(sceneData);
   }
   screenRect() {
-    return this.screen;
+    return Rect.from(this.screen);
   }
   worldRect() {
     const camera = this._camera.getPosition();
-    return new PIXI.Rectangle(
+    return new Rect(
       camera.x + this.screen.x,
       camera.y + this.screen.y,
       this.screen.width,
